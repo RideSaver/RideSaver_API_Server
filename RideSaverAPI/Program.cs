@@ -1,5 +1,6 @@
 using RideSaverAPI.Data;
 using Microsoft.EntityFrameworkCore;
+using RideSaverAPI.APIs;
 
 namespace RideSaverAPI
 {
@@ -32,6 +33,8 @@ namespace RideSaverAPI
 
 
             app.MapControllers();
+
+            HTTPClientInstance.InitializeClient(); // Creates one static instance of HTTP client used for the internal API calls. (opens a TCP port for the Uber/Lyft requests)
 
             app.Run();
         }
