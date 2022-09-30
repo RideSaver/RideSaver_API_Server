@@ -4,6 +4,7 @@ namespace RideSaverAPI.Models
 {
     public class Rider // Rider model class - represents each user registered on  the application.
     {
+        [Required]
         public Guid RiderID { get; set; } // Unique ID for each rider instance.
         [Required]
         public string RiderEmail { get; set; } // Email of the rider.
@@ -15,11 +16,7 @@ namespace RideSaverAPI.Models
         public string RiderName { get; set; } // Name of the rider.
         [Required]
         public string RiderPhoneNumber { get; set; } // Phone number of the rider.
-        [Required]
-    
-
-        public string? RiderCurrentLocation { get; set; } // Nullable value of the rider's current location - gets updated per API GET request.
-        public string? RiderCurrentDestination { get; set; } // Nullable value of the rider's current destination - gets updatd per API GET request.
+        
 
         public Rider(string riderEmail, string riderUsername, string riderPassword, string riderName, string riderPhoneNumber) // Parametric constructor.
         {
