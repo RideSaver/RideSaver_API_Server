@@ -1,0 +1,298 @@
+openapi: "3.0.2"
+info:
+  title: RideSaver API
+  version: "1.0"
+servers:
+  - url: https://localhost:8443/api/v1
+tags:
+  - name: estimate
+    description: Get estimates for rides
+  - name: location
+    description: Get location information (geocoding and autocomplete)
+  - name: user
+    description: Get user information.
+paths:
+  /estimates:
+    get:
+      tags:
+        - estimate
+      security:
+        - oAuthPassword:
+          - read_estimates
+      parameters:
+        - name: startPoint
+          in: query
+          required: true
+          style: deepObject
+          schema:
+            $ref: "#/components/schemas/Location"
+        - name: endPoint
+          in: query
+          style: deepObject
+          required: true
+          schema:
+            $ref: "#/components/schemas/Location"
+        - name: services
+          in: query
+          required: false
+          description: Only query these services (default is all supported services).
+          schema:
+            type: array
+            minItems: 1
+            items:
+              type: string
+              format: uuid
+              description: The ID of the ride service.
+        - name: seats
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            description: The number of seats required for the trip to estimate.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Estimate"
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Estimate"
+                xml:
+                  name: estimate
+        "401":
+          description: The user does not have access to any ride share services.
+  /estimates/refresh:
+    get:
+      security:
+        - oAuthPassword:
+          - read_estimates
+      tags:
+        - estimate
+      parameters:
+        - name: ids
+          in: query
+          required: true
+          schema:
+            type: array
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Estimate"
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Estimate"
+                xml:
+                  name: estimate
+        "401":
+          description: The user does not have access to any ride share services from the estimates anymore or the user has no access to the estimates.
+        "404":
+          description: The requested estimate does not exist.
+  /services:
+    get:
+      description: Get the supported services.
+      operationId: getServices
+      parameters:
+        - $ref: "#/components/parameters/location"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RideService"
+  /location/autocomplete:
+    get:
+      security:
+        - oAuthPassword:
+          - compute
+      tags:
+        - location
+      description: Get the suggested locations based on partial user input
+      operationId: autocomplete
+      parameters:
+        - $ref: "#/components/parameters/location"
+        - name: maxResponses
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+          description: The numbers of items to return.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+            application/xml:
+              schema:
+                type: array
+                items:
+                  type: string
+  /user/authorize/oauth/{userId}/{serviceId}:
+    parameters:
+      - name: serviceId
+        description: The ID of the service to request authorization from
+        in: path
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - name: userId
+        description: The ID of the user that requested the authorization
+        in: path
+        schema:
+          type: string
+          format: uuid
+        required: true
+    get:
+      description: Authorization endpoint an RideShare service for a user.
+      parameters:
+        - name: code
+          in: query
+          schema:
+            type: string
+          required: true
+      tags:
+        - user
+      responses:
+        "200":
+          description: OK
+components:
+  parameters:
+    location:
+      name: location
+      in: header
+      explode: true
+      required: false
+      description: The location at which services are supported (usually by country/city range), leaving this empty returns all supported services worldwide.
+      schema:
+        $ref: "#/components/schemas/Location"
+  schemas:
+    Estimate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The unique ID of this estimate, used to track this estimate for ride requests and estimate refreshes.
+          xml:
+            attribute: true
+        invalidTime:
+          type: string
+          format: date-time
+          description: The time at which the validity of this estimate expires (and should be refreshed before)
+        price:
+          type: integer
+          minimum: 0
+          description: The estimated price of this ride, in user currency.
+        distance:
+          type: integer
+          minimum: 0
+          description: The estimated distance for this ride, in kilometers.
+        waypoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/Location"
+          description: The waypoints of this estimate, used to display a route to the user, first element should be the start point and last should be the end point.
+        displayName:
+          type: string
+          description: The name of this service to display.
+        seats:
+          type: integer
+          minimum: 0
+          description: The number of seats available for this estimate.
+      required:
+        - id
+        - invalidTime
+        - price
+        - displayName
+        - seats
+    Location:
+      type: object
+      properties:
+        latitude:
+          type: number
+          minimum: -180
+          maximum: 180
+          description: The latitude of this location, - is south, + is north
+        longitude:
+          type: number
+          minimum: -180
+          maximum: 180
+          description: The longitude of this location, - is west, + is east
+        height:
+          type: number
+          minimum: 0
+          description: The height of the given location, from the center of the planet, defaults to sea level.
+        planet:
+          type: string
+          default: earth
+          pattern: "[^A-Z]"
+          description: The name (lowercase) of the planet this location is on, currently only earth is supported and the default
+          xml:
+            attribute: true
+      required:
+        - latitude
+        - longitude
+    RideService:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: The name to display for this service.
+          example: uberPOOL
+        id:
+          type: string
+          format: uuid
+          description: The unique ID for this ride service, stays the same even if the name changes.
+        security:
+          oneOf:
+            - type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - none
+            - type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - oauth
+                oauthURL:
+                  type: string
+                  format: uri
+  securitySchemes:
+    oAuthPassword:
+      type: oauth2
+      description: This API uses OAuth 2 with the implicit grant flow. [More info](https://api.example.com/docs/auth)
+      flows:
+        password:
+          tokenUrl: /oauth2/token
+          scopes:
+            compute: Allow compute power on the server (used to stop abuse of compute intensive operations for other services).
+            read_estimates: Read estimates for the user.
+            create_requests: Request rides for the user.
