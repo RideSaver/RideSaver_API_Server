@@ -21,6 +21,6 @@ namespace RideSaverAPI.Models
         [Required]
         public string? request_id { get; set; }
 
-
+        
     }
 }

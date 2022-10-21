@@ -7,7 +7,7 @@ namespace RideSaverAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DefaultController : DefaultApiController
+    public class ServicesController : DefaultApiController
     {
         public override IActionResult GetServices([FromHeader] Location location)
         {
