@@ -14,10 +14,7 @@ namespace UserAPI.Controllers
     {
         private readonly IUserRepository _userRepository;
 
-        public UserController(IUserRepository userRepository)
-        {
-            _userRepository = userRepository;
-        }
+        public UserController(IUserRepository userRepository) => _userRepository = userRepository;
 
         public override IActionResult SignUp([FromBody] User user)
         {
@@ -25,37 +22,38 @@ namespace UserAPI.Controllers
             {
                 _userRepository.CreateUser(user);
                 scope.Complete();
-                return CreatedAtAction(nameof(GetUser), new { username = user.Name }, user);
+                return new OkResult(); // [STATUS: 204 NO CONTENT]
             }
         }
         public override IActionResult GetUser([FromRoute(Name = "username"), Required] string username)
         {
             var user = _userRepository.GetUser(username);
-            return new OkObjectResult(user);
+            if(user is not null) new OkObjectResult(user); // [STATUS: 200 OK || user]
+            return new NoContentResult(); // [STATUS: 204 NO CONTENT]
         }
         public override IActionResult PatchUser([FromRoute(Name = "username"), Required] string username, [FromBody] User user)
         {
-            if (user != null)
+            if (user is not null)
             {
                 using (var scope = new TransactionScope())
                 {
                     _userRepository.UpdateUser(user);
                     scope.Complete();
-                    return new OkResult();
+                    return new OkResult(); // [STATUS: 200 OK]
                 }
             }
-            return new NoContentResult();
+            return new NoContentResult(); // [STATUS: 204 NO CONTENT]
         }
 
         public override IActionResult DeleteUser([FromRoute(Name = "username"), Required] string username)
         {
             _userRepository.DeleteUser(username);
-            return new OkResult();
+            return new OkResult(); // [STATUS: 200 OK]
         }
 
         public override IActionResult Login() // TO BE IMPLEMENTED
         {
-            throw new NotImplementedException();
+            return new OkResult(); // [STATUS: 200 OK]
         }
         public override IActionResult AutorizeServiceEndpoint([FromRoute(Name = "serviceId"), Required] Guid serviceId, [FromRoute(Name = "userId"), Required] Guid userId, [FromQuery(Name = "code"), Required] string code)
         {

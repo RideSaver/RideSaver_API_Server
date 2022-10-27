@@ -12,11 +12,7 @@ namespace LocationAPI.Controllers
     {
         public override IActionResult Autocomplete([FromHeader] Location location, [FromQuery(Name = "maxResponses"), Range(1, 50)] int? maxResponses)
         {
-            List<string> locationList = new List<string>();
-
-            locationList.Add("TO-BE-ADDED");
-
-            return new OkObjectResult(locationList);
+            return new OkObjectResult(new List<string>()); // [STATUS: 200 || Empty list]
         }
     }
 }

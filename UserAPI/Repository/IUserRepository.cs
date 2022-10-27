@@ -9,7 +9,6 @@ namespace UserAPI.Repository
         void CreateUser(User user);
         void DeleteUser(string username);
         void UpdateUser(User user);
-
         void Save();
     }
 }
