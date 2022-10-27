@@ -53,13 +53,13 @@ namespace UserAPI.Controllers
             return new OkResult();
         }
 
-        public override IActionResult Login()
+        public override IActionResult Login() // TO BE IMPLEMENTED
         {
             throw new NotImplementedException();
         }
         public override IActionResult AutorizeServiceEndpoint([FromRoute(Name = "serviceId"), Required] Guid serviceId, [FromRoute(Name = "userId"), Required] Guid userId, [FromQuery(Name = "code"), Required] string code)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException(); // TO BE IMPLEMENTED
         }
     }
 }
