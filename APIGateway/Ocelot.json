@@ -1,0 +1,69 @@
+{
+  "ReRoutes": 
+  [
+    {
+      "DownstreamPathTemplate": "/api/Estimate",
+      "DownstreamScheme": "https",
+      "DownstreamHostsAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44339
+        }
+      ],
+      "UpstreamPathTemplate": "/apigateway/EstimateService",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+
+    {
+      "DownstreamPathTemplate": "/api/Location",
+      "DownstreamScheme": "https",
+      "DownstreamHostsAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44319
+        }
+      ],
+      "UpstreamPathTemplate": "/apigateway/LocationService",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+
+    {
+      "DownstreamPathTemplate": "/api/Request",
+      "DownstreamScheme": "https",
+      "DownstreamHostsAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44336
+        }
+      ],
+      "UpstreamPathTemplate": "/apigateway/RequestService",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+
+    {
+      "DownstreamPathTemplate": "/api/Services",
+      "DownstreamScheme": "https",
+      "DownstreamHostsAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44387
+        }
+      ],
+      "UpstreamPathTemplate": "/apigateway/ServicesService",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+
+    {
+      "DownstreamPathTemplate": "/api/User",
+      "DownstreamScheme": "https",
+      "DownstreamHostsAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44385
+        }
+      ],
+      "UpstreamPathTemplate": "/apigateway/UserService",
+      "UpstreamHttpMethod": [ "GET", "POST", "PATCH", "DELETE" ]
+    }
+  ]
+}
