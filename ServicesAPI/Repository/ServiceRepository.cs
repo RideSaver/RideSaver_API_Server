@@ -4,12 +4,12 @@ namespace ServicesAPI.Repository
 {
     public class ServiceRepository : IServiceRepository
     {
-        public RideService GetService(Guid service_id) // TO BE ADDED
+        public RideService GetService(Guid service_id) // TBA
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<RideService> GetAvailableServices()
+        public IEnumerable<RideService> GetAvailableServices() // TBA:-> Will pull the service data from the DB.
         {
             List<RideService> rideServices = new List<RideService>() {
                 new RideService {

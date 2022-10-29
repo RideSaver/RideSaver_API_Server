@@ -11,11 +11,7 @@ namespace ServicesAPI.Controllers
     public class ServicesController : DefaultApiController
     {
         private readonly IServiceRepository _serviceRepository;
-
-        public ServicesController(IServiceRepository serviceRepository)
-        {
-            _serviceRepository = serviceRepository;
-        }
+        public ServicesController(IServiceRepository serviceRepository) =>_serviceRepository = serviceRepository;
 
         public override IActionResult GetServices([FromHeader] Location location)
         {

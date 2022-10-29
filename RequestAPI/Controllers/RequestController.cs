@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RequestAPI.Repository;
 
 namespace RequestAPI.Controllers
 {
@@ -7,6 +8,7 @@ namespace RequestAPI.Controllers
     [ApiController]
     public class RequestController : ControllerBase
     {
-        // TBD
+        private readonly IRequestRepository _requestRepository;
+        public RequestController(IRequestRepository requestRepository) => _requestRepository = requestRepository;
     }
 }
