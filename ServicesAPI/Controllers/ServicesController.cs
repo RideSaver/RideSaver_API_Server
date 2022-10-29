@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RideSaver.Server.Controllers;
 using RideSaver.Server.Models;
+using ServicesAPI.Repository;
 
 namespace ServicesAPI.Controllers
 {
@@ -9,43 +10,16 @@ namespace ServicesAPI.Controllers
     [ApiController]
     public class ServicesController : DefaultApiController
     {
+        private readonly IServiceRepository _serviceRepository;
+
+        public ServicesController(IServiceRepository serviceRepository)
+        {
+            _serviceRepository = serviceRepository;
+        }
+
         public override IActionResult GetServices([FromHeader] Location location)
         {
-            List<RideService> rideServices = new List<RideService>() {
-                new RideService {
-                    DisplayName = "lyftPool",
-                    Id = new Guid(),
-                    Security = new AuthorizationMethod()
-                    {
-                        Authorization = AuthorizationMethod.AuthorizationEnum.NoneEnum
-                    },
-                },
-                 new RideService {
-                    DisplayName = "uberPool",
-                    Id = new Guid(),
-                    Security = new AuthorizationMethod()
-                    {
-                        Authorization = AuthorizationMethod.AuthorizationEnum.NoneEnum
-                    },
-                },
-                  new RideService {
-                    DisplayName = "uber",
-                    Id = new Guid(),
-                    Security = new AuthorizationMethod()
-                    {
-                        Authorization = AuthorizationMethod.AuthorizationEnum.NoneEnum
-                    },
-                },
-                   new RideService {
-                    DisplayName = "lyft",
-                    Id = new Guid(),
-                    Security = new AuthorizationMethod()
-                    {
-                        Authorization = AuthorizationMethod.AuthorizationEnum.NoneEnum
-                    },
-                },
-            };
-
+            var rideServices = _serviceRepository.GetAvailableServices();
             return new OkObjectResult(rideServices);
         }
     }
