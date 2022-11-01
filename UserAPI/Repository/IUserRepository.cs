@@ -5,10 +5,10 @@ namespace UserAPI.Repository
     public interface IUserRepository
     {
         IEnumerable<User> GetUsers();
-        User GetUser(string username);
-        void CreateUser(User user);
-        void DeleteUser(string username);
-        void UpdateUser(User user);
-        void Save();
+        Task<User> GetUserAsync(string username);
+        Task CreateUserAsync(User user);
+        Task DeleteUserAsync(string username);
+        Task UpdateUserAsync(User user);
+        Task SaveAsync();
     }
 }

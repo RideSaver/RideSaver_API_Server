@@ -10,23 +10,29 @@ namespace UserAPI.Repository
 
         public UserRepository(UserContext dbContext) => _dbContext = dbContext;
         public IEnumerable<User> GetUsers() => _dbContext.Users.ToList();
-        public User GetUser(string username) => _dbContext.Users.Find(username);
-        public void UpdateUser(User user) =>_dbContext.Entry(user).State = EntityState.Modified;
-        public void Save() => _dbContext.SaveChanges();
+        public async Task<User> GetUserAsync(string username) => await _dbContext.Users.FindAsync(username);
+        public Task SaveAsync() => _dbContext.SaveChangesAsync();
 
-        public void CreateUser(User user)
+        public async Task CreateUserAsync(User user)
         {
-            _dbContext.Add(user);
-            Save();
+            await _dbContext.AddAsync(user);
+            await SaveAsync();
         }
-        public void DeleteUser(string username)
+        public async Task DeleteUserAsync(string username)
         {
-            var user = _dbContext.Users.Find(username);
+            var user = await _dbContext.Users.FindAsync(username);
             if (user != null)
             {
                 _dbContext.Users.Remove(user);
-                Save();
+                await SaveAsync();
             }
         }
+
+        public async Task UpdateUserAsync(User user)
+        {
+            _dbContext.Entry(user).State = EntityState.Modified;
+            await SaveAsync();
+        }
+        
     }
 }

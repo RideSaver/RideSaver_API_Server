@@ -12,9 +12,9 @@ namespace ServicesAPI.Controllers
         private readonly IServiceRepository _serviceRepository;
         public ServicesController(IServiceRepository serviceRepository) =>_serviceRepository = serviceRepository;
 
-        public override IActionResult GetServices([FromHeader] Location location)
+        public override async Task<IActionResult> GetServices([FromHeader] Location location)
         {
-            var rideServices = _serviceRepository.GetAvailableServices();
+            var rideServices = await _serviceRepository.GetAvailableServices();
             return new OkObjectResult(rideServices);
         }
     }

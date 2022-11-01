@@ -9,7 +9,7 @@ namespace ServicesAPI.Repository
             throw new NotImplementedException();
         }
 
-        public IEnumerable<RideService> GetAvailableServices() // TBA:-> Will pull the service data from the DB.
+        public async Task<IEnumerable<RideService>> GetAvailableServices() // TBA:-> Will pull the service data from the DB.
         {
             List<RideService> rideServices = new List<RideService>() {
                 new RideService {
@@ -46,6 +46,7 @@ namespace ServicesAPI.Repository
                 },
             };
 
+            await Task.Delay(1000);
             return rideServices;
         }
     }

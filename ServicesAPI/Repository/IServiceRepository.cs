@@ -4,7 +4,7 @@ namespace ServicesAPI.Repository
 {
     public interface IServiceRepository
     {
-        IEnumerable<RideService> GetAvailableServices();
+        Task<IEnumerable<RideService>> GetAvailableServices();
         RideService GetService(Guid service_id);
 
     }

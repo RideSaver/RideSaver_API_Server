@@ -113,7 +113,7 @@ namespace EstimateAPI.Repository
             return estimatesList;
         }
 
-        public List<Estimate> GetRideEstimatesRefresh(List<object> ids) // TBA
+        public async Task<List<Estimate>> GetRideEstimatesRefreshAsync(List<object> ids) // TBA
         {
             List<Estimate> rideEstimatesRefresh = new List<Estimate>();
 
@@ -122,11 +122,11 @@ namespace EstimateAPI.Repository
            {
                 if (id is object) // TBA: Distinguish between uber & lyft ride guids.
                 {
-                    var estimateRefresh = GetUberRideEstimateRefresh(id);
+                    var estimateRefresh = await GetUberRideEstimateRefreshAsync(id);
                     rideEstimatesRefresh.Add(estimateRefresh);
                 } else
                 {
-                    var estimateRefresh = GetLyftRideEstimateRefresh(id);
+                    var estimateRefresh = await GetLyftRideEstimateRefreshAsync(id);
                     rideEstimatesRefresh.Add(estimateRefresh);
                 }
            }
@@ -134,7 +134,7 @@ namespace EstimateAPI.Repository
             return rideEstimatesRefresh;
         }
 
-        public Estimate GetLyftRideEstimateRefresh(Estimate estimate_id) // TBA
+        public async Task<Estimate> GetLyftRideEstimateRefreshAsync(Estimate estimate_id) // TBA
         {
             var channel = GrpcChannel.ForAddress(LyftChannel);
             var estimatesRefreshClient = new Estimates.EstimatesClient(channel);
@@ -143,7 +143,7 @@ namespace EstimateAPI.Repository
                 EstimateId = estimate_id.ToString()
             };
 
-            var estimateRefreshReplyModel = estimatesRefreshClient.GetEstimateRefresh(clientRequested);
+            var estimateRefreshReplyModel = await estimatesRefreshClient.GetEstimateRefreshAsync(clientRequested);
             var LyftEstimate = new Estimate()
             {
                 Id = new Guid(estimateRefreshReplyModel.EstimateId), // TBA: IMPLEMENT EXCEPTION HANDLING
@@ -159,7 +159,7 @@ namespace EstimateAPI.Repository
             return LyftEstimate;
         }
 
-        public Estimate GetUberRideEstimateRefresh(Estimate estimate_id) // TBA
+        public async Task<Estimate> GetUberRideEstimateRefreshAsync(Estimate estimate_id) // TBA
         {
             var channel = GrpcChannel.ForAddress(UberChannel);
             var estimatesRefreshClient = new Estimates.EstimatesClient(channel);
@@ -168,7 +168,7 @@ namespace EstimateAPI.Repository
                 EstimateId = estimate_id.ToString()
             };
 
-            var estimateRefreshReplyModel = estimatesRefreshClient.GetEstimateRefresh(clientRequested);
+            var estimateRefreshReplyModel = await estimatesRefreshClient.GetEstimateRefreshAsync(clientRequested);
             var UberEstimate = new Estimate()
             {
                 Id = new Guid(estimateRefreshReplyModel.EstimateId), // TBA: IMPLEMENT EXCEPTION HANDLING
