@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RideSaver.Server.Controllers;
 using RideSaver.Server.Models;
 using ServicesAPI.Repository;

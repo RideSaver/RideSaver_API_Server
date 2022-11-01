@@ -14,9 +14,9 @@ namespace EstimateAPI.Controllers
         private readonly IEstimateRepository _estimateRepository;
         public EstimateController(IEstimateRepository estimateRepository) => _estimateRepository = estimateRepository;
 
-        public override IActionResult GetEstimates([FromQuery(Name = "startPioint"), Required] Location startPoint, [FromQuery(Name = "endPoint"), Required] Location endPoint, [FromQuery(Name = "services")] List<Guid> services, [FromQuery(Name = "seats")] int? seats)
+        public async override Task<IActionResult> GetEstimates([FromQuery(Name = "startPioint"), Required] Location startPoint, [FromQuery(Name = "endPoint"), Required] Location endPoint, [FromQuery(Name = "services")] List<Guid> services, [FromQuery(Name = "seats")] int? seats)
         {
-            return new OkObjectResult(_estimateRepository.GetRideEstimates(startPoint, endPoint, services, seats));
+            return new OkObjectResult(await _estimateRepository.GetRideEstimatesAsync(startPoint, endPoint, services, seats));
         }
 
         public override IActionResult RefreshEstimates([FromQuery(Name = "ids"), Required] List<object> ids)

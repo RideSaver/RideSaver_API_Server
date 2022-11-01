@@ -1,0 +1,39 @@
+syntax = "proto3";
+option csharp_namespace = "EstimateAPI";
+
+import "google/protobuf/timestamp.proto";
+
+
+service Estimates {
+	rpc GetEstimates(GetEstimatesRequest) returns (stream EstimateModel);
+	rpc GetEstimateRefresh(GetEstimateRefreshRequest) returns (EstimateModel);
+}
+
+message GetEstimatesRequest {
+	LocationModel startPoint = 1;
+	LocationModel endPoint = 2;
+	repeated string services = 3;
+	int32 seats = 4;
+}
+
+message GetEstimateRefreshRequest {
+	string estimate_id = 1;
+}
+
+message EstimateModel {
+	string estimate_id = 1;
+	google.protobuf.Timestamp createdTime = 2;
+	int32 price = 3;
+	int32 distance = 4;
+	repeated LocationModel wayPoints = 5;
+	int32 seats = 6;
+	string requestUrl = 7;
+	string displayName = 8;
+}
+
+message LocationModel {
+	double latitude = 1;
+	double longitude = 2;
+	double height = 3;
+	string planet = 4;
+}
