@@ -1,7 +1,5 @@
 ﻿using Grpc.Net.Client;
 using RideSaver.Server.Models;
-
-using Grpc.Core.Api;
 using Grpc.Core;
 
 namespace EstimateAPI.Repository
@@ -12,8 +10,8 @@ namespace EstimateAPI.Repository
         private string UberChannel = "";
         public async Task<List<Estimate>> GetRideEstimatesAsync(Location startPoint, Location endPoint, List<Guid> services, int? seats)
         {
-            List<Estimate> lyftEstimates = await GetLyftEstimates(startPoint, endPoint, services, seats);
-            List<Estimate> uberEstimates = await GetUberEstimates(startPoint, endPoint, services, seats);
+            List<Estimate> lyftEstimates = await GetLyftEstimatesAsync(startPoint, endPoint, services, seats);
+            List<Estimate> uberEstimates = await GetUberEstimatesAsync(startPoint, endPoint, services, seats);
             return lyftEstimates.Concat(uberEstimates).ToList();
         }
         public async Task<List<Estimate>> GetLyftEstimatesAsync(Location startPoint, Location endPoint, List<Guid> services, int? seats) // TBA
@@ -48,7 +46,19 @@ namespace EstimateAPI.Repository
             await foreach(var estimatesReply in estimatesReplyModel.ResponseStream.ReadAllAsync())
             {
                 await Task.Delay(1000);
-                estimatesList.Add(estimatesReply);
+                var estimate = new Estimate()
+                {
+                    Id = new Guid(estimatesReply.EstimateId), // TBA: IMPLEMENT EXCEPTION HANDLING
+                    Price = estimatesReply.Price,
+                    Distance = estimatesReply.Distance,
+                  // Waypoints = estimatesReply.WayPoints, // TBA: IMPLEMENT "LOCATIONMODEL" TO "LOCATION" CONVERTER.
+                    DisplayName = estimatesReply.DisplayName,
+                    Seats = estimatesReply.Seats,
+                    RequestURL = estimatesReply.RequestUrl,
+                    InvalidTime = estimatesReply.CreatedTime.ToDateTime()
+                };
+
+                estimatesList.Add(estimate);
             }
 
             return estimatesList;
@@ -85,7 +95,19 @@ namespace EstimateAPI.Repository
             await foreach (var estimatesReply in estimatesReplyModel.ResponseStream.ReadAllAsync())
             {
                 await Task.Delay(1000);
-                estimatesList.Add(estimatesReply);
+                var estimate = new Estimate()
+                {
+                    Id = new Guid(estimatesReply.EstimateId), // TBA: IMPLEMENT EXCEPTION HANDLING
+                    Price = estimatesReply.Price,
+                    Distance = estimatesReply.Distance,
+                 // Waypoints = estimatesReply.WayPoints, // TBA: IMPLEMENT "LOCATIONMODEL" TO "LOCATION" CONVERTER.
+                    DisplayName = estimatesReply.DisplayName,
+                    Seats = estimatesReply.Seats,
+                    RequestURL = estimatesReply.RequestUrl,
+                    InvalidTime = estimatesReply.CreatedTime.ToDateTime()
+                };
+
+                estimatesList.Add(estimate);
             }
 
             return estimatesList;
@@ -118,17 +140,17 @@ namespace EstimateAPI.Repository
             var estimatesRefreshClient = new Estimates.EstimatesClient(channel);
             var clientRequested = new GetEstimateRefreshRequest()
             {
-                EstimateId = estimate_id
+                EstimateId = estimate_id.ToString()
             };
 
             var estimateRefreshReplyModel = estimatesRefreshClient.GetEstimateRefresh(clientRequested);
             var LyftEstimate = new Estimate()
             {
-                Id = estimateRefreshReplyModel.EstimateId,
-                InvalidTime = estimateRefreshReplyModel.CreatedTime,
+                Id = new Guid(estimateRefreshReplyModel.EstimateId), // TBA: IMPLEMENT EXCEPTION HANDLING
+                InvalidTime = estimateRefreshReplyModel.CreatedTime.ToDateTime(),
                 Price = estimateRefreshReplyModel.Price,
                 Distance = estimateRefreshReplyModel.Distance,
-                Waypoints = estimateRefreshReplyModel.WayPoints.ToList(),
+             // Waypoints = estimateRefreshReplyModel.WayPoints, // TBA: IMPLEMENT "LOCATIONMODEL" TO "LOCATION" CONVERTER
                 DisplayName = estimateRefreshReplyModel.DisplayName,
                 Seats = estimateRefreshReplyModel.Seats,
                 RequestURL = estimateRefreshReplyModel.RequestUrl
@@ -143,17 +165,17 @@ namespace EstimateAPI.Repository
             var estimatesRefreshClient = new Estimates.EstimatesClient(channel);
             var clientRequested = new GetEstimateRefreshRequest()
             {
-                EstimateId = estimate_id
+                EstimateId = estimate_id.ToString()
             };
 
             var estimateRefreshReplyModel = estimatesRefreshClient.GetEstimateRefresh(clientRequested);
             var UberEstimate = new Estimate()
             {
-                Id = estimateRefreshReplyModel.EstimateId,
-                InvalidTime = estimateRefreshReplyModel.CreatedTime,
+                Id = new Guid(estimateRefreshReplyModel.EstimateId), // TBA: IMPLEMENT EXCEPTION HANDLING
+                InvalidTime = estimateRefreshReplyModel.CreatedTime.ToDateTime(),
                 Price = estimateRefreshReplyModel.Price,
                 Distance = estimateRefreshReplyModel.Distance,
-                Waypoints = estimateRefreshReplyModel.WayPoints.ToList(),
+             // Waypoints = estimateRefreshReplyModel.WayPoints, // TBA: IMPLEMENT "LOCATIONMODEL" TO "LOCATION" CONVERTER
                 DisplayName = estimateRefreshReplyModel.DisplayName,
                 Seats = estimateRefreshReplyModel.Seats,
                 RequestURL = estimateRefreshReplyModel.RequestUrl
