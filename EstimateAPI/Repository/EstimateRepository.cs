@@ -1,6 +1,7 @@
 ﻿using Grpc.Net.Client;
 using RideSaver.Server.Models;
 using Grpc.Core;
+using Google.Protobuf.Collections;
 
 namespace EstimateAPI.Repository
 {
@@ -51,7 +52,7 @@ namespace EstimateAPI.Repository
                     Id = new Guid(estimatesReply.EstimateId), // TBA: IMPLEMENT EXCEPTION HANDLING
                     Price = estimatesReply.Price,
                     Distance = estimatesReply.Distance,
-                  // Waypoints = estimatesReply.WayPoints, // TBA: IMPLEMENT "LOCATIONMODEL" TO "LOCATION" CONVERTER.
+                    Waypoints = ConvertLocationModelToLocation(estimatesReply.WayPoints), // TBA: IMPLEMENT "LOCATIONMODEL" TO "LOCATION" CONVERTER.
                     DisplayName = estimatesReply.DisplayName,
                     Seats = estimatesReply.Seats,
                     RequestURL = estimatesReply.RequestUrl,
@@ -100,7 +101,7 @@ namespace EstimateAPI.Repository
                     Id = new Guid(estimatesReply.EstimateId), // TBA: IMPLEMENT EXCEPTION HANDLING
                     Price = estimatesReply.Price,
                     Distance = estimatesReply.Distance,
-                 // Waypoints = estimatesReply.WayPoints, // TBA: IMPLEMENT "LOCATIONMODEL" TO "LOCATION" CONVERTER.
+                    Waypoints = ConvertLocationModelToLocation(estimatesReply.WayPoints), // TBA: IMPLEMENT "LOCATIONMODEL" TO "LOCATION" CONVERTER.
                     DisplayName = estimatesReply.DisplayName,
                     Seats = estimatesReply.Seats,
                     RequestURL = estimatesReply.RequestUrl,
@@ -150,7 +151,7 @@ namespace EstimateAPI.Repository
                 InvalidTime = estimateRefreshReplyModel.CreatedTime.ToDateTime(),
                 Price = estimateRefreshReplyModel.Price,
                 Distance = estimateRefreshReplyModel.Distance,
-             // Waypoints = estimateRefreshReplyModel.WayPoints, // TBA: IMPLEMENT "LOCATIONMODEL" TO "LOCATION" CONVERTER
+                Waypoints = ConvertLocationModelToLocation(estimateRefreshReplyModel.WayPoints), // TBA: IMPLEMENT "LOCATIONMODEL" TO "LOCATION" CONVERTER
                 DisplayName = estimateRefreshReplyModel.DisplayName,
                 Seats = estimateRefreshReplyModel.Seats,
                 RequestURL = estimateRefreshReplyModel.RequestUrl
@@ -175,13 +176,33 @@ namespace EstimateAPI.Repository
                 InvalidTime = estimateRefreshReplyModel.CreatedTime.ToDateTime(),
                 Price = estimateRefreshReplyModel.Price,
                 Distance = estimateRefreshReplyModel.Distance,
-             // Waypoints = estimateRefreshReplyModel.WayPoints, // TBA: IMPLEMENT "LOCATIONMODEL" TO "LOCATION" CONVERTER
+                Waypoints = ConvertLocationModelToLocation(estimateRefreshReplyModel.WayPoints),
                 DisplayName = estimateRefreshReplyModel.DisplayName,
                 Seats = estimateRefreshReplyModel.Seats,
                 RequestURL = estimateRefreshReplyModel.RequestUrl
             };
 
             return UberEstimate;
+        }
+
+        public List<Location> ConvertLocationModelToLocation(RepeatedField<LocationModel> field) // Converts RepeatedField<LocationModel> to List<Location>
+        {
+            if (field == null) return new List<Location>();
+            var fieldList = field.ToList();
+            var locationList = new List<Location>();
+            foreach(var f in fieldList)
+            {
+                var location = new Location()
+                {
+                    Latitude = (decimal)f.Latitude,
+                    Longitude = (decimal)f.Longitude,
+                    Height = (decimal)f.Height,
+                    Planet = f.Planet,
+                };
+
+                locationList.Add(location);
+;            }
+            return locationList;
         }
     }
 }
