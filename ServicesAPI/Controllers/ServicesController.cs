@@ -7,7 +7,7 @@ namespace ServicesAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ServicesController : DefaultApiController
+    public class ServicesController : ServicesApiController
     {
         private readonly IServiceRepository _serviceRepository;
         public ServicesController(IServiceRepository serviceRepository) =>_serviceRepository = serviceRepository;

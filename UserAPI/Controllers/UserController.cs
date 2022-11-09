@@ -28,7 +28,7 @@ namespace UserAPI.Controllers
         public override async Task<IActionResult> GetUser([FromRoute(Name = "username"), Required] string username)
         {
             var user = await _userRepository.GetUserAsync(username);
-            if(user is not null) new OkObjectResult(user); // [STATUS: 200 OK || user]
+            if(user is not null) return new OkObjectResult(user); // [STATUS: 200 OK || user]
             return new NoContentResult(); // [STATUS: 204 NO CONTENT]
         }
         public override async Task<IActionResult> PatchUser([FromRoute(Name = "username"), Required] string username, [FromBody] User user)
@@ -51,11 +51,11 @@ namespace UserAPI.Controllers
             return new OkResult(); // [STATUS: 200 OK]
         }
 
-        public override async Task<IActionResult> Login() // TO BE IMPLEMENTED
+        public override async Task<IActionResult> Login([FromBody]LoginRequest loginRequest) // TO BE IMPLEMENTED
         {
             return new OkResult(); // [STATUS: 200 OK]
         }
-        public override Task<IActionResult> AutorizeServiceEndpoint([FromRoute(Name = "serviceId"), Required] Guid serviceId, [FromRoute(Name = "userId"), Required] Guid userId, [FromQuery(Name = "code"), Required] string code)
+        public override async Task<IActionResult> AutorizeServiceEndpoint([FromRoute(Name = "serviceId"), Required] Guid serviceId, [FromRoute(Name = "userId"), Required] Guid userId, [FromQuery(Name = "code"), Required] string code)
         {
             throw new NotImplementedException(); // TO BE IMPLEMENTED
         }

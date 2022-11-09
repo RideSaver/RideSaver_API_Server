@@ -23,7 +23,7 @@ message GetEstimateRefreshRequest {
 message EstimateModel {
 	string estimate_id = 1;
 	google.protobuf.Timestamp createdTime = 2;
-	int32 price = 3;
+	CurrencyModel priceDetails = 3;
 	int32 distance = 4;
 	repeated LocationModel wayPoints = 5;
 	int32 seats = 6;
@@ -36,4 +36,9 @@ message LocationModel {
 	double longitude = 2;
 	double height = 3;
 	string planet = 4;
+}
+
+message CurrencyModel {
+	double price = 1;
+	string currency = 2;
 }

@@ -10,9 +10,9 @@ namespace LocationAPI.Controllers
     [ApiController]
     public class LocationController : LocationApiController
     {
-        public override Task<IActionResult> Autocomplete([FromHeader] Location location, [FromQuery(Name = "maxResponses"), Range(1, 50)] int? maxResponses)
+        public override async Task<IActionResult> Autocomplete([FromHeader] Location location, [FromQuery(Name = "maxResponses"), Range(1, 50)] int? maxResponses)
         {
-            throw new NotImplementedException();
+            return new OkObjectResult(await Task.FromResult(new List<Location>()));
         }
     }
 }

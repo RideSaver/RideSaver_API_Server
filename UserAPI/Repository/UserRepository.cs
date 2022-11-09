@@ -13,6 +13,16 @@ namespace UserAPI.Repository
         public async Task<User> GetUserAsync(string username) => await _dbContext.Users.FindAsync(username);
         public Task SaveAsync() => _dbContext.SaveChangesAsync();
 
+        public async Task<bool> ValidateUser(LoginRequest loginInfo)
+        {
+            var userInfo = await GetUserAsync(loginInfo.Username);
+            if(userInfo is not null)
+            {
+                return true;  // TBA 
+            }
+
+            return false;
+        }
         public async Task CreateUserAsync(User user)
         {
             await _dbContext.AddAsync(user);
@@ -33,6 +43,5 @@ namespace UserAPI.Repository
             _dbContext.Entry(user).State = EntityState.Modified;
             await SaveAsync();
         }
-        
     }
 }

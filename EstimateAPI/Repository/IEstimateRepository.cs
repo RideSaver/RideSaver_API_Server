@@ -8,8 +8,8 @@ namespace EstimateAPI.Repository
         Task<List<Estimate>> GetLyftEstimatesAsync(Location startPoint, Location endPoint, List<Guid> services, int? seats);
         Task<List<Estimate>> GetUberEstimatesAsync(Location startPoint, Location endPoint, List<Guid> services, int? seats);
         Task<List<Estimate>> GetRideEstimatesRefreshAsync(List<object> ids);
-        Task<Estimate> GetLyftRideEstimateRefreshAsync(Estimate estimate_id);
-        Task<Estimate> GetUberRideEstimateRefreshAsync(Estimate estimate_id);
+        Task<Estimate> GetLyftRideEstimateRefreshAsync(Guid estimate_id);
+        Task<Estimate> GetUberRideEstimateRefreshAsync(Guid estimate_id);
 
     }
 }
