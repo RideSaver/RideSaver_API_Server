@@ -7,8 +7,8 @@ namespace EstimateAPI.Repository
 {
     public class EstimateRepository : IEstimateRepository
     {
-        private string LyftChannel = ""; // Lyft-Service URL
-        private string UberChannel = ""; // Uber-Service URL
+        private readonly string lyftChannel = ""; // Lyft-Service URL
+        private readonly string uberChannel = ""; // Uber-Service URL
         public async Task<List<Estimate>> GetRideEstimatesAsync(Location startPoint, Location endPoint, List<Guid> services, int? seats)
         {
             List<Estimate> lyftEstimates = await GetLyftEstimatesAsync(startPoint, endPoint, services, seats);
@@ -19,7 +19,7 @@ namespace EstimateAPI.Repository
         {
             var estimatesList = new List<Estimate>();
 
-            var channel = GrpcChannel.ForAddress(LyftChannel);
+            var channel = GrpcChannel.ForAddress(lyftChannel);
             var estimatesClient = new Estimates.EstimatesClient(channel);
             var clientRequested = new GetEstimatesRequest()
             {
@@ -74,7 +74,7 @@ namespace EstimateAPI.Repository
         {
             var estimatesList = new List<Estimate>();
 
-            var channel = GrpcChannel.ForAddress(UberChannel);
+            var channel = GrpcChannel.ForAddress(uberChannel);
             var estimatesClient = new Estimates.EstimatesClient(channel);
             var clientRequested = new GetEstimatesRequest()
             {
@@ -147,7 +147,7 @@ namespace EstimateAPI.Repository
 
         public async Task<Estimate> GetLyftRideEstimateRefreshAsync(Guid estimate_id)
         {
-            var channel = GrpcChannel.ForAddress(LyftChannel);
+            var channel = GrpcChannel.ForAddress(lyftChannel);
             var estimatesRefreshClient = new Estimates.EstimatesClient(channel);
             var clientRequested = new GetEstimateRefreshRequest()
             {
@@ -178,7 +178,7 @@ namespace EstimateAPI.Repository
 
         public async Task<Estimate> GetUberRideEstimateRefreshAsync(Guid estimate_id)
         {
-            var channel = GrpcChannel.ForAddress(UberChannel);
+            var channel = GrpcChannel.ForAddress(uberChannel);
             var estimatesRefreshClient = new Estimates.EstimatesClient(channel);
             var clientRequested = new GetEstimateRefreshRequest()
             {
