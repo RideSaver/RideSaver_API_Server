@@ -12,19 +12,19 @@ namespace RequestAPI.Controllers
         private readonly IRequestRepository _requestRepository;
         public RequestController(IRequestRepository requestRepository) => _requestRepository = requestRepository;
 
-        public override Task<IActionResult> RidesRequestEstimateIdPost([FromRoute(Name = "estimateId")] string estimateId)
+        public override async Task<IActionResult> RidesRequestEstimateIdPost([FromRoute(Name = "estimateId")] string estimateId)
         {
-            throw new NotImplementedException();
+            return new OkObjectResult(await _requestRepository.GetRideRequestIDAsync(new Guid(estimateId)));
         }
 
-        public override Task<IActionResult> RidesRideIdDelete([FromRoute(Name = "rideId")] string rideId)
+        public override async Task<IActionResult> RidesRideIdDelete([FromRoute(Name = "rideId")] string rideId)
         {
-            throw new NotImplementedException();
+            return new OkObjectResult(await _requestRepository.DeleteRideRequestAsync(new Guid(rideId)));
         }
 
-        public override Task<IActionResult> RidesRideIdGet([FromRoute(Name = "rideId")] string rideId)
+        public override async Task<IActionResult> RidesRideIdGet([FromRoute(Name = "rideId")] string rideId)
         {
-            throw new NotImplementedException();
+            return new OkObjectResult(await _requestRepository.GetRideRequestIDAsync(new Guid(rideId)));
         }
     }
 }
