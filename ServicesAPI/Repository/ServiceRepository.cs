@@ -15,34 +15,23 @@ namespace ServicesAPI.Repository
                 new RideService {
                     DisplayName = "lyftPool",
                     Id = new Guid(),
-                    Security = new AuthorizationMethod()
-                    {
-                        Authorization = AuthorizationMethod.AuthorizationEnum.NoneEnum
-                    },
+                    Provider = new Guid(),
                 },
                  new RideService {
                     DisplayName = "uberPool",
                     Id = new Guid(),
-                    Security = new AuthorizationMethod()
-                    {
-                        Authorization = AuthorizationMethod.AuthorizationEnum.NoneEnum
-                    },
+                    Provider = new Guid(),
+
                 },
                   new RideService {
                     DisplayName = "uber",
                     Id = new Guid(),
-                    Security = new AuthorizationMethod()
-                    {
-                        Authorization = AuthorizationMethod.AuthorizationEnum.NoneEnum
-                    },
+                    Provider = new Guid(),
                 },
                    new RideService {
                     DisplayName = "lyft",
                     Id = new Guid(),
-                    Security = new AuthorizationMethod()
-                    {
-                        Authorization = AuthorizationMethod.AuthorizationEnum.NoneEnum
-                    },
+                    Provider = new Guid(),
                 },
             };
 

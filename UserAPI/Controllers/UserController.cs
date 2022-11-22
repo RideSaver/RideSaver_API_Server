@@ -16,44 +16,14 @@ namespace UserAPI.Controllers
 
         public UserController(IUserRepository userRepository) => _userRepository = userRepository;
 
-        public override async Task<IActionResult> SignUp([FromBody] User user)
+        public override Task<IActionResult> AutorizeServiceEndpoint([FromRoute(Name = "serviceId"), Required] Guid serviceId, [FromRoute(Name = "userId"), Required] Guid userId, [FromQuery(Name = "code"), Required] string code)
         {
-            using (var scope = new TransactionScope())
-            {
-                await _userRepository.CreateUserAsync(user);
-                scope.Complete();
-                return new OkResult(); // [STATUS: 204 NO CONTENT]
-            }
-        }
-        public override async Task<IActionResult> GetUser([FromRoute(Name = "username"), Required] string username)
-        {
-            var user = await _userRepository.GetUserAsync(username);
-            if(user is not null) return new OkObjectResult(user); // [STATUS: 200 OK || user]
-            return new NoContentResult(); // [STATUS: 204 NO CONTENT]
-        }
-        public override async Task<IActionResult> PatchUser([FromRoute(Name = "username"), Required] string username, [FromBody] User user)
-        {
-            if (user is not null)
-            {
-                using (var scope = new TransactionScope())
-                {
-                    await _userRepository.UpdateUserAsync(user);
-                    scope.Complete();
-                    return new OkResult(); // [STATUS: 200 OK]
-                }
-            }
-            return new NoContentResult(); // [STATUS: 204 NO CONTENT]
+            throw new NotImplementedException();
         }
 
-        public override async Task<IActionResult> DeleteUser([FromRoute(Name = "username"), Required] string username)
+        public override Task<IActionResult> DeleteUser([FromRoute(Name = "username"), Required] string username)
         {
-            await _userRepository.DeleteUserAsync(username);
-            return new OkResult(); // [STATUS: 200 OK]
-        }
-
-        public override async Task<IActionResult> AutorizeServiceEndpoint([FromRoute(Name = "serviceId"), Required] Guid serviceId, [FromRoute(Name = "userId"), Required] Guid userId, [FromQuery(Name = "code"), Required] string code)
-        {
-            throw new NotImplementedException(); // TO BE IMPLEMENTED
+            throw new NotImplementedException();
         }
 
         public override Task<IActionResult> GetHistory([FromRoute(Name = "username"), Required] string username)
@@ -61,7 +31,12 @@ namespace UserAPI.Controllers
             throw new NotImplementedException();
         }
 
-        public override Task<IActionResult> Login([FromBody]UserLogin userLogin)
+        public override Task<IActionResult> GetUser([FromRoute(Name = "username"), Required] string username)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<IActionResult> Login([FromBody] UserLogin userLogin)
         {
             throw new NotImplementedException();
         }
@@ -71,7 +46,7 @@ namespace UserAPI.Controllers
             throw new NotImplementedException();
         }
 
-        public override Task<IActionResult> SignUp([FromBody]PatchUserRequest patchUserRequest)
+        public override Task<IActionResult> SignUp([FromBody] PatchUserRequest patchUserRequest)
         {
             throw new NotImplementedException();
         }
