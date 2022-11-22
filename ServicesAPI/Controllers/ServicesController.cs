@@ -12,6 +12,11 @@ namespace ServicesAPI.Controllers
         private readonly IServiceRepository _serviceRepository;
         public ServicesController(IServiceRepository serviceRepository) =>_serviceRepository = serviceRepository;
 
+        public override Task<IActionResult> GetProviders()
+        {
+            throw new NotImplementedException();
+        }
+
         public override async Task<IActionResult> GetServices([FromHeader] Location location)
         {
             var rideServices = await _serviceRepository.GetAvailableServices();

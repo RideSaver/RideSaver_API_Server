@@ -1,5 +1,5 @@
+using DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
-using UserAPI.Data;
 using UserAPI.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +11,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-builder.Services.AddDbContext<UserContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("UserDB"))); // Adds the DbContext to the service container.
+builder.Services.AddDbContext<RSContext>(options =>
+{
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("UserDB"), x => x.UseNetTopologySuite());
+});
+
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 
 var app = builder.Build();
