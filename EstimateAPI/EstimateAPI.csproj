@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Protos\Estimates.proto" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.21.9" />
     <PackageReference Include="Grpc.Core.Api" Version="2.49.0" />
     <PackageReference Include="Grpc.Net.Client" Version="2.49.0" />
@@ -18,12 +14,9 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-	  <PackageReference Include="RideSaver.Server" Version="0.0.5" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Protobuf Include="Protos\Estimates.proto" GrpcServices="Client" />
+    <PackageReference Include="RideSaver.InternalAPI" Version="0.0.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+	  <PackageReference Include="RideSaver.Server" Version="0.0.6" />
   </ItemGroup>
 
 </Project>

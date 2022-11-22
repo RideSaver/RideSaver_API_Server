@@ -51,13 +51,29 @@ namespace UserAPI.Controllers
             return new OkResult(); // [STATUS: 200 OK]
         }
 
-        public override async Task<IActionResult> Login([FromBody]LoginRequest loginRequest) // TO BE IMPLEMENTED
-        {
-            return new OkResult(); // [STATUS: 200 OK]
-        }
         public override async Task<IActionResult> AutorizeServiceEndpoint([FromRoute(Name = "serviceId"), Required] Guid serviceId, [FromRoute(Name = "userId"), Required] Guid userId, [FromQuery(Name = "code"), Required] string code)
         {
             throw new NotImplementedException(); // TO BE IMPLEMENTED
+        }
+
+        public override Task<IActionResult> GetHistory([FromRoute(Name = "username"), Required] string username)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<IActionResult> Login([FromBody]UserLogin userLogin)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<IActionResult> PatchUser([FromRoute(Name = "username"), Required] string username, [FromBody] PatchUserRequest patchUserRequest)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<IActionResult> SignUp([FromBody]PatchUserRequest patchUserRequest)
+        {
+            throw new NotImplementedException();
         }
     }
 }
