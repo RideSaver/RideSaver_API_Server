@@ -1,5 +1,4 @@
 ﻿using EstimateAPI.Repository;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RideSaver.Server.Controllers;
 using RideSaver.Server.Models;
@@ -14,7 +13,7 @@ namespace EstimateAPI.Controllers
         private readonly IEstimateRepository _estimateRepository;
         public EstimateController(IEstimateRepository estimateRepository) => _estimateRepository = estimateRepository;
 
-        public async override Task<IActionResult> GetEstimates([FromQuery(Name = "startPioint"), Required] Location startPoint, [FromQuery(Name = "endPoint"), Required] Location endPoint, [FromQuery(Name = "services")] List<Guid> services, [FromQuery(Name = "seats")] int? seats)
+        public async override Task<IActionResult> GetEstimates([FromQuery(Name = "startPoint"), Required] Location startPoint, [FromQuery(Name = "endPoint"), Required] Location endPoint, [FromQuery(Name = "services")] List<Guid> services, [FromQuery(Name = "seats")] int? seats)
         {
             return new OkObjectResult(await _estimateRepository.GetRideEstimatesAsync(startPoint, endPoint, services, seats));
         }

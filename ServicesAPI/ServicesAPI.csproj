@@ -9,8 +9,8 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.2" />
     <PackageReference Include="Newtonsoft.Json.Schema" Version="3.0.14" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-	  <PackageReference Include="RideSaver.Server" Version="0.0.5" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+	  <PackageReference Include="RideSaver.Server" Version="0.0.6" />
   </ItemGroup>
 
 </Project>

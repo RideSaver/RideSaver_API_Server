@@ -1,15 +1,13 @@
 ﻿using Grpc.Net.Client;
-using Grpc.Core;
-using Google.Protobuf.Collections;
 using RideSaver.Server.Models;
-using Microsoft.AspNetCore.Http.Features;
+using InternalAPI;
 
 namespace RequestAPI.Repository
 {
     public class RequestRepository : IRequestRepository
     {
-        private readonly string lyftChannel = "";
-        private readonly string uberChannel = "";
+        private readonly string lyftChannel = ""; // TODO :: Update the web clients URL
+        private readonly string uberChannel = ""; // TODO :: Update the web clients URL
         public async Task<Ride> GetRideRequestIDAsync(Guid ride_id) => ride_id.ToString() == "TBA" ? (await GetLyftRideRequestIDAsync(ride_id)) : (await GetUberRideRequestIDAsync(ride_id));
         public async Task<Ride> PostRideRequestAsync(Guid estimate_id) => estimate_id.ToString() == "TBA" ? (await PostLyftRideRequestAsync(estimate_id)) : (await PostUberRideRequestAsync(estimate_id));
         public async Task<PriceWithCurrency> DeleteRideRequestAsync(Guid ride_id) => ride_id.ToString() == "TBA" ? (await DeleteLyfttRideRequestAsync(ride_id)) : (await DeleteUberRideRequestAsync(ride_id));

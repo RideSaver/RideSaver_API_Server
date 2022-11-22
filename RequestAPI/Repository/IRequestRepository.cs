@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using RideSaver.Server.Models;
+﻿using RideSaver.Server.Models;
 
 namespace RequestAPI.Repository
 {

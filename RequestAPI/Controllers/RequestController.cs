@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RequestAPI.Repository;
 using RideSaver.Server.Controllers;
+using System.ComponentModel.DataAnnotations;
 
 namespace RequestAPI.Controllers
 {
@@ -12,19 +13,19 @@ namespace RequestAPI.Controllers
         private readonly IRequestRepository _requestRepository;
         public RequestController(IRequestRepository requestRepository) => _requestRepository = requestRepository;
 
-        public override async Task<IActionResult> RidesRequestEstimateIdPost([FromRoute(Name = "estimateId")] string estimateId)
-        {
-            return new OkObjectResult(await _requestRepository.GetRideRequestIDAsync(new Guid(estimateId)));
-        }
-
-        public override async Task<IActionResult> RidesRideIdDelete([FromRoute(Name = "rideId")] string rideId)
+        public override async Task<IActionResult> CancelRide([FromRoute(Name = "rideId"), Required] string rideId)
         {
             return new OkObjectResult(await _requestRepository.DeleteRideRequestAsync(new Guid(rideId)));
         }
 
-        public override async Task<IActionResult> RidesRideIdGet([FromRoute(Name = "rideId")] string rideId)
+        public override async Task<IActionResult> GetRide([FromRoute(Name = "rideId"), Required] string rideId)
         {
             return new OkObjectResult(await _requestRepository.GetRideRequestIDAsync(new Guid(rideId)));
+        }
+
+        public override async Task<IActionResult> RequestRide([FromRoute(Name = "estimateId"), Required] string estimateId)
+        {
+            return new OkObjectResult(await _requestRepository.GetRideRequestIDAsync(new Guid(estimateId)));
         }
     }
 }

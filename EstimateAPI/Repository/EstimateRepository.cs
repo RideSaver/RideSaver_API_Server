@@ -1,7 +1,8 @@
 ﻿using Grpc.Net.Client;
 using RideSaver.Server.Models;
-using Grpc.Core;
 using Google.Protobuf.Collections;
+using InternalAPI;
+using Grpc.Core;
 
 namespace EstimateAPI.Repository
 {
@@ -19,7 +20,7 @@ namespace EstimateAPI.Repository
         {
             var estimatesList = new List<Estimate>();
 
-            var channel = GrpcChannel.ForAddress(lyftChannel);
+            using var channel = GrpcChannel.ForAddress(lyftChannel);
             var estimatesClient = new Estimates.EstimatesClient(channel);
             var clientRequested = new GetEstimatesRequest()
             {
