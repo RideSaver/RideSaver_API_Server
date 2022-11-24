@@ -1,5 +1,5 @@
-using DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
+using ServicesAPI.Data;
 using ServicesAPI.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,10 +10,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<RSContext>(options =>
+builder.Services.AddDbContext<ServiceContext>(options =>
 {
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("ServicesDB"), x => x.UseNetTopologySuite());
+        builder.Configuration.GetConnectionString("ServicesDB"), x => {
+            x.UseNetTopologySuite();
+        });
 });
 
 builder.Services.AddTransient<IServiceRepository, ServiceRepository>();

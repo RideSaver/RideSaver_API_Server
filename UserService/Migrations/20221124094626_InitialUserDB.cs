@@ -4,10 +4,10 @@ using NetTopologySuite.Geometries;
 
 #nullable disable
 
-namespace DataAccess.Migrations
+namespace UserService.Migrations
 {
     /// <inheritdoc />
-    public partial class RSInitialDB : Migration
+    public partial class InitialUserDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -26,7 +26,7 @@ namespace DataAccess.Migrations
                 name: "providers",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "(newsequentialid())"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ClientId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", rowVersion: true, nullable: false)
@@ -42,7 +42,7 @@ namespace DataAccess.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "(newsequentialid())"),
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", rowVersion: true, nullable: false),
                     Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
