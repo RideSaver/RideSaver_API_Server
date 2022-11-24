@@ -41,6 +41,7 @@ namespace UserService
                 {
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
                     ValidateIssuerSigningKey = true,
+                    ValidIssuer = "AuthService",
                     ValidateAudience = false,
                     ValidateIssuer = false,
                     ValidateLifetime = false,

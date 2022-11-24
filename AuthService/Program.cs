@@ -24,7 +24,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-    .AddJwtBearer(cfg =>
+    .AddJwtBearer("GatewayAuthenticationKey", cfg =>
     {
           cfg.RequireHttpsMetadata = true;
           cfg.SaveToken = true;

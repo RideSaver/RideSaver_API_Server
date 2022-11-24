@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RideSaver.Server.Controllers;
 using RideSaver.Server.Models;
 using ServicesAPI.Repository;
@@ -12,11 +14,13 @@ namespace ServicesAPI.Controllers
         private readonly IServiceRepository _serviceRepository;
         public ServicesController(IServiceRepository serviceRepository) =>_serviceRepository = serviceRepository;
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override Task<IActionResult> GetProviders()
         {
             throw new NotImplementedException();
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override async Task<IActionResult> GetServices([FromHeader] Location location)
         {
             var rideServices = await _serviceRepository.GetAvailableServices();
