@@ -21,7 +21,7 @@
       "UpstreamHttpMethod": [ "GET" ],
       "DownstreamPathTemplate": "/api/v1/auth/verifytoken",
       "AuthenticationOptions": {
-        "AuthenticationProviderKey": "GatewayAuthenticationKey"
+        "AuthenticationProviderKey": "APIGatewayAuthentication"
       },
       "RouteIsCaseSensitive": false,
       "DownstreamScheme": "https",
@@ -128,7 +128,7 @@
       "UpstreamHttpMethod": [ "GET" ],
       "DownstreamPathTemplate": "/api/v1/user/info/{username}",
       "AuthenticationOptions": {
-        "AuthenticationProviderKey": "GatewayAuthenticationKey"
+        "AuthenticationProviderKey": "APIGatewayAuthentication"
       },
       "RouteIsCaseSensitive": false,
       "DownstreamScheme": "https",
@@ -144,7 +144,7 @@
       "UpstreamHttpMethod": [ "PATCH" ],
       "DownstreamPathTemplate": "/api/v1/user/info/{username}",
       "AuthenticationOptions": {
-        "AuthenticationProviderKey": "GatewayAuthenticationKey"
+        "AuthenticationProviderKey": "APIGatewayAuthentication"
       },
       "RouteIsCaseSensitive": false,
       "DownstreamScheme": "https",

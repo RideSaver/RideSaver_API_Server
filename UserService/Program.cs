@@ -32,18 +32,22 @@ namespace UserService
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddJwtBearer("GatewayAuthenticationKey", option =>
-            { 
-              option.TokenValidationParameters = new TokenValidationParameters
-              {
-                  IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-                  ValidateAudience = false,
-                  ValidateIssuer = false,
-                  ValidateLifetime = false,
-                  RequireExpirationTime = false,
-                  ClockSkew = TimeSpan.Zero,
-                  ValidateIssuerSigningKey = true
-              };
+
+            .AddJwtBearer("APIGatewayAuthentication", cfg =>
+            {
+                cfg.RequireHttpsMetadata = true;
+                cfg.SaveToken = true;
+                cfg.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+                    ValidateIssuerSigningKey = true,
+                    ValidateAudience = false,
+                    ValidateIssuer = false,
+                    ValidateLifetime = false,
+                    RequireExpirationTime = false,
+                    ClockSkew = TimeSpan.Zero
+
+                };
             });
 
             builder.Services.AddTransient<IUserRepository, UserRepository>();
@@ -58,12 +62,8 @@ namespace UserService
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
-
             app.MapControllers();
-
             app.Run();
         }
     }

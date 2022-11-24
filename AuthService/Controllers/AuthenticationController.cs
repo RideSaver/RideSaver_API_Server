@@ -14,40 +14,38 @@ namespace AuthService.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
         private readonly ITokenService _tokenService;
         private readonly AuthContext _credentialsContext;
 
-        public AuthenticationController(ITokenService tokenService, AuthContext credentialsContext)
+        public AuthenticationController(ITokenService tokenService, AuthContext credentialsContext, IConfiguration configuration)
         {
             _tokenService = tokenService;
             _credentialsContext = credentialsContext;
+            _configuration = configuration;
         }
 
         [HttpPost]
         [Route("/api/v1/auth/login")]
         [Consumes("application/json")]
         [ValidateModelState]
-        public async Task<IActionResult> Login([FromBody] UserLogin userLogin) // returns HTTP 200 OK response with token (string)
+        public async Task<IActionResult> Login([FromBody] UserLogin userLogin)
         {
-            var dbUser = await _credentialsContext
-               .UserCredentials
-               .SingleOrDefaultAsync(u => u.Username == userLogin.Username);
+            var userInfo = await _credentialsContext.UserCredentials.SingleOrDefaultAsync(u => u.Username == userLogin.Username);
 
-            if (dbUser == null)
+            if (userInfo is null)
             {
-                return NotFound("User not found.");
+                return NotFound("ERROR: user not found");
             }
 
-            var isValid = dbUser.Password == userLogin.Password;
+            var isValid = userInfo.Password == userLogin.Password; // TODO: encryption/hashing/salting for user passwords.
 
             if (!isValid)
             {
-                return BadRequest("Could not authenticate user.");
+                return BadRequest("ERROR: Failed to authenticate user");
             }
 
-            var token = _tokenService.BuildToken(userLogin.Username);
-
-            return Ok(token);
+            return Ok(_tokenService.GenerateToken(userInfo));
         }
 
         [HttpGet]
@@ -57,18 +55,14 @@ namespace AuthService.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> VerifyToken()
         {
-            var username = User
-                .Claims
-                .SingleOrDefault();
+            var username = User.Claims.SingleOrDefault();
 
-            if (username == null)
+            if (username is null)
             {
                 return Unauthorized();
             }
 
-            var userExists = await _credentialsContext
-                .UserCredentials
-                .AnyAsync(u => u.Username == username.Value);
+            var userExists = await _credentialsContext.UserCredentials.AnyAsync(u => u.Username == username.Value);
 
             if (!userExists)
             {

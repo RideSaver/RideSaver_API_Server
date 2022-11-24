@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace DataAccess.Models
 {
@@ -13,6 +14,7 @@ namespace DataAccess.Models
         public string? Username { get; set; }
 
         [Required]
+        [JsonIgnore]
         public string? Password { get; set; }
 
         [Required]

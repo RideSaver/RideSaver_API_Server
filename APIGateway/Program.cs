@@ -18,7 +18,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-    .AddJwtBearer("GatewayAuthenticationKey", option =>
+    .AddJwtBearer("APIGatewayAuthentication", option =>
     {
         option.TokenValidationParameters = new TokenValidationParameters
         {

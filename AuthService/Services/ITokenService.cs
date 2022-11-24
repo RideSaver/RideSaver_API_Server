@@ -1,7 +1,9 @@
-﻿namespace AuthService.Services
+﻿using DataAccess.Models;
+
+namespace AuthService.Services
 {
     public interface ITokenService
     {
-        string BuildToken(string username);
+        string GenerateToken(UserModel userInfo);
     }
 }

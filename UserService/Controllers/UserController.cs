@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RideSaver.Server.Controllers;
 using RideSaver.Server.Models;
@@ -27,12 +29,14 @@ namespace UserService.Controllers
             }
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override async Task<IActionResult> DeleteUser([FromRoute(Name = "username"), Required] string username) // returns HTTP 200 OK response
         {
             await _userRepository.DeleteUserAsync(username);
             return new OkResult(); // [STATUS: 200 OK]
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override async Task<IActionResult> GetUser([FromRoute(Name = "username"), Required] string username) // returns HTTP 200 OK response with "user" instance
         {
             var user = await _userRepository.GetUserAsync(username);
@@ -40,6 +44,7 @@ namespace UserService.Controllers
             return new NoContentResult(); // [STATUS: 204 NO CONTENT]
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override async Task<IActionResult> PatchUser([FromRoute(Name = "username"), Required] string username, [FromBody] PatchUserRequest patchUserRequest) // returns HTTP 200 OK response
         {
             using (var scope = new TransactionScope())
@@ -50,15 +55,18 @@ namespace UserService.Controllers
             }
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override async Task<IActionResult> GetHistory([FromRoute(Name = "username"), Required] string username) // returns HTTP 200 OK response with List<Ride>
         {
             return new OkObjectResult(await _userRepository.GetUserHistoryASync(username));
         }
 
-        public override async Task<IActionResult> Login([FromBody] UserLogin userLogin) // returns HTTP 200 OK response with token (string)
+        public override Task<IActionResult> Login([FromBody] UserLogin userLogin) // returns HTTP 200 OK response with token (string)
         {
             throw new NotImplementedException();
         }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override Task<IActionResult> AutorizeServiceEndpoint([FromRoute(Name = "serviceId"), Required] Guid serviceId, [FromRoute(Name = "userId"), Required] Guid userId, [FromQuery(Name = "code"), Required] string code)
         {
             throw new NotImplementedException(); // returns HTTP 200 OK response

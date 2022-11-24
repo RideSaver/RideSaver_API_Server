@@ -31,12 +31,13 @@ builder.Services.AddAuthentication(options =>
           cfg.TokenValidationParameters = new TokenValidationParameters()
           {
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+                ValidateIssuerSigningKey = true,
                 ValidateAudience = false,
                 ValidateIssuer = false,
                 ValidateLifetime = false,
                 RequireExpirationTime = false,
-                ClockSkew = TimeSpan.Zero,
-                ValidateIssuerSigningKey = true
+                ClockSkew = TimeSpan.Zero
+                
           };
     });
 
