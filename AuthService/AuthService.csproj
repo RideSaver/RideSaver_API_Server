@@ -15,12 +15,9 @@
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="RideSaver.DataAccess" Version="0.0.1" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 		<PackageReference Include="RideSaver.Server" Version="0.0.6" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
