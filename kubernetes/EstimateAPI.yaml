@@ -19,11 +19,15 @@ spec:
                 service: estimate
         spec:
             containers:
-                - name: lyft
+                - name: estimate-api
                   image: ghcr.io/ridesaver/estimate_service:latest
                   ports:
                       - containerPort: 80
                       - containerPort: 443
+                - name: estimate-memcache
+                  image: memcached:1.6-alpine
+                  ports:
+                      - containerPort: 11211
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler

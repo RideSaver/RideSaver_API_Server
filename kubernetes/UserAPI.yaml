@@ -19,11 +19,15 @@ spec:
                 service: user
         spec:
             containers:
-                - name: lyft
+                - name: user-api
                   image: ghcr.io/ridesaver/user_service:latest
                   ports:
                       - containerPort: 80
                       - containerPort: 443
+                - name: user-memcache
+                  image: memcached:1.6-alpine
+                  ports:
+                      - containerPort: 11211
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler

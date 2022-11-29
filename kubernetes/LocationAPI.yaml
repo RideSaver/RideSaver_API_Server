@@ -1,39 +1,43 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: estimate-api
+    name: location-api
     namespace: api
     labels:
         type: service
-        service: estimate
+        service: location
 spec:
     selector:
         matchLabels:
             type: service
-            service: estimate
+            service: location
     replicas: 1
     template:
         metadata:
             labels:
                 type: service
-                service: estimate
+                service: location
         spec:
             containers:
-                - name: lyft
-                  image: ghcr.io/ridesaver/estimate_service:latest
+                - name: location-api
+                  image: ghcr.io/ridesaver/location_service:latest
                   ports:
                       - containerPort: 80
                       - containerPort: 443
+                - name: location-memcache
+                  image: memcached:1.6-alpine
+                  ports:
+                      - containerPort: 11211
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-    name: estimate-api
+    name: location-api
 spec:
     scaleTargetRef:
         apiVersion: apps/v1
         kind: Deployment
-        name: estimate-api
+        name: location-api
     minReplicas: 2 # Maintain at least two for redundancy in case on fails
     maxReplicas: 10
     targetCPUUtilizationPercentage: 50
@@ -41,10 +45,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-    name: estimate-api
+    name: location-api
     labels:
         type: service
-        service: estimate
+        service: location
 spec:
     ports:
         - port: 80
@@ -53,4 +57,4 @@ spec:
           name: https
     selector:
         type: service
-        service: estimate
+        service: location

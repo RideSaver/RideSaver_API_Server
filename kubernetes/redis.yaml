@@ -62,7 +62,7 @@ spec:
                   emptyDir: {}
                 - name: backend-redis-config
                   configMap:
-                      name: lyft-redis-config
+                      name: backend-redis-config
     volumeClaimTemplates:
         - metadata:
               name: backend-redis-data

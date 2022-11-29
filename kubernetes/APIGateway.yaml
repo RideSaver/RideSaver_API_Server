@@ -16,7 +16,7 @@ spec:
                 type: api-gateway
         spec:
             containers:
-                - name: lyft
+                - name: api-gateway
                   image: ghcr.io/ridesaver/api_gateway:latest
                   ports:
                       - containerPort: 80
