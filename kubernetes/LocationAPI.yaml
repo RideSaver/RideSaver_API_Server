@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: estimate-api
+    namespace: api
+    labels:
+        type: service
+        service: estimate
+spec:
+    selector:
+        matchLabels:
+            type: service
+            service: estimate
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                type: service
+                service: estimate
+        spec:
+            containers:
+                - name: lyft
+                  image: ghcr.io/ridesaver/estimate_service:latest
+                  ports:
+                      - containerPort: 80
+                      - containerPort: 443
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+    name: estimate-api
+spec:
+    scaleTargetRef:
+        apiVersion: apps/v1
+        kind: Deployment
+        name: estimate-api
+    minReplicas: 2 # Maintain at least two for redundancy in case on fails
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 50
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: estimate-api
+    labels:
+        type: service
+        service: estimate
+spec:
+    ports:
+        - port: 80
+          name: http
+        - port: 443
+          name: https
+    selector:
+        type: service
+        service: estimate
