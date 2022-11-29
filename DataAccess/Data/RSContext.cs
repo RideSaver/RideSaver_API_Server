@@ -35,5 +35,13 @@ namespace DataAccess.Data
             modelBuilder.Entity<List<Guid>>()
                 .HasNoKey();
         }
+
+        public virtual ProviderModel GetProviderForEstimate(Nullable<string> estimateId)
+        {
+            var estimateIdParameter = estimateId.HasValue() ?
+                new ObjectParameter("EstimateId", estimateId) :
+                new ObjectParameter("EstimateId", typeof(string));
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ProviderModel>("GetProviderForEstimate", estimateIdParameter);
+        }
     }
 }
