@@ -67,6 +67,7 @@ jobs:
                         request_api
                         services_api
                         user_api
+                        auth_service
                     
     deployment:
         name: Deploy
@@ -93,6 +94,7 @@ jobs:
                       kubernetes/RequestAPI.yaml
                       kubernetes/ServicesAPI.yaml
                       kubernetes/UserAPI.yaml
+                      kubernetes/AuthService.yaml
                   images: |
                       ghcr.io/ridesaver/api_gateway:${{ github.sha }}
                       ghcr.io/ridesaver/estiamte_api:${{ github.sha }}
@@ -100,3 +102,4 @@ jobs:
                       ghcr.io/ridesaver/location_api:${{ github.sha }}
                       ghcr.io/ridesaver/services_api:${{ github.sha }}
                       ghcr.io/ridesaver/user_api:${{ github.sha }}
+                      ghcr.io/ridesaver/auth_service:${{ github.sha }}
