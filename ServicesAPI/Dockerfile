@@ -12,11 +12,13 @@ WORKDIR /server
 
 RUN dotnet nuget add source --username $github_username --password $github_token --store-password-in-clear-text --name github "https://nuget.pkg.github.com/RideSaver/index.json"
 
-COPY ServicesAPI.csproj .
+COPY DataAccess/DataAccess.csproj /DataAccess/DataAccess.csproj
+COPY ServicesAPI/ServicesAPI.csproj .
 RUN dotnet restore
 
 # Copy all files
-COPY . .
+COPY DataAccess/* /DataAccess/
+COPY ServicesAPI .
 RUN dotnet publish -p:PublishProfile=PublishTrimmed --sc --os="linux-musl" -o publish
 
 FROM alpine:3.16 AS runtime
