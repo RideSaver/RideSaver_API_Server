@@ -1,10 +1,10 @@
 ﻿using Grpc.Net.Client;
 using InternalAPI;
 using k8s;
-using EstimateAPI.Configuration;
+using RequestAPI.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace EstimateAPI.Repository
+namespace RequestAPI.Repository
 {
     public class ClientRepository : IClientRepository
     {
@@ -13,7 +13,7 @@ namespace EstimateAPI.Repository
         private readonly string _labelStr;
         private CancellationTokenSource _cts;
         private string _namespace;
-        public Dictionary<string, Estimates.EstimatesClient> Clients { get; private set; }
+        public Dictionary<string, Requests.RequestsClient> Clients { get; private set; }
 
         ClientRepository(IOptions<ClientDiscoveryOptions> options) : this(options.Value.Namespace, options) {}
 
@@ -26,7 +26,7 @@ namespace EstimateAPI.Repository
             {
                 await this.Run(_cts.Token);
             }).Start();
-            this.Clients = new Dictionary<string, Estimates.EstimatesClient>();
+            this.Clients = new Dictionary<string, Requests.RequestsClient>();
 
             // Get the Kubernetes Object
             var config = KubernetesClientConfiguration.InClusterConfig();
@@ -59,11 +59,11 @@ namespace EstimateAPI.Repository
         public async Task RefreshClients()
         {
             var list = await _kubernetes.CoreV1.ListNamespacedServiceAsync(this._namespace, labelSelector: _labelStr);
-            Dictionary<string, Estimates.EstimatesClient> Clients = new Dictionary<string, Estimates.EstimatesClient>();
+            Dictionary<string, Requests.RequestsClient> Clients = new Dictionary<string, Requests.RequestsClient>();
             foreach(var client in list)
             {
                 GrpcChannel channel = GrpcChannel.ForAddress($"{client.Metadata.Name}.client");
-                Clients.Add(client.Metadata.Name, new Estimates.EstimatesClient(channel));
+                Clients.Add(client.Metadata.Name, new Requests.RequestsClient(channel));
             }
             this.Clients = Clients;
         }

@@ -1,7 +1,5 @@
 FROM mcr.microsoft.com/devcontainers/dotnet:0-6.0 AS builder
 
-ARG github_username
-ARG github_token
 
 # Install tools
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
@@ -10,13 +8,17 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 
 WORKDIR /server
 
+ARG github_username
+ARG github_token
 RUN dotnet nuget add source --username $github_username --password $github_token --store-password-in-clear-text --name github "https://nuget.pkg.github.com/RideSaver/index.json"
 
-COPY EstimateAPI.csproj .
+COPY DataAccess/DataAccess.csproj /DataAccess/DataAccess.csproj
+COPY EstimateAPI/EstimateAPI.csproj .
 RUN dotnet restore
 
 # Copy all files
-COPY . .
+COPY DataAccess/* /DataAccess/
+COPY EstimateAPI .
 RUN dotnet publish -p:PublishProfile=PublishTrimmed --sc --os="linux-musl" -o publish
 
 FROM alpine:3.16 AS runtime

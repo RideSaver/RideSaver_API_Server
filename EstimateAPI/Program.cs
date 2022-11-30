@@ -1,4 +1,7 @@
+using DataAccess.Data;
 using EstimateAPI.Repository;
+using EstimateAPI.Configuration;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 

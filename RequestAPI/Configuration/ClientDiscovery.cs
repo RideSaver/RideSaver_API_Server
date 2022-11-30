@@ -1,4 +1,4 @@
-namespace EstimateAPI.Configuration
+namespace RequestAPI.Configuration
 {
     public class ClientDiscoveryOptions
     {

@@ -1,11 +1,11 @@
 ﻿using Grpc.Net.Client;
 using InternalAPI;
 
-namespace EstimateAPI.Repository
+namespace RequestAPI.Repository
 {
     public interface IClientRepository
     {
-        Dictionary<string, Estimates.EstimatesClient> Clients { get; }
+        Dictionary<string, Requests.RequestsClient> Clients { get; }
         Task RefreshClients();
     }
 }

@@ -15,17 +15,17 @@ namespace RequestAPI.Controllers
 
         public override async Task<IActionResult> CancelRide([FromRoute(Name = "rideId"), Required] string rideId)
         {
-            return new OkObjectResult(await _requestRepository.DeleteRideRequestAsync(new Guid(rideId)));
+            return new OkObjectResult(await _requestRepository.CancelRideRequestAsync(new Guid(rideId)));
         }
 
         public override async Task<IActionResult> GetRide([FromRoute(Name = "rideId"), Required] string rideId)
         {
-            return new OkObjectResult(await _requestRepository.GetRideRequestIDAsync(new Guid(rideId)));
+            return new OkObjectResult(await _requestRepository.GetRideRequestAsync(new Guid(rideId)));
         }
 
         public override async Task<IActionResult> RequestRide([FromRoute(Name = "estimateId"), Required] string estimateId)
         {
-            return new OkObjectResult(await _requestRepository.GetRideRequestIDAsync(new Guid(estimateId)));
+            return new OkObjectResult(await _requestRepository.CreateRideRequestAsync(new Guid(estimateId)));
         }
     }
 }

@@ -3,12 +3,15 @@ using RideSaver.Server.Models;
 using Google.Protobuf.Collections;
 using InternalAPI;
 using Grpc.Core;
+using Microsoft.EntityFrameworkCore;
+using DataAccess.Models;
+using DataAccess.Data;
 
 namespace EstimateAPI.Repository
 {
     public class EstimateRepository : IEstimateRepository
     {
-        public IClientRepository Clients { get; private set; };
+        public IClientRepository Clients { get; private set; }
 
         EstimateRepository(IClientRepository clientRepo) {
             this.Clients = clientRepo;
@@ -16,14 +19,15 @@ namespace EstimateAPI.Repository
 
         public async Task<List<Estimate>> GetRideEstimatesAsync(Location startPoint, Location endPoint, List<Guid> services, int? seats)
         {
-            IEnumerable<Task<List<Estimate>>> estimateTasks =
+            IEnumerable<Task<List<Estimate>>> estimateTasksQuery =
                 from client in Clients.Clients
-                select GetEstimatesAsync(client);
-            List<Estimate> estimates;
+                select GetEstimatesAsync(client.Value, startPoint, endPoint, services, seats);
+            List<Task<List<Estimate>>> estimateTasks = estimateTasksQuery.ToList();
+            List<Estimate> estimates = new List<Estimate>();
 
             while (estimateTasks.Any())
             {
-                Task<int> finishedTask = await Task.WhenAny(estimateTasks);
+                Task<List<Estimate>> finishedTask = await Task.WhenAny(estimateTasks);
                 estimateTasks.Remove(finishedTask);
                 estimates.AddRange(await finishedTask);
             }
@@ -81,26 +85,26 @@ namespace EstimateAPI.Repository
             return estimatesList;
         }
 
-        public async Task<List<Estimate>> GetRideEstimatesRefreshAsync(List<object> ids) // TBA
+        public async Task<List<Estimate>> GetRideEstimatesRefreshAsync(List<Guid> ids) // TBA
         {
            List<Estimate> estimates;
            List<Task<Estimate>> rideEstimatesRefreshTasks;
            foreach(var id in ids)
            {
-                ServicesModel service;
-                using (var context = new DataAccess.Data.RSContext())
+                ProviderModel provider;
+                using (var context = new DataAccess.Data.RSContext(new DbContextOptions<RSContext>()))
                 {
-                    service = context.GetProviderForEstimate(id);
+                    provider = context.GetProviderForEstimate(id.ToString());
                 }
                 
-                rideEstimatesRefreshTasks.Add(GetRideEstimateRefreshAsync(Clients.Clients[service.Name], new Guid(id)))
-           }
+                rideEstimatesRefreshTasks.Add(GetRideEstimateRefreshAsync(Clients.Clients[provider.ClientId], id));
+            }
 
             while (rideEstimatesRefreshTasks.Any())
             {
-                Task<int> finishedTask = await Task.WhenAny(rideEstimatesRefreshTasks);
+                Task<Estimate> finishedTask = await Task.WhenAny(rideEstimatesRefreshTasks);
                 rideEstimatesRefreshTasks.Remove(finishedTask);
-                estimates.AddRange(await finishedTask);
+                estimates.Add(await finishedTask);
             }
 
             return estimates;

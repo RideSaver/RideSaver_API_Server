@@ -18,7 +18,7 @@ namespace EstimateAPI.Controllers
             return new OkObjectResult(await _estimateRepository.GetRideEstimatesAsync(startPoint, endPoint, services, seats));
         }
 
-        public async override Task<IActionResult> RefreshEstimates([FromQuery(Name = "ids"), Required] List<object> ids)
+        public async override Task<IActionResult> RefreshEstimates([FromQuery(Name = "ids"), Required] List<Guid> ids)
         {
             return new OkObjectResult(await _estimateRepository.GetRideEstimatesRefreshAsync(ids));
         }

@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../DataAccess/DataAccess.csproj" />
+
     <PackageReference Include="Google.Protobuf" Version="3.21.9" />
     <PackageReference Include="Grpc.Core.Api" Version="2.49.0" />
     <PackageReference Include="Grpc.Net.Client" Version="2.49.0" />
@@ -16,7 +18,8 @@
     </PackageReference>
     <PackageReference Include="RideSaver.InternalAPI" Version="0.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
-	  <PackageReference Include="RideSaver.Server" Version="0.0.6" />
+	  <PackageReference Include="RideSaver.Server" Version="0.0.7" />
+    <PackageReference Include="KubernetesClient" Version="9.0.38" />
   </ItemGroup>
 
 </Project>

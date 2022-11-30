@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using DataAccess.Models;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Infrastructure;
 
 namespace DataAccess.Data
 {
@@ -36,12 +38,14 @@ namespace DataAccess.Data
                 .HasNoKey();
         }
 
-        public virtual ProviderModel GetProviderForEstimate(Nullable<string> estimateId)
+        public virtual ProviderModel GetProviderForEstimate(string estimateId)
         {
-            var estimateIdParameter = estimateId.HasValue() ?
-                new ObjectParameter("EstimateId", estimateId) :
-                new ObjectParameter("EstimateId", typeof(string));
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ProviderModel>("GetProviderForEstimate", estimateIdParameter);
+            var estimateIdParameter = new ObjectParameter("EstimateId", estimateId);
+            return ((IObjectContextAdapter)this)
+                .ObjectContext
+                .ExecuteFunction<ProviderModel>("GetProviderForEstimate", estimateIdParameter)
+                .GetEnumerator()
+                .Current;
         }
     }
 }

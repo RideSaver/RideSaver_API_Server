@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../DataAccess/DataAccess.csproj" />
+
     <PackageReference Include="Google.Protobuf" Version="3.21.9" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.50.0" />
     <PackageReference Include="Grpc.Core" Version="2.46.5" />
@@ -16,8 +18,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="RideSaver.InternalAPI" Version="0.0.3" />
-    <PackageReference Include="RideSaver.Server" Version="0.0.6" />
+    <PackageReference Include="RideSaver.Server" Version="0.0.7" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="KubernetesClient" Version="9.0.38" />
   </ItemGroup>
 
 </Project>
