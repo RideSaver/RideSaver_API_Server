@@ -2,6 +2,9 @@ using DataAccess.Data;
 using RequestAPI.Repository;
 using RequestAPI.Configuration;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
+using RequestAPI.Configuration;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +24,30 @@ builder.Services.AddDbContext<RSContext>(options =>
 
 builder.Services.AddSingleton<IClientRepository, ClientRepository>();
 builder.Services.AddTransient<IRequestRepository, RequestRepository>();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+
+            .AddJwtBearer("APIGatewayAuthentication", cfg =>
+            {
+                cfg.RequireHttpsMetadata = true;
+                cfg.SaveToken = true;
+                cfg.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = "AuthService",
+                    ValidateAudience = false,
+                    ValidateIssuer = false,
+                    ValidateLifetime = false,
+                    RequireExpirationTime = false,
+                    ClockSkew = TimeSpan.Zero
+
+                };
+            });
 
 var app = builder.Build();
 

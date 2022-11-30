@@ -1,6 +1,9 @@
-using DataAccess.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using ServicesAPI.Data;
 using ServicesAPI.Repository;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,11 +13,39 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<RSContext>(options =>
+builder.Services.AddDbContext<ServiceContext>(options =>
 {
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("ServicesDB"), x => x.UseNetTopologySuite());
+        builder.Configuration.GetConnectionString("ServicesDB"), x =>
+        {
+            x.UseNetTopologySuite();
+        });
 });
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+
+      .AddJwtBearer("APIGatewayAuthentication", cfg =>
+      {
+            cfg.RequireHttpsMetadata = true;
+            cfg.SaveToken = true;
+            cfg.TokenValidationParameters = new TokenValidationParameters()
+            {
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = "AuthService",
+                    ValidateAudience = false,
+                    ValidateIssuer = false,
+                    ValidateLifetime = false,
+                    RequireExpirationTime = false,
+                    ClockSkew = TimeSpan.Zero
+
+            };
+       });
+
 
 builder.Services.AddTransient<IServiceRepository, ServiceRepository>();
 

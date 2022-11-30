@@ -1,69 +1,172 @@
 {
-  "ReRoutes": 
-  [
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:5000"
+  },
+  "Routes": [
     {
-      "DownstreamPathTemplate": "/api/Estimate",
+      "UpstreamPathTemplate": "/apigateway/AuthService/Login",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamPathTemplate": "/api/v1/auth/login",
+      "RouteIsCaseSensitive": false,
       "DownstreamScheme": "https",
-      "DownstreamHostsAndPorts": [
+      "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 44339
+          "Port": 5001
         }
-      ],
-      "UpstreamPathTemplate": "/apigateway/EstimateService",
-      "UpstreamHttpMethod": [ "GET" ]
+      ]
     },
-
     {
-      "DownstreamPathTemplate": "/api/Location",
+      "UpstreamPathTemplate": "/apigateway/AuthService/VerifyToken",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamPathTemplate": "/api/v1/auth/verifytoken",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "APIGatewayAuthentication"
+      },
+      "RouteIsCaseSensitive": false,
       "DownstreamScheme": "https",
-      "DownstreamHostsAndPorts": [
+      "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 44319
+          "Port": 5001
         }
-      ],
-      "UpstreamPathTemplate": "/apigateway/LocationService",
-      "UpstreamHttpMethod": [ "GET" ]
+      ]
     },
-
     {
-      "DownstreamPathTemplate": "/api/Request",
+      "UpstreamPathTemplate": "/apigateway/Estimates",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamPathTemplate": "/api/v1/estimates",
+      "RouteIsCaseSensitive": false,
       "DownstreamScheme": "https",
-      "DownstreamHostsAndPorts": [
+      "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 44336
+          "Port": 5002
         }
-      ],
-      "UpstreamPathTemplate": "/apigateway/RequestService",
-      "UpstreamHttpMethod": [ "GET" ]
+      ]
     },
-
     {
-      "DownstreamPathTemplate": "/api/Services",
+      "UpstreamPathTemplate": "/apigateway/Estimates/Refresh",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamPathTemplate": "/api/v1/estimates/refresh",
+      "RouteIsCaseSensitive": false,
       "DownstreamScheme": "https",
-      "DownstreamHostsAndPorts": [
+      "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 44387
+          "Port": 5002
         }
-      ],
-      "UpstreamPathTemplate": "/apigateway/ServicesService",
-      "UpstreamHttpMethod": [ "GET" ]
+      ]
     },
-
     {
-      "DownstreamPathTemplate": "/api/User",
+      "UpstreamPathTemplate": "/apigateway/Location/Autocomplete",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamPathTemplate": "/api/v1/location/autocomplete",
+      "RouteIsCaseSensitive": false,
       "DownstreamScheme": "https",
-      "DownstreamHostsAndPorts": [
+      "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 44385
+          "Port": 5003
         }
-      ],
-      "UpstreamPathTemplate": "/apigateway/UserService",
-      "UpstreamHttpMethod": [ "GET", "POST", "PATCH", "DELETE" ]
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/apigateway/Rides/{rideId}",
+      "UpstreamHttpMethod": [ "DELETE" ],
+      "DownstreamPathTemplate": "/api/v1/rides/{rideId}",
+      "RouteIsCaseSensitive": false,
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5004
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/apigateway/Rides/{rideId}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamPathTemplate": "/api/v1/rides/{rideId}",
+      "RouteIsCaseSensitive": false,
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5004
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/apigateway/Rides/Request/{estimateId}",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/api/v1/rides/request/{estimateId}",
+      "RouteIsCaseSensitive": false,
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5004
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/apigateway/Providers",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamPathTemplate": "/api/v1/providers",
+      "RouteIsCaseSensitive": false,
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5005
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/apigateway/User/Info/{username}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamPathTemplate": "/api/v1/user/info/{username}",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "APIGatewayAuthentication"
+      },
+      "RouteIsCaseSensitive": false,
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5006
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/apigateway/User/Info/{username}",
+      "UpstreamHttpMethod": [ "PATCH" ],
+      "DownstreamPathTemplate": "/api/v1/user/info/{username}",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "APIGatewayAuthentication"
+      },
+      "RouteIsCaseSensitive": false,
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5006
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/apigateway/User/Signup",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/api/v1/user/signup",
+      "RouteIsCaseSensitive": false,
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5006
+        }
+      ]
     }
   ]
 }

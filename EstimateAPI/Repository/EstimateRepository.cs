@@ -144,6 +144,7 @@ namespace EstimateAPI.Repository
             if (field is null) return new List<Location>();
             var fieldList = field.ToList();
             var locationList = new List<Location>();
+
             foreach(var f in fieldList)
             {
                 var location = new Location()
