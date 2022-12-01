@@ -49,7 +49,7 @@ spec:
                       - name: ACCEPT_EULA
                         value: "Y"
                       - name: MSSQL_SA_PASSWORD
-                        value: STARUP_P4SSW0RD
+                        value: ST@RTUP_P4SSW0RD
                   volumeMounts:
                       - name: userapi-mssqldb
                         mountPath: /var/opt/mssql

@@ -73,3 +73,10 @@ spec:
               resources:
                   requests:
                       storage: 500Mi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-config
+data:
+  redis.conf:
