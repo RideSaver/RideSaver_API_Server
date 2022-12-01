@@ -11,6 +11,7 @@ spec:
             app: backend-redis
     template:
         metadata:
+            namespace: api
             labels:
                 app: backend-redis
         spec:

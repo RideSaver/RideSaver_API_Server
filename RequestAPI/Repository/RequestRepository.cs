@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Grpc.Net.Client;
+﻿using Grpc.Net.Client;
 using RideSaver.Server.Models;
 using InternalAPI;
 
@@ -15,7 +14,7 @@ namespace RequestAPI.Repository
 
         private async Task<Requests.RequestsClient> getClient(Guid rideId)
         {
-            
+
             var servicesClient = new Services.ServicesClient(GrpcChannel.ForAddress($"services.api"));
             var service = await servicesClient.GetServiceByHashAsync(new GetServiceByHashRequest {
                 Hash = Google.Protobuf.ByteString.CopyFrom(rideId.ToByteArray(), 0, 4)
