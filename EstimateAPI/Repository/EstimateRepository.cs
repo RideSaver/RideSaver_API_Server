@@ -3,9 +3,6 @@ using RideSaver.Server.Models;
 using Google.Protobuf.Collections;
 using InternalAPI;
 using Grpc.Core;
-using Microsoft.EntityFrameworkCore;
-using DataAccess.Models;
-using DataAccess.Data;
 
 namespace EstimateAPI.Repository
 {
@@ -87,17 +84,15 @@ namespace EstimateAPI.Repository
 
         public async Task<List<Estimate>> GetRideEstimatesRefreshAsync(List<Guid> ids) // TBA
         {
-           List<Estimate> estimates;
-           List<Task<Estimate>> rideEstimatesRefreshTasks;
-           foreach(var id in ids)
-           {
-                ProviderModel provider;
-                using (var context = new DataAccess.Data.RSContext(new DbContextOptions<RSContext>()))
-                {
-                    provider = context.GetProviderForEstimate(id.ToString());
-                }
-                
-                rideEstimatesRefreshTasks.Add(GetRideEstimateRefreshAsync(Clients.Clients[provider.ClientId], id));
+            List<Estimate> estimates = new List<Estimate>();
+            List<Task<Estimate>> rideEstimatesRefreshTasks = new List<Task<Estimate>>();
+            var servicesClient = new Services.ServicesClient(GrpcChannel.ForAddress($"services.api"));
+            foreach(var id in ids)
+            {
+                var service = await servicesClient.GetServiceByHashAsync(new GetServiceByHashRequest {
+                    Hash = Google.Protobuf.ByteString.CopyFrom(id.ToByteArray(), 0, 4)
+                });
+                rideEstimatesRefreshTasks.Add(GetRideEstimateRefreshAsync(Clients.Clients[service.ClientId], id));
             }
 
             while (rideEstimatesRefreshTasks.Any())

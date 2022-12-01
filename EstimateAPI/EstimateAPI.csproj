@@ -7,8 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="RideSaver.DataAccess" Version="0.0.1" />
-
     <PackageReference Include="Google.Protobuf" Version="3.21.9" />
     <PackageReference Include="Grpc.Core.Api" Version="2.49.0" />
     <PackageReference Include="Grpc.Net.Client" Version="2.49.0" />
@@ -17,7 +15,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.11" />
-    <PackageReference Include="RideSaver.InternalAPI" Version="0.0.3" />
+    <PackageReference Include="RideSaver.InternalAPI" Version="0.0.5" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 	  <PackageReference Include="RideSaver.Server" Version="0.0.7" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />

@@ -1,10 +1,8 @@
-using DataAccess.Data;
 using RequestAPI.Repository;
 using RequestAPI.Configuration;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using RequestAPI.Configuration;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,12 +13,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.Configure<ClientDiscoveryOptions>(
     builder.Configuration.GetSection(ClientDiscoveryOptions.Position));
-
-builder.Services.AddDbContext<RSContext>(options =>
-{
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("UserDB"), x => x.UseNetTopologySuite());
-});
 
 builder.Services.AddSingleton<IClientRepository, ClientRepository>();
 builder.Services.AddTransient<IRequestRepository, RequestRepository>();

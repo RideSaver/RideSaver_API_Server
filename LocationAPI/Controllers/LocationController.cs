@@ -13,7 +13,7 @@ namespace LocationAPI.Controllers
     public class LocationController : LocationApiController
     {
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public override async Task<IActionResult> Autocomplete([FromHeader] Location location, [FromQuery(Name = "maxResponses"), Range(1, 50)] int? maxResponses)
+        public override async Task<IActionResult> Autocomplete([FromQuery(Name = "location")] Location location, [FromQuery(Name = "maxResponses"), Range(1, 50)] int? maxResponses)
         {
             return new OkObjectResult(await Task.FromResult(new List<Location>()));
         }

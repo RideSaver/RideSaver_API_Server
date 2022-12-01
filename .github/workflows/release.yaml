@@ -23,6 +23,16 @@ jobs:
     build:
         name: Push Docker image to GitHub Container Registry
         runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                image:
+                    - api_gateway
+                    - estimate_api
+                    - location_api
+                    - request_api
+                    - services_api
+                    - user_api
+                    - auth_service
         steps:
             - name: Check out the repo
               uses: actions/checkout@v3
@@ -45,7 +55,7 @@ jobs:
               uses: docker/metadata-action@v4
               with:
                   images: |
-                      ghcr.io/ridesaver/lyftapi
+                      ghcr.io/ridesaver/${{ matrix.image }}
                   tags: |
                       type=schedule,pattern=nightly
                       type=ref,event=branch
@@ -58,17 +68,10 @@ jobs:
               uses: docker/bake-action@v2
               with:
                   files: |
-                        ./docker-bake.hcl
-                        ${{ steps.meta.outputs.bake-file }}
-                  targets: |
-                        api_gateway
-                        estimate_api
-                        location_api
-                        request_api
-                        services_api
-                        user_api
-                        auth_service
-                    
+                      ./docker-bake.hcl
+                      ${{ steps.meta.outputs.bake-file }}
+                  targets: ${{ matrix.image }}
+
     deployment:
         name: Deploy
         runs-on: ubuntu-latest
