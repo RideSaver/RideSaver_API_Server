@@ -1,4 +1,4 @@
-﻿using AuthService.Data;
+using AuthService.Data;
 using AuthService.Models;
 using AuthService.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

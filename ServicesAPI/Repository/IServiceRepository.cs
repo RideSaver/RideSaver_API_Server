@@ -1,4 +1,4 @@
-﻿using RideSaver.Server.Models;
+using RideSaver.Server.Models;
 
 namespace ServicesAPI.Repository
 {
@@ -6,6 +6,5 @@ namespace ServicesAPI.Repository
     {
         Task<IEnumerable<RideService>> GetAvailableServices();
         RideService GetService(Guid service_id);
-
     }
 }

@@ -1,4 +1,4 @@
-﻿using Grpc.Net.Client;
+using Grpc.Net.Client;
 using InternalAPI;
 using k8s;
 using EstimateAPI.Configuration;

@@ -1,65 +1,61 @@
 using Grpc.Core;
 using InternalAPI;
-using ServicesAPI.Repository;
 using Google.Protobuf.WellKnownTypes;
 using DataAccess.Models;
+using ServicesAPI.Data;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using System.Transactions;
 
 namespace ServicesAPI.Controllers
 {
     // Summary: Handles all requests for estimates
     public class InternalServicesController : Services.ServicesBase
     {
-        Task<ServiceModel> GetServiceByHash(GetServiceByHashRequest request, grpc::ServerCallContext context)
+        private readonly ServiceContext _serviceContext;
+        public InternalServicesController(ServiceContext serviceContext) => _serviceContext = serviceContext;
+        public override async Task<ServiceModel> GetServiceByHash(GetServiceByHashRequest request, ServerCallContext context)
         {
-            using (ServiceContext context = new ServiceContext())
+            var EstimateId = new SqlParameter("@EstimateId", request.Hash);
+            var service = await _serviceContext.Services.FromSql($"SELECT * FROM services {EstimateId} = SUBSTRING(HASHBYTES('SHA1', Id), 0, 4))").FirstOrDefaultAsync();
+            return new ServiceModel
             {
-                var service = ctx.Services
-                    .SqlQuery("SELECT * FROM services @EstimateId = SUBSTRING(HASHBYTES('SHA1', Id), 0, 4))", new SqlParameter("@EstimateId", request.hash));
-                    .FirstOrDefault();
-                return new ServiceModel {
-                    Name = service.Name,
-                    ClientId = service.ClientId
-                };
-            }
+                Name = service?.Name,
+                ClientId = service?.ClientId,
+            };
         }
-        Task GetServices(Empty request, IServerStreamWriter<ServiceModel> responseStream, ServerCallContext context)
+        public override async Task GetServices(Empty request, IServerStreamWriter<ServiceModel> responseStream, ServerCallContext context)
         {
-            using (ServiceContext context = new ServiceContext())
+            using (var scope = new TransactionScope())
             {
-                IList<ServicesModel> services = ctx.Students.ToList<Student>();
+                IList<ServicesModel> services = (IList<ServicesModel>)_serviceContext.Services.ToListAsync<ServicesModel>();
                 foreach(var service in services)
                 {
                     await responseStream.WriteAsync(new ServiceModel {
-                        Name = service.Name;
-                        ClientId = service.ClientId
+                        Name = service.Name,
+                        ClientId = service.ClientId,
                     });
                 }
+                scope.Complete();
             }
         }
-        Task<Empty> RegisterService(RegisterServiceRequest request, ServerCallContext context)
+        public override Task<Empty> RegisterService(RegisterServiceRequest request, ServerCallContext context)
         {
-            using (ServiceContext context = new ServiceContext())
+            using (var scope = new TransactionScope())
             {
-
                 var service = new ServicesModel()
                 {
-                    Id = new Guid(request.Id),
-
-                    Name = request.Name
-
+                    Id = new Guid(request.Id.ToByteArray()),
+                    Name = request.Name,
                     ClientId = request.ClientName,
-
-                    ProviderId  = new Guid();
+                    ProviderId  = new Guid()
                 };
-        
-                ctx.Services.Add(service);
 
-                foreach(var feature in request.features)
+                _serviceContext.Services.Add(service);
+                foreach(var features in request.Features)
                 {
-                    var feature = new ServiceFeaturesModel {
-                        ServiceId = request.Id
-                    };
-                    switch(feature)
+                    var feature = new ServiceFeaturesModel { ServiceId = new Guid(request.Id.ToByteArray()) };
+                    switch(features)
                     {
                         case ServiceFeatures.Shared:
                             feature.Feature = ServiceFeaturesModel.Features.shared;
@@ -76,12 +72,12 @@ namespace ServicesAPI.Controllers
                         default:
                             continue;
                     }
-                    ctx.ServicesFeatures.Add(feature);
+                    _serviceContext.ServicesFeatures.Add(feature);
                 }
-
-                ctx.SaveChanges();   
+                _serviceContext.SaveChanges();   
             }
-            return new Empty();
+
+            return (Task<Empty>)Task.CompletedTask;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RideSaver.Server.Controllers;
@@ -15,7 +15,7 @@ namespace ServicesAPI.Controllers
         public ServicesController(IServiceRepository serviceRepository) =>_serviceRepository = serviceRepository;
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public override Task<IActionResult> GetProviders()
+        public override async Task<IActionResult> GetProviders()
         {
             var rideServices = await _serviceRepository.GetAvailableServices();
             return new OkObjectResult(rideServices);
