@@ -1,6 +1,7 @@
+using RequestAPI.Repository;
+using RequestAPI.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using RequestAPI.Repository;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.Configure<ClientDiscoveryOptions>(
+    builder.Configuration.GetSection(ClientDiscoveryOptions.Position));
 
+builder.Services.AddSingleton<IClientRepository, ClientRepository>();
 builder.Services.AddTransient<IRequestRepository, RequestRepository>();
 
 builder.Services.AddAuthentication(options =>

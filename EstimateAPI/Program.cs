@@ -1,4 +1,5 @@
 using EstimateAPI.Repository;
+using EstimateAPI.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -11,6 +12,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.Configure<ClientDiscoveryOptions>(
+    builder.Configuration.GetSection(ClientDiscoveryOptions.Position));
+
+builder.Services.AddSingleton<IClientRepository, ClientRepository>();
 builder.Services.AddTransient<IEstimateRepository, EstimateRepository>();
 
 builder.Services.AddAuthentication(options =>

@@ -22,7 +22,7 @@ namespace EstimateAPI.Controllers
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async override Task<IActionResult> RefreshEstimates([FromQuery(Name = "ids"), Required] List<object> ids)
+        public async override Task<IActionResult> RefreshEstimates([FromQuery(Name = "ids"), Required] List<Guid> ids)
         {
             return new OkObjectResult(await _estimateRepository.GetRideEstimatesRefreshAsync(ids));
         }

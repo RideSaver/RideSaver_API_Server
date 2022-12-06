@@ -17,11 +17,12 @@ namespace ServicesAPI.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override Task<IActionResult> GetProviders()
         {
-            throw new NotImplementedException();
+            var rideServices = await _serviceRepository.GetAvailableServices();
+            return new OkObjectResult(rideServices);
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public override async Task<IActionResult> GetServices([FromHeader] Location location)
+        public override async Task<IActionResult> GetServices([FromQuery(Name = "location")] Location location)
         {
             var rideServices = await _serviceRepository.GetAvailableServices();
             return new OkObjectResult(rideServices);

@@ -1,0 +1,73 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+    name: userapi-mssql-data
+    namespace: api
+spec:
+    accessModes:
+        - ReadWriteOnce
+    resources:
+        requests:
+            storage: 8Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: userapi-mssql-deployment
+    namespace: api
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: mssql
+            for: service-api
+    template:
+        metadata:
+            namespace: api
+            labels:
+                app: mssql
+                for: service-api
+        spec:
+            terminationGracePeriodSeconds: 30
+            securityContext:
+                fsGroup: 10001
+            containers:
+                - name: userapi-mssql
+                  image: mcr.microsoft.com/mssql/server:2019-latest
+                  resources:
+                      requests:
+                          memory: "2G"
+                          cpu: "2000m"
+                      limits:
+                          memory: "2G"
+                          cpu: "2000m"
+                  ports:
+                      - containerPort: 1433
+                  env:
+                      - name: MSSQL_PID
+                        value: "Developer"
+                      - name: ACCEPT_EULA
+                        value: "Y"
+                      - name: MSSQL_SA_PASSWORD
+                        value: ST@RTUP_P4SSW0RD
+                  volumeMounts:
+                      - name: userapi-mssqldb
+                        mountPath: /var/opt/mssql
+            volumes:
+                - name: userapi-mssqldb
+                  persistentVolumeClaim:
+                      claimName: userapi-mssql-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: userapi-mssql-deployment
+    namespace: api
+spec:
+    selector:
+        app: mssql
+        for: user-api
+    ports:
+        - protocol: TCP
+          port: 1433
+          targetPort: 1433

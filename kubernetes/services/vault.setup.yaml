@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vault-setup-script
+data:
+  vaultSetup.sh: |
+    sleep 20
+    vault secrets enable database
+    vault write database/config/auth_db \
+        plugin_name=mssql-database-plugin \
+        connection_url='sqlserver://{{username}}:{{password}}@sql-server:1433' \
+        allowed_roles="lyft-client" \
+        username="sa" \
+        password="ST@RTUP_P4SSW0RD"
+    vault write database/config/service_db \
+        plugin_name=mssql-database-plugin \
+        connection_url='sqlserver://{{username}}:{{password}}@sql-server:1433' \
+        allowed_roles="lyft-client" \
+        username="sa" \
+        password="ST@RTUP_P4SSW0RD"
+    vault write database/config/user_db \
+        plugin_name=mssql-database-plugin \
+        connection_url='sqlserver://{{username}}:{{password}}@sql-server:1433' \
+        allowed_roles="lyft-client" \
+        username="sa" \
+        password="ST@RTUP_P4SSW0RD"
+
+    vault write database/roles/auth-service \
+        db_name=auth_db \
+        creation_statements="CREATE LOGIN [{{name}}] WITH PASSWORD = '{{password}}';\
+            CREATE USER [{{name}}] FOR LOGIN [{{name}}];\
+            GRANT SELECT ON SCHEMA::dbo TO [{{name}}];" \
+        default_ttl="1h" \
+        max_ttl="24h"
+
+    vault write database/roles/services-service \
+        db_name=service_db \
+        creation_statements="CREATE LOGIN [{{name}}] WITH PASSWORD = '{{password}}';\
+            CREATE USER [{{name}}] FOR LOGIN [{{name}}];\
+            GRANT SELECT ON SCHEMA::dbo TO [{{name}}];" \
+        default_ttl="1h" \
+        max_ttl="24h"
+
+    vault write database/roles/user-service \
+        db_name=user_db \
+        creation_statements="CREATE LOGIN [{{name}}] WITH PASSWORD = '{{password}}';\
+            CREATE USER [{{name}}] FOR LOGIN [{{name}}];\
+            GRANT SELECT ON SCHEMA::dbo TO [{{name}}];" \
+        default_ttl="1h" \
+        max_ttl="24h"
+
+
+    vault secrets enable pki
+    vault secrets tune -max-lease-ttl=8760h pki
+    vault write pki/root/generate/internal \
+        common_name=vault.core \
+        ttl=8760h
+
+    vault write pki/config/urls \
+        issuing_certificates="http://127.0.0.1:8200/v1/pki/ca" \
+        crl_distribution_points="http://127.0.0.1:8200/v1/pki/crl"
+
+    vault write pki/roles/lyft-client \
+        allowed_domains=lyft-client;lyft-client.client \
+        allow_subdomains=true \
+        max_ttl=72h
+    vault write pki/roles/uber-client \
+        allowed_domains=uber-client;uber-client.client \
+        allow_subdomains=true \
+        max_ttl=72h
+    vault write pki/roles/estimate-service \
+        allowed_domains=estimate-api;estimate-api.api \
+        allow_subdomains=true \
+        max_ttl=72h
+    vault write pki/roles/request-service \
+        allowed_domains=request-api;request-api.api \
+        allow_subdomains=true \
+        max_ttl=72h
+    vault write pki/roles/location-service \
+        allowed_domains=location-api;location-api.api \
+        allow_subdomains=true \
+        max_ttl=72h
+    vault write pki/roles/services-service \
+        allowed_domains=services-api;services-api.api \
+        allow_subdomains=true \
+        max_ttl=72h
+    vault write pki/roles/user-service \
+        allowed_domains=user-api;user-api.api \
+        allow_subdomains=true \
+        max_ttl=72h
+    vault write pki/roles/auth-service \
+        allowed_domains=auth-service;auth-service.api \
+        allow_subdomains=true \
+        max_ttl=72h
+    vault write pki/roles/gateway-service \
+        allowed_domains=api-gateway;api-gateway.server \
+        allow_subdomains=true \
+        max_ttl=72h
+

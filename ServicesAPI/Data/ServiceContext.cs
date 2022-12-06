@@ -1,5 +1,7 @@
-﻿using DataAccess.Models;
+using DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Infrastructure;
 
 namespace ServicesAPI.Data
 {
@@ -23,6 +25,16 @@ namespace ServicesAPI.Data
 
             modelBuilder.Entity<List<Guid>>()
                 .HasNoKey();
+        }
+
+        public virtual ProviderModel GetProviderForEstimate(string estimateId)
+        {
+            var estimateIdParameter = new ObjectParameter("EstimateId", estimateId);
+            return ((IObjectContextAdapter)this)
+                .ObjectContext
+                .ExecuteFunction<ProviderModel>("GetProviderForEstimate", estimateIdParameter)
+                .GetEnumerator()
+                .Current;
         }
     }
 }

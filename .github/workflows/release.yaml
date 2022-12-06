@@ -1,0 +1,117 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# GitHub recommends pinning actions to a commit SHA.
+# To get a newer version, you will need to update the SHA.
+# You can also reference a tag or branch, but the action may change without warning.
+
+name: Publish Docker image
+
+on:
+    push:
+        branches:
+            - "main"
+        tags:
+            - "v*"
+    release:
+        types:
+            - published
+    workflow_dispatch:
+jobs:
+    build:
+        name: Push Docker image to GitHub Container Registry
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                image:
+                    - api_gateway
+                    - estimate_api
+                    - location_api
+                    - request_api
+                    - services_api
+                    - user_api
+                    - auth_service
+        steps:
+            - name: Check out the repo
+              uses: actions/checkout@v3
+            - name: Set up QEMU
+              uses: docker/setup-qemu-action@v2
+              with:
+                  platforms: arm,arm64,amd64
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v2
+              with:
+                  platforms: linux/arm,linux/arm64,linux/x64
+            - name: Log in to Github Container Repository
+              uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+            - name: Docker meta
+              id: meta
+              uses: docker/metadata-action@v4
+              with:
+                  images: |
+                      ghcr.io/ridesaver/${{ matrix.image }}
+                  tags: |
+                      type=schedule,pattern=nightly
+                      type=ref,event=branch
+                      type=ref,event=pr
+                      type=semver,pattern={{version}}
+                      type=semver,pattern={{major}}.{{minor}}
+                      type=semver,pattern={{major}}
+                      type=sha
+            - name: Build
+              uses: docker/bake-action@v2
+              with:
+                  files: |
+                      ./docker-bake.hcl
+                      ${{ steps.meta.outputs.bake-file }}
+                  targets: ${{ matrix.image }}
+
+    deployment:
+        name: Deploy
+        runs-on: ubuntu-latest
+        needs:
+            - deploy
+        if: ${{ GITHUB_EVENT_NAME == "workflow_dispatch" || GITHUB_EVENT_NAME == "release" }}
+        steps:
+            - uses: actions/checkout@master
+
+            - name: Log in to Github Container Repository
+              uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+            - uses: azure/setup-kubectl@v2.0
+            - name: Set the Kubernetes context
+              uses: azure/k8s-set-context@v2
+              with:
+                  method: service-account
+                  k8s-url: ${{ secrets.KUBERNETES_URL }}
+                  k8s-secret: ${{ secrets.KUBERNETES_SECRET }}
+            - name: Deploy to the Kubernetes cluster
+              uses: azure/k8s-deploy@v1
+              with:
+                  namespace: default
+                  manifests: |
+                      kubernetes/redis.yaml
+                      kubernetes/APIGateway.yaml
+                      kubernetes/EstimateAPI.yaml
+                      kubernetes/LocationAPI.yaml
+                      kubernetes/RequestAPI.yaml
+                      kubernetes/ServicesAPI.yaml
+                      kubernetes/UserAPI.yaml
+                      kubernetes/AuthService.yaml
+                  images: |
+                      ghcr.io/ridesaver/api_gateway:${{ github.sha }}
+                      ghcr.io/ridesaver/estiamte_api:${{ github.sha }}
+                      ghcr.io/ridesaver/request_api:${{ github.sha }}
+                      ghcr.io/ridesaver/location_api:${{ github.sha }}
+                      ghcr.io/ridesaver/services_api:${{ github.sha }}
+                      ghcr.io/ridesaver/user_api:${{ github.sha }}
+                      ghcr.io/ridesaver/auth_service:${{ github.sha }}

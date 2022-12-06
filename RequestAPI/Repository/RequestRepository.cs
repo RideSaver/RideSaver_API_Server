@@ -6,22 +6,39 @@ namespace RequestAPI.Repository
 {
     public class RequestRepository : IRequestRepository
     {
-        private readonly string lyftChannel = ""; // TODO :: Update the web clients URL
-        private readonly string uberChannel = ""; // TODO :: Update the web clients URL
-        public async Task<Ride> GetRideRequestIDAsync(Guid ride_id) => ride_id.ToString() == "TBA" ? (await GetLyftRideRequestIDAsync(ride_id)) : (await GetUberRideRequestIDAsync(ride_id));
-        public async Task<Ride> PostRideRequestAsync(Guid estimate_id) => estimate_id.ToString() == "TBA" ? (await PostLyftRideRequestAsync(estimate_id)) : (await PostUberRideRequestAsync(estimate_id));
-        public async Task<PriceWithCurrency> DeleteRideRequestAsync(Guid ride_id) => ride_id.ToString() == "TBA" ? (await DeleteLyfttRideRequestAsync(ride_id)) : (await DeleteUberRideRequestAsync(ride_id));
-        public async Task<Ride> GetLyftRideRequestIDAsync(Guid ride_id)
-        {
-            var channel = GrpcChannel.ForAddress(lyftChannel);
-            var requestsClient = new Requests.RequestsClient(channel);
-            var clientRequested = new GetRideRequestModel()
-            {
-                RideId = ride_id.ToString(),
-            };
+        public IClientRepository Clients { get; private set; }
 
-            var rideReplyModel = await requestsClient.GetRideRequestAsync(clientRequested);
-            var lyftRide = new Ride()
+        RequestRepository(IClientRepository clientRepo) {
+            this.Clients = clientRepo;
+        }
+
+        private async Task<Requests.RequestsClient> getClient(Guid rideId)
+        {
+
+            var servicesClient = new Services.ServicesClient(GrpcChannel.ForAddress($"services.api"));
+            var service = await servicesClient.GetServiceByHashAsync(new GetServiceByHashRequest {
+                Hash = Google.Protobuf.ByteString.CopyFrom(rideId.ToByteArray(), 0, 4)
+            });
+            if(service.Name == null)
+            {
+                throw new NotImplementedException();
+            }
+            if(!this.Clients.Clients.ContainsKey(service.Name))
+            {
+                // Refresh cache, in case the service came up during the 10s cache window
+                await this.Clients.RefreshClients();
+                if(!this.Clients.Clients.ContainsKey(service.Name))
+                {
+                    throw new NotImplementedException(); // Should never happen, SQL has a service that does not exist in K8s
+                }
+            }
+            return this.Clients.Clients[service.Name];
+        }
+        public async Task<Ride> GetRideRequestAsync(Guid rideId) {
+            var rideReplyModel = await (await getClient(rideId)).GetRideRequestAsync(new GetRideRequestModel() {
+                RideId = rideId.ToString(),
+            });
+            return new Ride()
             {
                 Id = new Guid(rideReplyModel.RideId),
                 EstimatedTimeOfArrival = rideReplyModel.EstimatedTimeOfArrival.ToDateTime(),
@@ -52,67 +69,13 @@ namespace RequestAPI.Repository
 
                 Stage = (Ride.StageEnum)rideReplyModel.RideStage
             };
-
-            return lyftRide;
-
         }
-
-        public async Task<Ride> GetUberRideRequestIDAsync(Guid ride_id)
+        public async Task<Ride> CreateRideRequestAsync(Guid rideId)
         {
-            var channel = GrpcChannel.ForAddress(uberChannel);
-            var requestsClient = new Requests.RequestsClient(channel);
-            var clientRequested = new GetRideRequestModel()
-            {
-                RideId = ride_id.ToString(),
-            };
-
-            var rideReplyModel = await requestsClient.GetRideRequestAsync(clientRequested);
-            var uberRide = new Ride()
-            {
-                Id = new Guid(rideReplyModel.RideId),
-                EstimatedTimeOfArrival = rideReplyModel.EstimatedTimeOfArrival.ToDateTime(),
-                RiderOnBoard = rideReplyModel.RiderOnBoard,
-
-                Price = new PriceWithCurrency()
-                {
-                    Price = (decimal)rideReplyModel.Price.Price,
-                    Currency = rideReplyModel.Price.Currency
-                },
-
-                Driver = new Driver()
-                {
-                    DisplayName = rideReplyModel.Driver.DisplayName,
-                    LicensePlate = rideReplyModel.Driver.LicensePlate,
-                    CarPicture = rideReplyModel.Driver.CarPicture,
-                    CarDescription = rideReplyModel.Driver.CarDescription,
-                    DriverPronounciation = rideReplyModel.Driver.DriverPronounciation,
-                },
-
-                DriverLocation = new Location()
-                {
-                    Latitude = (decimal)rideReplyModel.DriverLocation.Latitude,
-                    Longitude = (decimal)rideReplyModel.DriverLocation.Longitude,
-                    Height = (decimal)rideReplyModel.DriverLocation.Height,
-                    Planet = rideReplyModel.DriverLocation.Planet,
-                },
-
-                Stage = (Ride.StageEnum)rideReplyModel.RideStage
-            };
-
-            return uberRide;
-        }
-
-        public async Task<Ride> PostUberRideRequestAsync(Guid estimate_id)
-        {
-            var channel = GrpcChannel.ForAddress(uberChannel);
-            var requestsClient = new Requests.RequestsClient(channel);
-            var clientRequested = new PostRideRequestModel()
-            {
-                EstimateId = estimate_id.ToString(),
-            };
-
-            var rideReplyModel = await requestsClient.PostRideRequestAsync(clientRequested);
-            var uberRide = new Ride()
+            var rideReplyModel = await (await getClient(rideId)).PostRideRequestAsync(new PostRideRequestModel() {
+                EstimateId = rideId.ToString(),
+            });
+            return new Ride()
             {
                 Id = new Guid(rideReplyModel.RideId),
                 EstimatedTimeOfArrival = rideReplyModel.EstimatedTimeOfArrival.ToDateTime(),
@@ -143,92 +106,17 @@ namespace RequestAPI.Repository
 
                 Stage = (Ride.StageEnum)rideReplyModel.RideStage,
             };
-
-            return uberRide;
-
         }
-        public async Task<Ride> PostLyftRideRequestAsync(Guid estimate_id)
+        public async Task<PriceWithCurrency> CancelRideRequestAsync(Guid rideId)
         {
-            var channel = GrpcChannel.ForAddress(lyftChannel);
-            var requestsClient = new Requests.RequestsClient(channel);
-            var clientRequested = new PostRideRequestModel()
-            {
-                EstimateId = estimate_id.ToString(),
-            };
-
-            var rideReplyModel = await requestsClient.PostRideRequestAsync(clientRequested);
-            var lyftRide = new Ride()
-            {
-                Id = new Guid(rideReplyModel.RideId),
-                EstimatedTimeOfArrival = rideReplyModel.EstimatedTimeOfArrival.ToDateTime(),
-                RiderOnBoard = rideReplyModel.RiderOnBoard,
-
-                Price = new PriceWithCurrency()
-                {
-                    Price = (decimal)rideReplyModel.Price.Price,
-                    Currency = rideReplyModel.Price.Currency
-                },
-
-                Driver = new Driver()
-                {
-                    DisplayName = rideReplyModel.Driver.DisplayName,
-                    LicensePlate = rideReplyModel.Driver.LicensePlate,
-                    CarPicture = rideReplyModel.Driver.CarPicture,
-                    CarDescription = rideReplyModel.Driver.CarDescription,
-                    DriverPronounciation = rideReplyModel.Driver.DriverPronounciation,
-                },
-
-                DriverLocation = new Location()
-                {
-                    Latitude = (decimal)rideReplyModel.DriverLocation.Latitude,
-                    Longitude = (decimal)rideReplyModel.DriverLocation.Longitude,
-                    Height = (decimal)rideReplyModel.DriverLocation.Height,
-                    Planet = rideReplyModel.DriverLocation.Planet,
-                },
-
-                Stage = (Ride.StageEnum)rideReplyModel.RideStage,
-            };
-
-            return lyftRide;
-        }
-
-   
-        public async Task<PriceWithCurrency> DeleteLyfttRideRequestAsync(Guid ride_id)
-        {
-            var channel = GrpcChannel.ForAddress(lyftChannel);
-            var requestsClient = new Requests.RequestsClient(channel);
-            var clientRequested = new DeleteRideRequestModel()
-            {
-                RideId = ride_id.ToString(),
-            };
-
-            var rideReplyModel = await requestsClient.DeleteRideRequestAsync(clientRequested);
-            var priceModel = new PriceWithCurrency()
+            var rideReplyModel = await (await getClient(rideId)).DeleteRideRequestAsync(new DeleteRideRequestModel() {
+                RideId = rideId.ToString(),
+            });
+            return new PriceWithCurrency()
             {
                 Price = (decimal)rideReplyModel.Price,
                 Currency = rideReplyModel.Currency
             };
-
-            return priceModel;
-        }
-
-        public async Task<PriceWithCurrency> DeleteUberRideRequestAsync(Guid ride_id)
-        {
-            var channel = GrpcChannel.ForAddress(uberChannel);
-            var requestsClient = new Requests.RequestsClient(channel);
-            var clientRequested = new DeleteRideRequestModel()
-            {
-                RideId = ride_id.ToString(),
-            };
-
-            var rideReplyModel = await requestsClient.DeleteRideRequestAsync(clientRequested);
-            var priceModel = new PriceWithCurrency()
-            {
-                Price = (decimal)rideReplyModel.Price,
-                Currency = rideReplyModel.Currency
-            };
-
-            return priceModel;
         }
     }
 }

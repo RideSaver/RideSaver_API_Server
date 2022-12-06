@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: services-api
+    namespace: api
+    labels:
+        type: service
+        service: services
+spec:
+    selector:
+        matchLabels:
+            type: service
+            service: services
+    replicas: 1
+    template:
+        metadata:
+            namespace: api
+            labels:
+                type: service
+                service: services
+        spec:
+            containers:
+                - name: services-api
+                  image: ghcr.io/ridesaver/services_service:latest
+                  ports:
+                      - containerPort: 80
+                      - containerPort: 443
+                - name: services-memcache
+                  image: memcached:1.6-alpine
+                  ports:
+                      - containerPort: 11211
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+    name: services-api
+    namespace: api
+spec:
+    scaleTargetRef:
+        apiVersion: apps/v1
+        kind: Deployment
+        name: services-api
+    minReplicas: 2 # Maintain at least two for redundancy in case on fails
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 50
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: services-api
+    namespace: api
+    labels:
+        type: service
+        service: services
+spec:
+    ports:
+        - port: 80
+          name: http
+        - port: 443
+          name: https
+    selector:
+        type: service
+        service: services
