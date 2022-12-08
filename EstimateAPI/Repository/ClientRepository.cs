@@ -22,7 +22,7 @@ namespace EstimateAPI.Repository
             this._namespace = Namespace;
             _options = options.Value;
             _cts = new CancellationTokenSource();
-            new Thread(async () => 
+            new Thread(async () =>
             {
                 await this.Run(_cts.Token);
             }).Start();
@@ -62,7 +62,7 @@ namespace EstimateAPI.Repository
             Dictionary<string, Estimates.EstimatesClient> Clients = new Dictionary<string, Estimates.EstimatesClient>();
             foreach(var client in list)
             {
-                GrpcChannel channel = GrpcChannel.ForAddress($"{client.Metadata.Name}.client");
+                GrpcChannel channel = GrpcChannel.ForAddress($"https://{client.Metadata.Name}.client:7042");
                 Clients.Add(client.Metadata.Name, new Estimates.EstimatesClient(channel));
             }
             this.Clients = Clients;
