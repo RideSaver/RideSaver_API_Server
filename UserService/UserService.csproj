@@ -19,6 +19,7 @@
 	  <PackageReference Include="RideSaver.DataAccess" Version="0.0.1" />
 	  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 	  <PackageReference Include="RideSaver.Server" Version="0.0.6" />
+    <PackageReference Include="RideSaver.InternalAPI" Version="0.0.7" />
   </ItemGroup>
 
 </Project>

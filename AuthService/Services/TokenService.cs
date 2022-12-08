@@ -28,7 +28,8 @@ namespace AuthService.Services
                 new Claim(JwtRegisteredClaimNames.Email, userInfo.Email),
                 new Claim(JwtRegisteredClaimNames.UniqueName, userInfo.Name),
                 new Claim("UserCreationDate", userInfo.CreatedAt.ToString()),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.NameId, userInfo.UserId),
             };
 
             var token = new JwtSecurityToken(_configuration["Jwt:Issuer"], _configuration["Jwt:Issuer"], claims, DateTime.Now + ExpiryDuration, signingCredentials: credentials);

@@ -103,10 +103,10 @@ namespace UserService.Repository
             else
             {
                 List<RideHistoryModel>? emptyRideHistory = null;
-                return emptyRideHistory; 
+                return emptyRideHistory;
             }
         }
-       
+
         public async Task UpdateUserAsync(string username, PatchUserRequest userInfo)
         {
             var userModel = await _userContext.Users.FindAsync(username);
@@ -122,6 +122,14 @@ namespace UserService.Repository
             }
 
             await SaveAsync();
+        }
+
+        public async Task<string> GetToken(Guid userId, Guid serviceId)
+        {
+            return await (from a in _userContext.Authorizations
+                where a.UserId == userId && a.ServiceId == request.service_id
+                select a
+            ).FirstOrDefaultAsync<AuthorizationModel>();
         }
     }
 }
