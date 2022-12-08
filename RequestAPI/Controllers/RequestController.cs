@@ -18,19 +18,28 @@ namespace RequestAPI.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override async Task<IActionResult> CancelRide([FromRoute(Name = "rideId"), Required] string rideId)
         {
-            return new OkObjectResult(await _requestRepository.CancelRideRequestAsync(new Guid(rideId)));
+            string authToken = string.Empty;
+
+            Request.Headers.TryGetValue("Authorization", out StringValues authToken);
+            return new OkObjectResult(await _requestRepository.CancelRideRequestAsync(new Guid(rideId), authToken));
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override async Task<IActionResult> GetRide([FromRoute(Name = "rideId"), Required] string rideId)
         {
-            return new OkObjectResult(await _requestRepository.GetRideRequestAsync(new Guid(rideId)));
+            string authToken = string.Empty;
+
+            Request.Headers.TryGetValue("Authorization", out StringValues authToken);
+            return new OkObjectResult(await _requestRepository.GetRideRequestAsync(new Guid(rideId), authToken));
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override async Task<IActionResult> RequestRide([FromRoute(Name = "estimateId"), Required] string estimateId)
         {
-            return new OkObjectResult(await _requestRepository.CreateRideRequestAsync(new Guid(estimateId)));
+            string authToken = string.Empty;
+
+            Request.Headers.TryGetValue("Authorization", out StringValues authToken);
+            return new OkObjectResult(await _requestRepository.CreateRideRequestAsync(new Guid(estimateId), authToken));
         }
     }
 }

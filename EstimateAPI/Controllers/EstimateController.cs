@@ -18,13 +18,19 @@ namespace EstimateAPI.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async override Task<IActionResult> GetEstimates([FromQuery(Name = "startPoint"), Required] Location startPoint, [FromQuery(Name = "endPoint"), Required] Location endPoint, [FromQuery(Name = "services")] List<Guid> services, [FromQuery(Name = "seats")] int? seats)
         {
-            return new OkObjectResult(await _estimateRepository.GetRideEstimatesAsync(startPoint, endPoint, services, seats));
+            string authToken = string.Empty;
+
+            Request.Headers.TryGetValue("Authorization", out StringValues authToken);
+            return new OkObjectResult(await _estimateRepository.GetRideEstimatesAsync(startPoint, endPoint, services, seats, authToken));
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async override Task<IActionResult> RefreshEstimates([FromQuery(Name = "ids"), Required] List<Guid> ids)
         {
-            return new OkObjectResult(await _estimateRepository.GetRideEstimatesRefreshAsync(ids));
+            string authToken = string.Empty;
+
+            Request.Headers.TryGetValue("Authorization", out StringValues authToken);
+            return new OkObjectResult(await _estimateRepository.GetRideEstimatesRefreshAsync(ids, authToken));
         }
     }
 }

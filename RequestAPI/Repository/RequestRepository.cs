@@ -14,7 +14,6 @@ namespace RequestAPI.Repository
 
         private async Task<Requests.RequestsClient> getClient(Guid rideId)
         {
-
             var servicesClient = new Services.ServicesClient(GrpcChannel.ForAddress($"services.api"));
             var service = await servicesClient.GetServiceByHashAsync(new GetServiceByHashRequest {
                 Hash = Google.Protobuf.ByteString.CopyFrom(rideId.ToByteArray(), 0, 4)
@@ -34,10 +33,12 @@ namespace RequestAPI.Repository
             }
             return this.Clients.Clients[service.Name];
         }
-        public async Task<Ride> GetRideRequestAsync(Guid rideId) {
+        public async Task<Ride> GetRideRequestAsync(Guid rideId, string jwtToken) {
+            var headers = new Metadata();
+            headers.Add("Authorization", jwtToken);
             var rideReplyModel = await (await getClient(rideId)).GetRideRequestAsync(new GetRideRequestModel() {
                 RideId = rideId.ToString(),
-            });
+            }, headers);
             return new Ride()
             {
                 Id = new Guid(rideReplyModel.RideId),
@@ -70,11 +71,13 @@ namespace RequestAPI.Repository
                 Stage = (Ride.StageEnum)rideReplyModel.RideStage
             };
         }
-        public async Task<Ride> CreateRideRequestAsync(Guid rideId)
+        public async Task<Ride> CreateRideRequestAsync(Guid rideId, string jwtToken)
         {
+            var headers = new Metadata();
+            headers.Add("Authorization", jwtToken);
             var rideReplyModel = await (await getClient(rideId)).PostRideRequestAsync(new PostRideRequestModel() {
                 EstimateId = rideId.ToString(),
-            });
+            }, headers);
             return new Ride()
             {
                 Id = new Guid(rideReplyModel.RideId),
@@ -107,11 +110,13 @@ namespace RequestAPI.Repository
                 Stage = (Ride.StageEnum)rideReplyModel.RideStage,
             };
         }
-        public async Task<PriceWithCurrency> CancelRideRequestAsync(Guid rideId)
+        public async Task<PriceWithCurrency> CancelRideRequestAsync(Guid rideId, string jwtToken)
         {
+            var headers = new Metadata();
+            headers.Add("Authorization", jwtToken);
             var rideReplyModel = await (await getClient(rideId)).DeleteRideRequestAsync(new DeleteRideRequestModel() {
                 RideId = rideId.ToString(),
-            });
+            }, headers);
             return new PriceWithCurrency()
             {
                 Price = (decimal)rideReplyModel.Price,

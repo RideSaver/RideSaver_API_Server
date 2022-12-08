@@ -1,3 +1,7 @@
+/**
+ * \author John Hanna
+ * \brief Authentication HTTP(S) Controller Class
+ */
 using AuthService.Data;
 using AuthService.Models;
 using AuthService.Services;
@@ -25,6 +29,42 @@ namespace AuthService.Controllers
             _configuration = configuration;
         }
 
+        /// @startuml "State Diagram"
+        /// start
+        /// :Username<
+        /// :Password<
+        /// :Get User Information form Database with username;
+        /// if (User Exists?) then (no)
+        ///     :return NotFound("ERROR: user not found")>
+        ///     stop
+        /// endif
+        /// -> yes;
+        /// :Check Password matches stored password;
+        /// if (Password is same as stored password?) then (no)
+        ///     :return BadRequest("ERROR: Failed to authenticate user")>
+        ///     stop
+        /// endif
+        /// -> yes;
+        /// :return JWT token with user information.>
+        /// stop
+        /// @enduml
+        ///
+        /// @startuml "Sequence Diagram"
+        /// participant Caller
+        /// participant "Authorization Service" as AS
+        /// database AuthDB
+        /// Caller -> AS ++: Login
+        /// AS -> AuthDB ++: Get User by Username
+        /// AuthDB -> AuthDB: Search Users
+        /// return User Information
+        /// alt Correct Username / Password
+        ///     AS -[dashed]-> Caller: JWT Token
+        /// else Incorrect Username
+        ///     AS -[dashed]-> Caller: NotFound("ERROR: user not found")
+        /// else Incorrect Password
+        ///     return BadRequest("ERROR: Failed to authenticate user")
+        /// end
+        /// @enduml
         [HttpPost]
         [Route("/api/v1/auth/login")]
         [Consumes("application/json")]

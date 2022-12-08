@@ -14,11 +14,11 @@ namespace EstimateAPI.Repository
             this.Clients = clientRepo;
         }
 
-        public async Task<List<Estimate>> GetRideEstimatesAsync(Location startPoint, Location endPoint, List<Guid> services, int? seats)
+        public async Task<List<Estimate>> GetRideEstimatesAsync(Location startPoint, Location endPoint, List<Guid> services, int? seats, string jwtToken)
         {
             IEnumerable<Task<List<Estimate>>> estimateTasksQuery =
                 from client in Clients.Clients
-                select GetEstimatesAsync(client.Value, startPoint, endPoint, services, seats);
+                select GetEstimatesAsync(client.Value, startPoint, endPoint, services, seats, jwtToken);
             List<Task<List<Estimate>>> estimateTasks = estimateTasksQuery.ToList();
             List<Estimate> estimates = new List<Estimate>();
 
@@ -30,7 +30,7 @@ namespace EstimateAPI.Repository
             }
             return estimates;
         }
-        public async Task<List<Estimate>> GetEstimatesAsync(Estimates.EstimatesClient client, Location startPoint, Location endPoint, List<Guid> services, int? seats) // TBA
+        public async Task<List<Estimate>> GetEstimatesAsync(Estimates.EstimatesClient client, Location startPoint, Location endPoint, List<Guid> services, int? seats, string jwtToken)
         {
             var estimatesList = new List<Estimate>();
             var clientRequested = new GetEstimatesRequest()
@@ -55,7 +55,9 @@ namespace EstimateAPI.Repository
                 Seats = (int)(seats > 0 ? seats : 0),
             };
 
-            var estimatesReplyModel = client.GetEstimates(clientRequested);
+            var headers = new Metadata();
+            headers.Add("Authorization", jwtToken);
+            var estimatesReplyModel = client.GetEstimates(clientRequested, headers);
             await foreach(var estimatesReply in estimatesReplyModel.ResponseStream.ReadAllAsync())
             {
                 var estimate = new Estimate()
@@ -69,7 +71,7 @@ namespace EstimateAPI.Repository
                     },
 
                     Distance = estimatesReply.Distance,
-                    Waypoints = ConvertLocationModelToLocation(estimatesReply.WayPoints), 
+                    Waypoints = ConvertLocationModelToLocation(estimatesReply.WayPoints),
                     DisplayName = estimatesReply.DisplayName,
                     Seats = estimatesReply.Seats,
                     RequestURL = estimatesReply.RequestUrl,
@@ -82,17 +84,17 @@ namespace EstimateAPI.Repository
             return estimatesList;
         }
 
-        public async Task<List<Estimate>> GetRideEstimatesRefreshAsync(List<Guid> ids) // TBA
+        public async Task<List<Estimate>> GetRideEstimatesRefreshAsync(List<Guid> ids, string jwtToken)
         {
             List<Estimate> estimates = new List<Estimate>();
             List<Task<Estimate>> rideEstimatesRefreshTasks = new List<Task<Estimate>>();
-            var servicesClient = new Services.ServicesClient(GrpcChannel.ForAddress($"services.api"));
+            var servicesClient = new Services.ServicesClient(GrpcChannel.ForAddress($"https://services.api"));
             foreach(var id in ids)
             {
                 var service = await servicesClient.GetServiceByHashAsync(new GetServiceByHashRequest {
                     Hash = Google.Protobuf.ByteString.CopyFrom(id.ToByteArray(), 0, 4)
                 });
-                rideEstimatesRefreshTasks.Add(GetRideEstimateRefreshAsync(Clients.Clients[service.ClientId], id));
+                rideEstimatesRefreshTasks.Add(GetRideEstimateRefreshAsync(Clients.Clients[service.ClientId], id, jwtToken));
             }
 
             while (rideEstimatesRefreshTasks.Any())
@@ -105,17 +107,19 @@ namespace EstimateAPI.Repository
             return estimates;
         }
 
-        public async Task<Estimate> GetRideEstimateRefreshAsync(Estimates.EstimatesClient client, Guid estimate_id)
+        public async Task<Estimate> GetRideEstimateRefreshAsync(Estimates.EstimatesClient client, Guid estimate_id, string jwtToken)
         {
             var clientRequested = new GetEstimateRefreshRequest()
             {
                 EstimateId = estimate_id.ToString()
             };
 
-            var estimateRefreshReplyModel = await client.GetEstimateRefreshAsync(clientRequested);
+            var headers = new Metadata();
+            headers.Add("Authorization", jwtToken);
+            var estimateRefreshReplyModel = await client.GetEstimateRefreshAsync(clientRequested, headers);
             var estimate = new Estimate()
             {
-                Id = new Guid(estimateRefreshReplyModel.EstimateId), // TBA: IMPLEMENT EXCEPTION HANDLING
+                Id = new Guid(estimateRefreshReplyModel.EstimateId),
                 InvalidTime = estimateRefreshReplyModel.CreatedTime.ToDateTime(),
 
                 Price = new PriceWithCurrency()
@@ -151,7 +155,7 @@ namespace EstimateAPI.Repository
                 };
 
                 locationList.Add(location);
-;            }
+            }
             return locationList;
         }
     }
