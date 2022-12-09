@@ -98,4 +98,4 @@ jobs:
               env:
                 KUBE_CONFIG_DATA: ${{ secrets.KUBERNETES_SECRET }}
               with:
-                args: apply kubernetes/**/*.yaml
+                args: apply -f kubernetes
