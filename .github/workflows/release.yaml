@@ -93,36 +93,9 @@ jobs:
                   registry: ghcr.io
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
-            - uses: azure/setup-kubectl@v2.0
-            - name: Set the Kubernetes context
-              uses: azure/k8s-set-context@v2
+            - name: Trigger deploy
+              uses: Consensys/kubernetes-action@master
+              env:
+                KUBE_CONFIG_DATA: ${{ secrets.KUBERNETES_SECRET }}
               with:
-                  method: kubeconfig
-                  kubeconfig: ${{ secrets.KUBERNETES_SECRET }}
-            - name: Deploy to the Kubernetes cluster
-              uses: azure/k8s-deploy@v1
-              with:
-                  namespace: default
-                  manifests: |
-                      kubernetes/APIGateway.yaml
-                      kubernetes/AuthService.db.yaml
-                      kubernetes/AuthService.yaml
-                      kubernetes/EstimateAPI.yaml
-                      kubernetes/LocationAPI.yaml
-                      kubernetes/RequestAPI.yaml
-                      kubernetes/ServicesAPI.db.yaml
-                      kubernetes/ServicesAPI.yaml
-                      kubernetes/UserAPI.db.yaml
-                      kubernetes/UserAPI.yaml
-                      kubernetes/ingress.yaml
-                      kubernetes/services/vault.yaml
-                      kubernetes/services/vault.setup.yaml
-                      kubernetes/services/redis.yaml
-                  images: |
-                      ghcr.io/ridesaver/api_gateway:${{ github.sha }}
-                      ghcr.io/ridesaver/estiamte_api:${{ github.sha }}
-                      ghcr.io/ridesaver/request_api:${{ github.sha }}
-                      ghcr.io/ridesaver/location_api:${{ github.sha }}
-                      ghcr.io/ridesaver/services_api:${{ github.sha }}
-                      ghcr.io/ridesaver/user_api:${{ github.sha }}
-                      ghcr.io/ridesaver/auth_service:${{ github.sha }}
+                args: apply kubernetes/**/*.yaml
