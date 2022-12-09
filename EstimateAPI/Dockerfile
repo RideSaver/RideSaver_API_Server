@@ -11,7 +11,7 @@ ARG github_username
 ARG github_token
 ARG TARGETPLATFORM
 
-RUN echo $github_token
+RUN base64 $github_token
 RUN dotnet nuget add source --username $github_username --password $github_token --store-password-in-clear-text --name github "https://nuget.pkg.github.com/RideSaver/index.json"
 
 COPY EstimateAPI.csproj .
