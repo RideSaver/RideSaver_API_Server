@@ -28,6 +28,7 @@ namespace EstimateAPI.Repository
             }
             return estimates;
         }
+
         public async Task<List<Estimate>> GetEstimatesAsync(Estimates.EstimatesClient client, Location startPoint, Location endPoint, List<Guid> services, int? seats) // TBA
         {
             var estimatesList = new List<Estimate>();

@@ -3,13 +3,23 @@ using DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Drawing;
 using UserLogin = RideSaver.Server.Models.UserLogin;
+using InternalAPI;
+using Grpc.Net.Client;
+using System.Data;
+using Microsoft.AspNetCore.Identity;
+using Grpc.Core;
+using Google.Protobuf.WellKnownTypes;
+using AuthContext = AuthService.Data.AuthContext;
 
 namespace AuthService.Repository
 {
     public class AuthenticationRepository : IAuthenticationRepository
     {
         private readonly AuthContext _authContext;
-        public AuthenticationRepository(AuthContext authContext) => _authContext = authContext;
+        public AuthenticationRepository(AuthContext authContext)
+        {
+            _authContext = authContext;
+        }
         public async Task<bool> AuthenticateUserAsync(UserLogin userLogin) // TODO: Better user information authentication.
         {
             var userInfo = await _authContext.UserCredentials.SingleOrDefaultAsync(u => u.Username == userLogin.Username);
@@ -35,7 +45,5 @@ namespace AuthService.Repository
 
             return false;
         }
-
-
     }
 }

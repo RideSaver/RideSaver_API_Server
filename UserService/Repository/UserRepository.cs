@@ -11,7 +11,12 @@ namespace UserService.Repository
     public class UserRepository : IUserRepository
     {
         private readonly UserContext _userContext;
-        public UserRepository(UserContext userContext) => _userContext = userContext;
+        private readonly UserService _userService;
+        public UserRepository(UserContext userContext, UserService userService)
+        {
+            _userContext = userContext;
+            _userService = userService;
+        }
         public async Task SaveAsync() => await _userContext.SaveChangesAsync();
         public List<UserModel> GetUserModels() => _userContext.Users.ToList();
         public async Task<UserModel> GetUserModelAsync(string username) => await _userContext.Users.FindAsync(username);
@@ -71,6 +76,7 @@ namespace UserService.Repository
                 };
 
                 await _userContext.AddAsync(user);
+                await _userService.PostIdentityToAuthService(user); // Sends the new model to the auth-service to be added to the DB for authentication
                 await SaveAsync();
             }
         }

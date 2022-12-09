@@ -9,7 +9,7 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using System.Web.Http.Filters;
+using InternalAPI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +25,12 @@ builder.Services.AddDbContext<AuthContext>(options =>
         });
 });
 
+builder.Services.AddGrpcClient<Authentication.AuthenticationClient>(o =>
+{
+    o.Address = new Uri($"https://user.api");
+});
+
+builder.Services.AddGrpc();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
 

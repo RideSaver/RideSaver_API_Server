@@ -19,7 +19,7 @@ namespace AuthService.Controllers
 
         public AuthenticationController(ITokenService tokenService, IAuthenticationRepository authenticationRepository)
         {
-            _authenticationRepository= authenticationRepository;
+            _authenticationRepository = authenticationRepository;
             _tokenService = tokenService;
         }
 

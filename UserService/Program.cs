@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using UserService.Data;
 using UserService.Repository;
+using InternalAPI;
 
 namespace UserService
 {
@@ -54,6 +55,13 @@ namespace UserService
                 };
             });
 
+
+            builder.Services.AddGrpcClient<Authentication.AuthenticationClient>(o =>
+            {
+                o.Address = new Uri($"https://authentication.api");
+            });
+
+            builder.Services.AddGrpc();
             builder.Services.AddTransient<IUserRepository, UserRepository>();
 
             var app = builder.Build();

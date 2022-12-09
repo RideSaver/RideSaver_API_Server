@@ -1,4 +1,4 @@
-﻿using DataAccess.Models;
+using DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace UserService.Data
@@ -22,6 +22,10 @@ namespace UserService.Data
 
             modelBuilder.Entity<List<Guid>>()
              .HasNoKey();
+
+            modelBuilder.Entity<ProviderModel>()
+                .HasMany(c => c.Authorizations)
+                .WithOne(e => e.ProviderModel);
         }
 
     }

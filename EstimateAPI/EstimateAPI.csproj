@@ -15,7 +15,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.11" />
-    <PackageReference Include="RideSaver.InternalAPI" Version="0.0.7" />
+    <PackageReference Include="RideSaver.InternalAPI" Version="0.0.8" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 	  <PackageReference Include="RideSaver.Server" Version="0.0.9" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />

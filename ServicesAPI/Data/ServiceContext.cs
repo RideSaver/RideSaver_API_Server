@@ -15,7 +15,6 @@ namespace ServicesAPI.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) 
         {
-
             modelBuilder.Entity<ProviderModel>()
                  .Property(t => t.Id)
                  .IsRequired()
@@ -25,6 +24,10 @@ namespace ServicesAPI.Data
 
             modelBuilder.Entity<List<Guid>>()
                 .HasNoKey();
+
+            modelBuilder.Entity<ProviderModel>()
+              .HasMany(c => c.Authorizations)
+              .WithOne(e => e.ProviderModel);
         }
 
         public virtual ProviderModel GetProviderForEstimate(string estimateId)

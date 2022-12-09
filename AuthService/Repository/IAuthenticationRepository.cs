@@ -8,6 +8,5 @@ namespace AuthService.Repository
         Task<bool> AuthenticateUserAsync(UserLogin userLogin);
         Task<bool> ValidateUserAsync(string userName);
         Task<UserModel> GetUserAsync(string userName);
-       
     }
 }
