@@ -73,11 +73,11 @@ namespace UserService
                 app.UseSwaggerUI();
             }
 
-            using (var scope = app.Services.CreateScope())
+            /*using (var scope = app.Services.CreateScope())
             {
                 var dataContext = scope.ServiceProvider.GetRequiredService<UserContext>();
                 dataContext.Database.Migrate();
-            }
+            }*/
 
             app.UseHttpsRedirection();
             app.UseAuthorization();

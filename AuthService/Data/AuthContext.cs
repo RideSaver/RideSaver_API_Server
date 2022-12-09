@@ -1,5 +1,6 @@
 using DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Options;
 
 namespace AuthService.Data
@@ -24,6 +25,8 @@ namespace AuthService.Data
             modelBuilder.Entity<ProviderModel>()
            .HasMany(c => c.Authorizations)
            .WithOne(e => e.ProviderModel);
+
+            modelBuilder.Entity<ProviderModel>().Ignore(c => c.Authorizations); 
         }
     }
 }

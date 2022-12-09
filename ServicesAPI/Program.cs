@@ -58,11 +58,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-using (var scope = app.Services.CreateScope())
+/*using (var scope = app.Services.CreateScope())
 {
     var dataContext = scope.ServiceProvider.GetRequiredService<ServiceContext>();
     dataContext.Database.Migrate();
-}
+}*/
 
 app.UseHttpsRedirection();
 
