@@ -19,7 +19,7 @@ RUN dotnet restore
 
 # Copy all files
 COPY . .
-RUN dotnet publish -p:PublishProfile=PublishTrimmed --sc --os="linux-musl" -o publish --arch=$TARGETPLATFORM
+RUN dotnet publish -p:PublishProfile=PublishTrimmed --sc --os="linux-musl" -o publish
 
 FROM --platform= alpine:3.16 AS runtime
 # Add labels to add information to the image
