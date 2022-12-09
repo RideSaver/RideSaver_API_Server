@@ -1,5 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/dotnet:0-6.0 AS builder
-
+FROM --platform=amd64 mcr.microsoft.com/devcontainers/dotnet:0-6.0 AS builder
 
 # Install tools
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
@@ -17,9 +16,9 @@ RUN dotnet restore
 
 # Copy all files
 COPY . .
-RUN dotnet publish -p:PublishProfile=PublishTrimmed --sc --os="linux-musl" -o publish
+RUN dotnet publish -p:PublishProfile=PublishTrimmed --sc --os="linux-musl" -o publish --arch=$TARGETPLATFORM
 
-FROM alpine:3.16 AS runtime
+FROM --platform=$TARGETPLATFORM alpine:3.16 AS runtime
 # Add labels to add information to the image
 LABEL org.opencontainers.image.source=https://github.com/RideSaver/RideSaver_API_Server
 LABEL org.opencontainers.image.description="Estimate API Service for RideSaver"
