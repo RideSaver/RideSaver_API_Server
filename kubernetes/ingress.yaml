@@ -15,14 +15,14 @@ spec:
                     pathType: Prefix
                     backend:
                         service:
-                            name: api-gateway
+                            name: api-gateway.server
                             port:
                                 number: 443
                   - path: /
                     pathType: Prefix
                     backend:
                         service:
-                            name: ui-server
+                            name: ui-server.ui
                             port:
                                 number: 443
                   - path: /.well-known/acme-challenge/
