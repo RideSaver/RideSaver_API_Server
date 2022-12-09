@@ -34,9 +34,6 @@ spec:
                 - name: authservice-mssql
                   image: mcr.microsoft.com/mssql/server:2019-latest
                   resources:
-                      requests:
-                          memory: "1.5G"
-                          cpu: "250m"
                       limits:
                           memory: "2G"
                           cpu: "1G"
