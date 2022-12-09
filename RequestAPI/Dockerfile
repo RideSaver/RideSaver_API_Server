@@ -2,6 +2,7 @@ FROM --platform=amd64 mcr.microsoft.com/devcontainers/dotnet:0-6.0 AS builder
 
 ARG github_username
 ARG github_token
+ARG TARGETPLATFORM
 
 # Install tools
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \

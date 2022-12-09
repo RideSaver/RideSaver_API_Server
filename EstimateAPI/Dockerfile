@@ -9,6 +9,7 @@ WORKDIR /server
 
 ARG github_username
 ARG github_token
+ARG TARGETPLATFORM
 RUN dotnet nuget add source --username $github_username -p $github_token --store-password-in-clear-text --name github "https://nuget.pkg.github.com/RideSaver/index.json"
 
 COPY EstimateAPI.csproj .
