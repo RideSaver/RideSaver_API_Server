@@ -93,6 +93,12 @@ jobs:
                   registry: ghcr.io
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
+            - name: Delete old registry secret
+              uses: Consensys/kubernetes-action@master
+              env:
+                KUBE_CONFIG_DATA: ${{ secrets.KUBERNETES_SECRET }}
+              with:
+                args: delete secret ridesaver-registry-credentials --ignore-not-found
             - name: Add registry secret
               uses: Consensys/kubernetes-action@master
               env:
