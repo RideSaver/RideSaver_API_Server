@@ -22,6 +22,8 @@ spec:
                   ports:
                       - containerPort: 80
                       - containerPort: 443
+            imagePullSecrets:
+                - name: ridesaver-registry-credentials
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler

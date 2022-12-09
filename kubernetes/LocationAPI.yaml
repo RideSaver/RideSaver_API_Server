@@ -29,6 +29,8 @@ spec:
                   image: memcached:1.6-alpine
                   ports:
                       - containerPort: 11211
+            imagePullSecrets:
+                - name: ridesaver-registry-credentials
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler

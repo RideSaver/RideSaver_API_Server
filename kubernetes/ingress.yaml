@@ -48,30 +48,31 @@ metadata:
         app: letsencrypt
 spec:
     schedule: "0 0 1 */2 *" # every second month on the first at midnight
-    spec:
-        template:
-            metadata:
-                name: letsencrypt
-                labels:
-                    app: letsencrypt
-            spec:
-                containers:
-                    # Bash script that starts an http server and launches certbot
-                    # Fork of github.com/sjenning/kube-nginx-letsencrypt
-                     - image: quay.io/hiphipjorge/kube-nginx-letsencrypt:latest
-                       name: letsencrypt
-                       imagePullPolicy: Always
-                       ports:
-                           - name: letsencrypt
-                             containerPort: 80
-                       env:
-                           - name: DOMAINS
-                             value: ridesaver.online
-                           - name: EMAIL
-                             value: eschabl@calstatela.edu
-                           - name: SECRET
-                             value: letsencrypt-certs
-                restartPolicy: Never
+    jobTemplate:
+        spec:
+            template:
+                metadata:
+                    name: letsencrypt
+                    labels:
+                        app: letsencrypt
+                spec:
+                    containers:
+                        # Bash script that starts an http server and launches certbot
+                        # Fork of github.com/sjenning/kube-nginx-letsencrypt
+                        - image: quay.io/hiphipjorge/kube-nginx-letsencrypt:latest
+                          name: letsencrypt
+                          imagePullPolicy: Always
+                          ports:
+                            - name: letsencrypt
+                              containerPort: 80
+                          env:
+                            - name: DOMAINS
+                              value: ridesaver.online
+                            - name: EMAIL
+                              value: eschabl@calstatela.edu
+                            - name: SECRET
+                              value: letsencrypt-certs
+                    restartPolicy: Never
 ---
 apiVersion: v1
 kind: Service
