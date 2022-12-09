@@ -3,7 +3,7 @@ target "docker-metadata-action" {}
 target "api_gateway" {
   inherits = ["docker-metadata-action"]
   context = "APIGateway"
-  dockerfile = "APIGateway/Dockerfile"
+  dockerfile = "Dockerfile"
   platforms = [
     "linux/amd64",
     "linux/arm/v6",
@@ -16,7 +16,7 @@ target "api_gateway" {
 target "estimate_api" {
   inherits = ["docker-metadata-action"]
   context = "EstimateAPI"
-  dockerfile = "EstimateAPI/Dockerfile"
+  dockerfile = "Dockerfile"
   platforms = [
     "linux/amd64",
     "linux/arm/v6",
@@ -29,7 +29,7 @@ target "estimate_api" {
 target "location_api" {
   inherits = ["docker-metadata-action"]
   context = "LocationAPI"
-  dockerfile = "LocationAPI/Dockerfile"
+  dockerfile = "Dockerfile"
   platforms = [
     "linux/amd64",
     "linux/arm/v6",
@@ -42,7 +42,7 @@ target "location_api" {
 target "request_api" {
   inherits = ["docker-metadata-action"]
   context = "RequestAPI"
-  dockerfile = "RequestAPI/Dockerfile"
+  dockerfile = "Dockerfile"
   platforms = [
     "linux/amd64",
     "linux/arm/v6",
@@ -55,7 +55,7 @@ target "request_api" {
 target "services_api" {
   inherits = ["docker-metadata-action"]
   context = "ServicesAPI"
-  dockerfile = "ServicesAPI/Dockerfile"
+  dockerfile = "Dockerfile"
   platforms = [
     "linux/amd64",
     "linux/arm/v6",
@@ -68,7 +68,7 @@ target "services_api" {
 target "user_api" {
   inherits = ["docker-metadata-action"]
   context = "UserAPI"
-  dockerfile = "UserAPI/Dockerfile"
+  dockerfile = "Dockerfile"
   platforms = [
     "linux/amd64",
     "linux/arm/v6",
@@ -81,7 +81,7 @@ target "user_api" {
 target "auth_service" {
   inherits = ["docker-metadata-action"]
   context = "AuthService"
-  dockerfile = "AuthService/Dockerfile"
+  dockerfile = "Dockerfile"
   platforms = [
     "linux/amd64",
     "linux/arm/v6",
