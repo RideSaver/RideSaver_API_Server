@@ -76,14 +76,7 @@ jobs:
                   set: |
                       *.args.github_username=${{ github.actor }}
                       *.args.github_token=${{ secrets.GITHUB_TOKEN }}
-            -
-                name: Build and push
-                uses: docker/build-push-action@v3
-                with:
-                    context: .
-                    push: ${{ github.event_name != 'pull_request' }}
-                    tags: ${{ steps.meta.outputs.tags }}
-                    labels: ${{ steps.meta.outputs.labels }}
+                  push: true
 
     deployment:
         name: Deploy
