@@ -99,14 +99,20 @@ jobs:
               with:
                   namespace: default
                   manifests: |
-                      kubernetes/redis.yaml
                       kubernetes/APIGateway.yaml
+                      kubernetes/AuthService.db.yaml
+                      kubernetes/AuthService.yaml
                       kubernetes/EstimateAPI.yaml
                       kubernetes/LocationAPI.yaml
                       kubernetes/RequestAPI.yaml
+                      kubernetes/ServicesAPI.db.yaml
                       kubernetes/ServicesAPI.yaml
+                      kubernetes/UserAPI.db.yaml
                       kubernetes/UserAPI.yaml
-                      kubernetes/AuthService.yaml
+                      kubernetes/ingress.yaml
+                      kubernetes/services/vault.yaml
+                      kubernetes/services/vault.setup.yaml
+                      kubernetes/services/redis.yam
                   images: |
                       ghcr.io/ridesaver/api_gateway:${{ github.sha }}
                       ghcr.io/ridesaver/estiamte_api:${{ github.sha }}
