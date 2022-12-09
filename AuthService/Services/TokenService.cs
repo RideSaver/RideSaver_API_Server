@@ -1,4 +1,4 @@
-﻿using DataAccess.Models;
+using DataAccess.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -8,32 +8,68 @@ namespace AuthService.Services
 {
     public class TokenService : ITokenService
     {
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration _configuration; // appsettings.json configuration
+        private readonly TimeSpan ExpiryDuration = new(2, 0, 0); // 2 hours expiry-duration
+        private readonly ILogger _logger;
 
-        private readonly TimeSpan ExpiryDuration = new TimeSpan(2, 0, 0);
-
-        public TokenService(IConfiguration configuration)
+        public TokenService(IConfiguration configuration, ILogger<TokenService> logger)
         {
             _configuration = configuration;
+            _logger = logger;
         }
 
         public string GenerateToken(UserModel userInfo)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])); // Generates the key based on the appsettings JSON file secret
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256); // generates the creds by hashing the key
-
-            var claims = new List<Claim> // creates a claim to add the user model properties to the token
+            var Claims = new ClaimsIdentity(new Claim[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, userInfo.Username),
-                new Claim(JwtRegisteredClaimNames.Email, userInfo.Email),
-                new Claim(JwtRegisteredClaimNames.UniqueName, userInfo.Name),
-                new Claim("UserCreationDate", userInfo.CreatedAt.ToString()),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(ClaimTypes.Name, value: userInfo.Username!.ToString()),
+                new Claim(ClaimTypes.Email, value: userInfo.Email!.ToString()),
+                new Claim(ClaimTypes.NameIdentifier , value: userInfo.Id.ToString()) // GUID 
+            });
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var encryptionKey = _configuration["Jwt:Key"];
+            var key = Encoding.UTF8.GetBytes(encryptionKey!); 
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Issuer = _configuration["Jwt:Issuer"],
+                Subject = Claims,
+                Expires = DateTime.Now + ExpiryDuration,
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
-            var token = new JwtSecurityToken(_configuration["Jwt:Issuer"], _configuration["Jwt:Issuer"], claims, DateTime.Now + ExpiryDuration, signingCredentials: credentials);
-            var encodedToken = new JwtSecurityTokenHandler().WriteToken(token);
-            return encodedToken;
+            var token = tokenHandler.CreateJwtSecurityToken(tokenDescriptor);
+            var tokenString = tokenHandler.WriteToken(token);
+
+            return tokenString;
+        }
+
+        public ClaimsPrincipal GetPrincipal(string token)
+        {
+            try
+            {
+                var tokenHandler = new JwtSecurityTokenHandler();
+                if (tokenHandler.ReadToken(token) is not JwtSecurityToken jwtToken) return null;
+
+                var symmetricKey = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!);
+                var validationParameters = new TokenValidationParameters()
+                {
+                    RequireExpirationTime = true,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    IssuerSigningKey = new SymmetricSecurityKey(symmetricKey)
+                };
+
+                var principal = tokenHandler.ValidateToken(token, validationParameters, out SecurityToken securityToken);
+
+                return principal;
+            }
+
+            catch(Exception ex)
+            {
+                _logger.LogInformation("[TokenService::GetPrincipal::Exception] " + ex.Message);
+                return null;
+            }
         }
     }
 }

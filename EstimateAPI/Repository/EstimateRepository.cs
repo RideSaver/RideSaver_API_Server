@@ -8,16 +8,14 @@ namespace EstimateAPI.Repository
 {
     public class EstimateRepository : IEstimateRepository
     {
-        public IClientRepository Clients { get; private set; }
+        public readonly IClientRepository _clientRepository;
 
-        EstimateRepository(IClientRepository clientRepo) {
-            this.Clients = clientRepo;
-        }
+        public EstimateRepository(IClientRepository clientRepository) => _clientRepository = clientRepository;
 
         public async Task<List<Estimate>> GetRideEstimatesAsync(Location startPoint, Location endPoint, List<Guid> services, int? seats)
         {
             IEnumerable<Task<List<Estimate>>> estimateTasksQuery =
-                from client in Clients.Clients
+                from client in _clientRepository.Clients
                 select GetEstimatesAsync(client.Value, startPoint, endPoint, services, seats);
             List<Task<List<Estimate>>> estimateTasks = estimateTasksQuery.ToList();
             List<Estimate> estimates = new List<Estimate>();
@@ -92,7 +90,7 @@ namespace EstimateAPI.Repository
                 var service = await servicesClient.GetServiceByHashAsync(new GetServiceByHashRequest {
                     Hash = Google.Protobuf.ByteString.CopyFrom(id.ToByteArray(), 0, 4)
                 });
-                rideEstimatesRefreshTasks.Add(GetRideEstimateRefreshAsync(Clients.Clients[service.ClientId], id));
+                rideEstimatesRefreshTasks.Add(GetRideEstimateRefreshAsync(_clientRepository.Clients[service.ClientId], id));
             }
 
             while (rideEstimatesRefreshTasks.Any())

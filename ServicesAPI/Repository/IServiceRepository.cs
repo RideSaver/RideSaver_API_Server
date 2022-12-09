@@ -1,10 +1,11 @@
 using RideSaver.Server.Models;
+using ServiceProvider = RideSaver.Server.Models.ServiceProvider;
 
 namespace ServicesAPI.Repository
 {
     public interface IServiceRepository
     {
-        Task<IEnumerable<RideService>> GetAvailableServices();
-        RideService GetService(Guid service_id);
+        Task<List<RideService>> GetAvailableServices();
+        Task<List<ServiceProvider>> GetAvailableProviders();
     }
 }

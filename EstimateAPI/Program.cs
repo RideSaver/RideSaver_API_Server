@@ -12,8 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.Configure<ClientDiscoveryOptions>(
-    builder.Configuration.GetSection(ClientDiscoveryOptions.Position));
+builder.Services.Configure<ClientDiscoveryOptions>(builder.Configuration.GetSection(ClientDiscoveryOptions.Position));
 
 builder.Services.AddSingleton<IClientRepository, ClientRepository>();
 builder.Services.AddTransient<IEstimateRepository, EstimateRepository>();
@@ -36,12 +35,10 @@ builder.Services.AddAuthentication(options =>
                     ValidateAudience = false,
                     ValidateIssuer = false,
                     ValidateLifetime = false,
-                    RequireExpirationTime = false,
+                    RequireExpirationTime = true,
                     ClockSkew = TimeSpan.Zero
-
                 };
             });
-
 
 var app = builder.Build();
 

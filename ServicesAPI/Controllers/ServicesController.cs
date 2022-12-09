@@ -17,14 +17,14 @@ namespace ServicesAPI.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override async Task<IActionResult> GetProviders()
         {
-            var rideServices = await _serviceRepository.GetAvailableServices();
+            var rideServices = await _serviceRepository.GetAvailableProviders();
             return new OkObjectResult(rideServices);
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override async Task<IActionResult> GetServices([FromQuery(Name = "location")] Location location)
         {
-            var rideServices = await _serviceRepository.GetAvailableServices();
+            var rideServices = await _serviceRepository.GetAvailableProviders();
             return new OkObjectResult(rideServices);
         }
     }

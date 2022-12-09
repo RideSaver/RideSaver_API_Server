@@ -6,11 +6,9 @@ namespace RequestAPI.Repository
 {
     public class RequestRepository : IRequestRepository
     {
-        public IClientRepository Clients { get; private set; }
+        public readonly IClientRepository _clientRepository;
 
-        RequestRepository(IClientRepository clientRepo) {
-            this.Clients = clientRepo;
-        }
+        public RequestRepository(IClientRepository clientRepository) => _clientRepository = clientRepository;
 
         private async Task<Requests.RequestsClient> getClient(Guid rideId)
         {
@@ -23,16 +21,16 @@ namespace RequestAPI.Repository
             {
                 throw new NotImplementedException();
             }
-            if(!this.Clients.Clients.ContainsKey(service.Name))
+            if(!this._clientRepository.Clients.ContainsKey(service.Name))
             {
                 // Refresh cache, in case the service came up during the 10s cache window
-                await this.Clients.RefreshClients();
-                if(!this.Clients.Clients.ContainsKey(service.Name))
+                await this._clientRepository.RefreshClients();
+                if(!this._clientRepository.Clients.ContainsKey(service.Name))
                 {
                     throw new NotImplementedException(); // Should never happen, SQL has a service that does not exist in K8s
                 }
             }
-            return this.Clients.Clients[service.Name];
+            return this._clientRepository.Clients[service.Name];
         }
         public async Task<Ride> GetRideRequestAsync(Guid rideId) {
             var rideReplyModel = await (await getClient(rideId)).GetRideRequestAsync(new GetRideRequestModel() {

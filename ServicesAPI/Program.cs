@@ -40,7 +40,7 @@ builder.Services.AddAuthentication(options =>
                     ValidateAudience = false,
                     ValidateIssuer = false,
                     ValidateLifetime = false,
-                    RequireExpirationTime = false,
+                    RequireExpirationTime = true,
                     ClockSkew = TimeSpan.Zero
 
             };
@@ -56,6 +56,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var dataContext = scope.ServiceProvider.GetRequiredService<ServiceContext>();
+    dataContext.Database.Migrate();
 }
 
 app.UseHttpsRedirection();

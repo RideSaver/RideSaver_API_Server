@@ -1,12 +1,12 @@
-using AuthService.Data;
-using AuthService.Models;
+using AuthService.Filters;
+using AuthService.Repository;
 using AuthService.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RideSaver.Server.Attributes;
-using UserLogin = AuthService.Models.UserLogin;
+using RideSaver.Server.Models;
 
 namespace AuthService.Controllers
 {
@@ -14,15 +14,13 @@ namespace AuthService.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
         private readonly ITokenService _tokenService;
-        private readonly AuthContext _credentialsContext;
+        private readonly IAuthenticationRepository _authenticationRepository;
 
-        public AuthenticationController(ITokenService tokenService, AuthContext credentialsContext, IConfiguration configuration)
+        public AuthenticationController(ITokenService tokenService, IAuthenticationRepository authenticationRepository)
         {
+            _authenticationRepository= authenticationRepository;
             _tokenService = tokenService;
-            _credentialsContext = credentialsContext;
-            _configuration = configuration;
         }
 
         [HttpPost]
@@ -31,45 +29,12 @@ namespace AuthService.Controllers
         [ValidateModelState]
         public async Task<IActionResult> Login([FromBody] UserLogin userLogin)
         {
-            var userInfo = await _credentialsContext.UserCredentials.SingleOrDefaultAsync(u => u.Username == userLogin.Username);
+            if (userLogin is null) return BadRequest();
+            if (!await _authenticationRepository.AuthenticateUserAsync(userLogin)) return Unauthorized();
 
-            if (userInfo is null)
-            {
-                return NotFound("ERROR: user not found");
-            }
+            var userInfo = await _authenticationRepository.GetUserAsync(userLogin.Username);
 
-            var isValid = userInfo.Password == userLogin.Password; // TODO: encryption/hashing/salting for user passwords.
-
-            if (!isValid)
-            {
-                return BadRequest("ERROR: Failed to authenticate user");
-            }
-
-            return Ok(_tokenService.GenerateToken(userInfo));
-        }
-
-        [HttpGet]
-        [Route("/api/v1/auth/verifytoken")]
-        [Consumes("application/json")]
-        [ValidateModelState]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> VerifyToken()
-        {
-            var username = User.Claims.SingleOrDefault();
-
-            if (username is null)
-            {
-                return Unauthorized();
-            }
-
-            var userExists = await _credentialsContext.UserCredentials.AnyAsync(u => u.Username == username.Value);
-
-            if (!userExists)
-            {
-                return Unauthorized();
-            }
-
-            return NoContent();
+            return new OkObjectResult(_tokenService.GenerateToken(userInfo));
         }
     }
 }

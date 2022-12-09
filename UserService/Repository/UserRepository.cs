@@ -1,19 +1,20 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using RideSaver.Server.Models;
 using DataAccess.Models;
 using System.Text;
 using UserService.Data;
+using Konscious.Security.Cryptography;
+using Microsoft.AspNetCore.Identity;
 
 namespace UserService.Repository
 {
     public class UserRepository : IUserRepository
     {
         private readonly UserContext _userContext;
-
         public UserRepository(UserContext userContext) => _userContext = userContext;
-
         public async Task SaveAsync() => await _userContext.SaveChangesAsync();
-
+        public List<UserModel> GetUserModels() => _userContext.Users.ToList();
+        public async Task<UserModel> GetUserModelAsync(string username) => await _userContext.Users.FindAsync(username);
         public List<User> GetUsers()
         {
             var userList = new List<User>();
@@ -24,8 +25,7 @@ namespace UserService.Repository
                 {
                     Email = user.Email,
                     Name = user.Name,
-                    PhoneNumber = "000-000-0000",
-                    Avatar = user.Avatar,
+                    PhoneNumber = user.PhoneNumber
                 };
 
                 userList.Add(userInfo);
@@ -43,8 +43,7 @@ namespace UserService.Repository
                 {
                     Email = userModel.Email,
                     Name = userModel.Name,
-                    PhoneNumber = "000-000-0000",
-                    Avatar = userModel.Avatar,
+                    PhoneNumber = userModel.PhoneNumber
                 };
 
                 return userInfo;
@@ -55,28 +54,20 @@ namespace UserService.Repository
             }
 
         }
-
-        public async Task<UserModel> GetUserModelAsync(string username)
-        {
-            return await _userContext.Users.FindAsync(username);
-        }
-
-        public List<UserModel> GetUserModels()
-        {
-            return _userContext.Users.ToList();
-        }
         public async Task CreateUserAsync(PatchUserRequest userInfo)
         {
             if(userInfo is not null)
             {
+                var salt = Security.Argon2.CreateSalt();
                 var user = new UserModel()
                 {
                     Username = userInfo.Username,
-                    Password = userInfo.Password,
                     Name = userInfo.Name,
                     CreatedAt = DateTime.Now,
-                    Avatar = userInfo.Avatar,
                     Email = userInfo.Email,
+                    PhoneNumber = userInfo.PhoneNumber,
+                    passwordSalt = salt,
+                    passwordHash = Security.Argon2.HashPassword(userInfo.Password, salt)
                 };
 
                 await _userContext.AddAsync(user);
@@ -110,14 +101,18 @@ namespace UserService.Repository
         public async Task UpdateUserAsync(string username, PatchUserRequest userInfo)
         {
             var userModel = await _userContext.Users.FindAsync(username);
+            byte[] newSalt = Security.Argon2.CreateSalt();
             if(userModel is not null)
             {
+                if(!Security.Argon2.VerifyHash(userInfo.Password, userModel.passwordHash!, userModel.passwordSalt!))
+                {
+                    userModel.passwordHash = Security.Argon2.HashPassword(userInfo.Password, newSalt);
+                    userModel.passwordSalt = newSalt;
+                }
                 userModel.Username = userInfo.Username;
-                userModel.Password = userInfo.Password;
                 userModel.Email = userInfo.Email;
                 userModel.Name = userInfo.Name;
-                userModel.Avatar = userInfo.Avatar;
-
+                userModel.PhoneNumber = userInfo.PhoneNumber;
                 _userContext.Update(userModel);
             }
 

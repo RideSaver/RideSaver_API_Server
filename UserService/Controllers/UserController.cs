@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,8 +17,6 @@ namespace UserService.Controllers
         private readonly IUserRepository _userRepository;
 
         public UserController(IUserRepository userRepository) => _userRepository = userRepository;
-
-
         public override async Task<IActionResult> SignUp([FromBody] PatchUserRequest patchUserRequest) // returns HTTP 200 OK response
         {
             using (var scope = new TransactionScope())
@@ -61,16 +59,16 @@ namespace UserService.Controllers
             return new OkObjectResult(await _userRepository.GetUserHistoryASync(username));
         }
 
-        public override Task<IActionResult> Login([FromBody] UserLogin userLogin) // returns HTTP 200 OK response with token (string)
-        {
-            throw new NotImplementedException();
-        }
+
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override Task<IActionResult> AutorizeServiceEndpoint([FromRoute(Name = "serviceId"), Required] Guid serviceId, [FromRoute(Name = "userId"), Required] Guid userId, [FromQuery(Name = "code"), Required] string code)
         {
             throw new NotImplementedException(); // returns HTTP 200 OK response
         }
+        public override Task<IActionResult> UpdateAvatar([FromRoute(Name = "username"), Required] string username, [FromBody] Stream body) => throw new NotImplementedException();
+        public override Task<IActionResult> GetAvatar([FromRoute(Name = "username"), Required] string username) => throw new NotImplementedException();
+        public override Task<IActionResult> Login([FromBody] UserLogin userLogin) => throw new NotImplementedException();
 
     }
 }

@@ -1,4 +1,6 @@
+using DataAccess.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -27,12 +29,13 @@ namespace UserService
                     });
             });
 
+
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-
+ 
             .AddJwtBearer("APIGatewayAuthentication", cfg =>
             {
                 cfg.RequireHttpsMetadata = true;
@@ -45,7 +48,7 @@ namespace UserService
                     ValidateAudience = false,
                     ValidateIssuer = false,
                     ValidateLifetime = false,
-                    RequireExpirationTime = false,
+                    RequireExpirationTime = true,
                     ClockSkew = TimeSpan.Zero
 
                 };
@@ -60,6 +63,12 @@ namespace UserService
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+            }
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var dataContext = scope.ServiceProvider.GetRequiredService<UserContext>();
+                dataContext.Database.Migrate();
             }
 
             app.UseHttpsRedirection();

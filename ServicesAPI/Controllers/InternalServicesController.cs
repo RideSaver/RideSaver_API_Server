@@ -28,7 +28,7 @@ namespace ServicesAPI.Controllers
         {
             using (var scope = new TransactionScope())
             {
-                IList<ServicesModel> services = (IList<ServicesModel>)_serviceContext.Services.ToListAsync<ServicesModel>();
+                IList<ServicesModel> services = (IList<ServicesModel>)_serviceContext.Services.ToListAsync();
                 foreach(var service in services)
                 {
                     await responseStream.WriteAsync(new ServiceModel {

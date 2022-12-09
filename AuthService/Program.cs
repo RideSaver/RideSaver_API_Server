@@ -1,9 +1,15 @@
 using AuthService.Data;
+using AuthService.Filters;
+using AuthService.Repository;
 using AuthService.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using System.Web.Http.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +24,9 @@ builder.Services.AddDbContext<AuthContext>(options =>
             x.UseNetTopologySuite();
         });
 });
+
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -35,16 +44,19 @@ builder.Services.AddAuthentication(options =>
                 ValidateAudience = false,
                 ValidateIssuer = false,
                 ValidateLifetime = false,
-                RequireExpirationTime = false,
+                RequireExpirationTime = true,
                 ClockSkew = TimeSpan.Zero
                 
           };
     });
 
-builder.Services.AddScoped<ITokenService, TokenService>();
-
-
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dataContext = scope.ServiceProvider.GetRequiredService<AuthContext>();
+    dataContext.Database.Migrate();
+}
 
 if (app.Environment.IsDevelopment())
 {

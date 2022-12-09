@@ -1,4 +1,4 @@
-﻿using Grpc.Net.Client;
+using Grpc.Net.Client;
 using InternalAPI;
 using k8s;
 using RequestAPI.Configuration;
@@ -15,7 +15,7 @@ namespace RequestAPI.Repository
         private string _namespace;
         public Dictionary<string, Requests.RequestsClient> Clients { get; private set; }
 
-        ClientRepository(IOptions<ClientDiscoveryOptions> options) : this(options.Value.Namespace, options) {}
+        public ClientRepository(IOptions<ClientDiscoveryOptions> options) : this(options.Value.Namespace, options) {}
 
         ClientRepository(string Namespace, IOptions<ClientDiscoveryOptions> options)
         {
