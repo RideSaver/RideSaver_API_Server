@@ -5,11 +5,7 @@ target "api_gateway" {
   context = "APIGateway"
   dockerfile = "Dockerfile"
   platforms = [
-    "linux/amd64",
-    "linux/arm/v6",
-    "linux/arm/v7",
-    "linux/arm64",
-    "linux/386"
+    "linux/amd64"
   ]
 }
 
@@ -18,11 +14,7 @@ target "estimate_api" {
   context = "EstimateAPI"
   dockerfile = "Dockerfile"
   platforms = [
-    "linux/amd64",
-    "linux/arm/v6",
-    "linux/arm/v7",
-    "linux/arm64",
-    "linux/386"
+    "linux/amd64"
   ]
 }
 
@@ -31,11 +23,7 @@ target "location_api" {
   context = "LocationAPI"
   dockerfile = "Dockerfile"
   platforms = [
-    "linux/amd64",
-    "linux/arm/v6",
-    "linux/arm/v7",
-    "linux/arm64",
-    "linux/386"
+    "linux/amd64"
   ]
 }
 
@@ -44,11 +32,7 @@ target "request_api" {
   context = "RequestAPI"
   dockerfile = "Dockerfile"
   platforms = [
-    "linux/amd64",
-    "linux/arm/v6",
-    "linux/arm/v7",
-    "linux/arm64",
-    "linux/386"
+    "linux/amd64"
   ]
 }
 
@@ -57,11 +41,7 @@ target "services_api" {
   context = "ServicesAPI"
   dockerfile = "Dockerfile"
   platforms = [
-    "linux/amd64",
-    "linux/arm/v6",
-    "linux/arm/v7",
-    "linux/arm64",
-    "linux/386"
+    "linux/amd64"
   ]
 }
 
@@ -70,11 +50,7 @@ target "user_api" {
   context = "UserService"
   dockerfile = "Dockerfile"
   platforms = [
-    "linux/amd64",
-    "linux/arm/v6",
-    "linux/arm/v7",
-    "linux/arm64",
-    "linux/386"
+    "linux/amd64"
   ]
 }
 
@@ -83,10 +59,6 @@ target "auth_service" {
   context = "AuthService"
   dockerfile = "Dockerfile"
   platforms = [
-    "linux/amd64",
-    "linux/arm/v6",
-    "linux/arm/v7",
-    "linux/arm64",
-    "linux/386"
+    "linux/amd64"
   ]
 }
