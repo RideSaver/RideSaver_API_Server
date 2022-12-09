@@ -67,7 +67,7 @@ namespace EstimateAPI.Repository
                     },
 
                     Distance = estimatesReply.Distance,
-                    Waypoints = ConvertLocationModelToLocation(estimatesReply.WayPoints), 
+                    Waypoints = ConvertLocationModelToLocation(estimatesReply.WayPoints),
                     DisplayName = estimatesReply.DisplayName,
                     Seats = estimatesReply.Seats,
                     RequestURL = estimatesReply.RequestUrl,
@@ -84,7 +84,7 @@ namespace EstimateAPI.Repository
         {
             List<Estimate> estimates = new List<Estimate>();
             List<Task<Estimate>> rideEstimatesRefreshTasks = new List<Task<Estimate>>();
-            var servicesClient = new Services.ServicesClient(GrpcChannel.ForAddress($"services.api"));
+            var servicesClient = new Services.ServicesClient(GrpcChannel.ForAddress($"https://services.api"));
             foreach(var id in ids)
             {
                 var service = await servicesClient.GetServiceByHashAsync(new GetServiceByHashRequest {
