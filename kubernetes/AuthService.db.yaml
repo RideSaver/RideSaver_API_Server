@@ -33,10 +33,6 @@ spec:
             containers:
                 - name: authservice-mssql
                   image: mcr.microsoft.com/mssql/server:2019-latest
-                  resources:
-                      limits:
-                          memory: "2G"
-                          cpu: "1G"
                   ports:
                       - containerPort: 1433
                   env:
