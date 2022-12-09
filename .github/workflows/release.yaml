@@ -71,6 +71,9 @@ jobs:
                       ./docker-bake.hcl
                       ${{ steps.meta.outputs.bake-file }}
                   targets: ${{ matrix.image }}
+                  set: |
+                    *.args.github_username={{ github.actor }}
+                    *.args.github_token={{ secrets.GITHUB_TOKEN }}
 
     deployment:
         name: Deploy
