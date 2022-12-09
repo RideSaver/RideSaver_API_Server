@@ -8,8 +8,7 @@ target "api_gateway" {
     "linux/amd64",
     "linux/arm/v6",
     "linux/arm/v7",
-    "linux/arm64",
-    "linux/386"
+    "linux/arm64"
   ]
 }
 
@@ -20,9 +19,7 @@ target "estimate_api" {
   platforms = [
     "linux/amd64",
     "linux/arm/v6",
-    "linux/arm/v7",
-    "linux/arm64",
-    "linux/386"
+    "linux/arm64"
   ]
 }
 
@@ -33,9 +30,7 @@ target "location_api" {
   platforms = [
     "linux/amd64",
     "linux/arm/v6",
-    "linux/arm/v7",
-    "linux/arm64",
-    "linux/386"
+    "linux/arm64"
   ]
 }
 
@@ -46,9 +41,7 @@ target "request_api" {
   platforms = [
     "linux/amd64",
     "linux/arm/v6",
-    "linux/arm/v7",
-    "linux/arm64",
-    "linux/386"
+    "linux/arm64"
   ]
 }
 
@@ -59,9 +52,7 @@ target "services_api" {
   platforms = [
     "linux/amd64",
     "linux/arm/v6",
-    "linux/arm/v7",
-    "linux/arm64",
-    "linux/386"
+    "linux/arm64"
   ]
 }
 
@@ -72,9 +63,7 @@ target "user_api" {
   platforms = [
     "linux/amd64",
     "linux/arm/v6",
-    "linux/arm/v7",
-    "linux/arm64",
-    "linux/386"
+    "linux/arm64"
   ]
 }
 
@@ -85,8 +74,6 @@ target "auth_service" {
   platforms = [
     "linux/amd64",
     "linux/arm/v6",
-    "linux/arm/v7",
-    "linux/arm64",
-    "linux/386"
+    "linux/arm64"
   ]
 }
