@@ -39,8 +39,8 @@ spec:
                           memory: "1G"
                           cpu: "250m"
                       limits:
-                          memory: "1G"
-                          cpu: "500m"
+                          memory: "1.5G"
+                          cpu: "1G"
                   ports:
                       - containerPort: 1433
                   env:
