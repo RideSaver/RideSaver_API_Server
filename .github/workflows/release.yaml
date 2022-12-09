@@ -104,4 +104,9 @@ jobs:
             - name: Add registry secret
               run: kubectl create secret docker-registry ridesaver-registry-credentials --docker-server=ghcr.io --docker-username=${{ github.actor }} --docker-password=${{ secrets.GITHUB_TOKEN }}
             - name: Trigger deploy
+              run: |
+                helm repo add jetstack https://charts.jetstack.io
+                helm repo update
+                helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set installCRDs=true
+            - name: Trigger deploy
               run: kubectl apply -f kubernetes

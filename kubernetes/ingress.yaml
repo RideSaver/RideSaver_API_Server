@@ -3,11 +3,13 @@ kind: Ingress
 metadata:
     name: ridesaver-ingress
     namespace: server
+    annotations:
+        kubernetes.io/ingress.class: nginx
+        cert-manager.io/cluster-issuer: letsencrypt-production
 spec:
     tls:
         - hosts:
               - ridesaver.online
-          secretName: letsencrypt-certs # Name of the secret
     rules:
         - host: ride-saver.online
           http:
@@ -25,66 +27,4 @@ spec:
                         service:
                             name: ui-server
                             port:
-                                number: 443
-                  - path: /.well-known/acme-challenge/
-                    pathType: Prefix
-                    backend:
-                        service:
-                            name: letsencrypt
-                            port:
                                 number: 80
----
-apiVersion: v1
-kind: Secret
-metadata:
-    name: letsencrypt-certs
-    namespace: server
-type: Opaque
-# Create an empty secret (with no data) in order for the update to work
----
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-    name: letsencrypt-job
-    namespace: server
-    labels:
-        app: letsencrypt
-spec:
-    schedule: "0 0 1 */2 *" # every second month on the first at midnight
-    jobTemplate:
-        spec:
-            template:
-                metadata:
-                    name: letsencrypt
-                    labels:
-                        app: letsencrypt
-                spec:
-                    containers:
-                        # Bash script that starts an http server and launches certbot
-                        # Fork of github.com/sjenning/kube-nginx-letsencrypt
-                        - image: quay.io/hiphipjorge/kube-nginx-letsencrypt:latest
-                          name: letsencrypt
-                          imagePullPolicy: Always
-                          ports:
-                            - name: letsencrypt
-                              containerPort: 80
-                          env:
-                            - name: DOMAINS
-                              value: ride-saver.online
-                            - name: EMAIL
-                              value: eschabl@calstatela.edu
-                            - name: SECRET
-                              value: letsencrypt-certs
-                    restartPolicy: Never
----
-apiVersion: v1
-kind: Service
-metadata:
-    name: letsencrypt
-    namespace: server
-spec:
-    selector:
-        app: letsencrypt
-    ports:
-        - protocol: "TCP"
-          port: 80
