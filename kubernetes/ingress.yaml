@@ -8,7 +8,7 @@ spec:
               - ridesaver.online
           secretName: letsencrypt-certs # Name of the secret
     rules:
-        - host: ridesaver.online
+        - host: ride-saver.online
           http:
               paths:
                   - path: /api
@@ -67,7 +67,7 @@ spec:
                               containerPort: 80
                           env:
                             - name: DOMAINS
-                              value: ridesaver.online
+                              value: ride-saver.online
                             - name: EMAIL
                               value: eschabl@calstatela.edu
                             - name: SECRET
