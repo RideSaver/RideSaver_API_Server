@@ -97,9 +97,8 @@ jobs:
             - name: Set the Kubernetes context
               uses: azure/k8s-set-context@v2
               with:
-                  method: service-account
-                  k8s-url: ${{ secrets.KUBERNETES_URL }}
-                  k8s-secret: ${{ secrets.KUBERNETES_SECRET }}
+                  method: kubeconfig
+                  kubeconfig: ${{ secrets.KUBERNETES_SECRET }}
             - name: Deploy to the Kubernetes cluster
               uses: azure/k8s-deploy@v1
               with:
@@ -118,7 +117,7 @@ jobs:
                       kubernetes/ingress.yaml
                       kubernetes/services/vault.yaml
                       kubernetes/services/vault.setup.yaml
-                      kubernetes/services/redis.yam
+                      kubernetes/services/redis.yaml
                   images: |
                       ghcr.io/ridesaver/api_gateway:${{ github.sha }}
                       ghcr.io/ridesaver/estiamte_api:${{ github.sha }}
