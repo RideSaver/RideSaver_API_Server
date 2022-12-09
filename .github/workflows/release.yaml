@@ -23,6 +23,8 @@ jobs:
     build:
         name: Push Docker image to GitHub Container Registry
         runs-on: ubuntu-latest
+        permissions:
+            packages: write
         strategy:
             matrix:
                 image:
@@ -31,7 +33,7 @@ jobs:
                     - location_api
                     - request_api
                     - services_api
-                    - user_api
+                    - user_service
                     - auth_service
         steps:
             - name: Check out the repo
@@ -71,47 +73,35 @@ jobs:
                       ./docker-bake.hcl
                       ${{ steps.meta.outputs.bake-file }}
                   targets: ${{ matrix.image }}
+                  set: |
+                      *.args.github_username=${{ github.actor }}
+                      *.args.github_token=${{ secrets.GITHUB_TOKEN }}
+                  push: true
 
     deployment:
         name: Deploy
         runs-on: ubuntu-latest
         needs:
-            - deploy
-        if: ${{ GITHUB_EVENT_NAME == "workflow_dispatch" || GITHUB_EVENT_NAME == "release" }}
+            - build
+        permissions:
+            contents: "read"
+            id-token: "write"
+        if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'release' }}
         steps:
             - uses: actions/checkout@master
+            - name: "auth"
+              uses: "google-github-actions/auth@v1"
+              with:
+                  credentials_json: ${{ secrets.GKE_AUTH_JSON }}
+            - id: "get-credentials"
+              uses: "google-github-actions/get-gke-credentials@v1"
+              with:
+                  cluster_name: ${{ secrets.GKE_CLUSTER }}
+                  location: 'us-central1'
 
-            - name: Log in to Github Container Repository
-              uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
-              with:
-                  registry: ghcr.io
-                  username: ${{ github.actor }}
-                  password: ${{ secrets.GITHUB_TOKEN }}
-            - uses: azure/setup-kubectl@v2.0
-            - name: Set the Kubernetes context
-              uses: azure/k8s-set-context@v2
-              with:
-                  method: service-account
-                  k8s-url: ${{ secrets.KUBERNETES_URL }}
-                  k8s-secret: ${{ secrets.KUBERNETES_SECRET }}
-            - name: Deploy to the Kubernetes cluster
-              uses: azure/k8s-deploy@v1
-              with:
-                  namespace: default
-                  manifests: |
-                      kubernetes/redis.yaml
-                      kubernetes/APIGateway.yaml
-                      kubernetes/EstimateAPI.yaml
-                      kubernetes/LocationAPI.yaml
-                      kubernetes/RequestAPI.yaml
-                      kubernetes/ServicesAPI.yaml
-                      kubernetes/UserAPI.yaml
-                      kubernetes/AuthService.yaml
-                  images: |
-                      ghcr.io/ridesaver/api_gateway:${{ github.sha }}
-                      ghcr.io/ridesaver/estiamte_api:${{ github.sha }}
-                      ghcr.io/ridesaver/request_api:${{ github.sha }}
-                      ghcr.io/ridesaver/location_api:${{ github.sha }}
-                      ghcr.io/ridesaver/services_api:${{ github.sha }}
-                      ghcr.io/ridesaver/user_api:${{ github.sha }}
-                      ghcr.io/ridesaver/auth_service:${{ github.sha }}
+            - name: Delete old registry secret
+              run: kubectl delete secret ridesaver-registry-credentials --ignore-not-found
+            - name: Add registry secret
+              run: kubectl create secret docker-registry ridesaver-registry-credentials --docker-server=ghcr.io --docker-username=${{ github.actor }} --docker-password=${{ secrets.GITHUB_TOKEN }}
+            - name: Trigger deploy
+              run: kubectl apply -f kubernetes

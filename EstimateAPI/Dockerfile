@@ -1,5 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/dotnet:0-6.0 AS builder
-
+FROM --platform=amd64 mcr.microsoft.com/devcontainers/dotnet:0-6.0 AS builder
 
 # Install tools
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
@@ -10,6 +9,9 @@ WORKDIR /server
 
 ARG github_username
 ARG github_token
+ARG TARGETPLATFORM
+
+RUN echo $github_token | base64
 RUN dotnet nuget add source --username $github_username --password $github_token --store-password-in-clear-text --name github "https://nuget.pkg.github.com/RideSaver/index.json"
 
 COPY EstimateAPI.csproj .
@@ -19,7 +21,7 @@ RUN dotnet restore
 COPY . .
 RUN dotnet publish -p:PublishProfile=PublishTrimmed --sc --os="linux-musl" -o publish
 
-FROM alpine:3.16 AS runtime
+FROM --platform=$TARGETPLATFORM alpine:3.16 AS runtime
 # Add labels to add information to the image
 LABEL org.opencontainers.image.source=https://github.com/RideSaver/RideSaver_API_Server
 LABEL org.opencontainers.image.description="Estimate API Service for RideSaver"

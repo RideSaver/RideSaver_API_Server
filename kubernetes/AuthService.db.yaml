@@ -14,6 +14,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
     name: authservice-mssql-deployment
+    namespace: api
 spec:
     replicas: 1
     selector:
@@ -32,13 +33,6 @@ spec:
             containers:
                 - name: authservice-mssql
                   image: mcr.microsoft.com/mssql/server:2019-latest
-                  resources:
-                      requests:
-                          memory: "2G"
-                          cpu: "2000m"
-                      limits:
-                          memory: "2G"
-                          cpu: "2000m"
                   ports:
                       - containerPort: 1433
                   env:
