@@ -35,7 +35,7 @@ spec:
         apiVersion: apps/v1
         kind: Deployment
         name: api-gateway
-    minReplicas: 2 # Maintain at least two for redundancy in case on fails
+    minReplicas: 1 # Maintain at least one for redundancy in case on fails
     maxReplicas: 10
     targetCPUUtilizationPercentage: 50
 ---

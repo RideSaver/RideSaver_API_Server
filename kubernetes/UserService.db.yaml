@@ -1,7 +1,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-    name: userapi-mssql-data
+    name: userservice-mssql-data
     namespace: api
 spec:
     accessModes:
@@ -13,7 +13,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: userapi-mssql-deployment
+    name: userservice-mssql-deployment
     namespace: api
 spec:
     replicas: 1
@@ -32,7 +32,7 @@ spec:
             securityContext:
                 fsGroup: 10001
             containers:
-                - name: userapi-mssql
+                - name: userservice-mssql
                   image: mcr.microsoft.com/mssql/server:2019-latest
                   resources:
                       requests:
@@ -51,17 +51,17 @@ spec:
                       - name: MSSQL_SA_PASSWORD
                         value: ST@RTUP_P4SSW0RD
                   volumeMounts:
-                      - name: userapi-mssqldb
+                      - name: userservice-mssqldb
                         mountPath: /var/opt/mssql
             volumes:
-                - name: userapi-mssqldb
+                - name: userservice-mssqldb
                   persistentVolumeClaim:
-                      claimName: userapi-mssql-data
+                      claimName: userservice-mssql-data
 ---
 apiVersion: v1
 kind: Service
 metadata:
-    name: userapi-mssql-deployment
+    name: userservice-mssql-deployment
     namespace: api
 spec:
     selector:

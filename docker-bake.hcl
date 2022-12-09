@@ -45,7 +45,7 @@ target "services_api" {
   ]
 }
 
-target "user_api" {
+target "user_service" {
   inherits = ["docker-metadata-action"]
   context = "UserService"
   dockerfile = "Dockerfile"

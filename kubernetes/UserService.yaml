@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: user-api
+    name: user-service
     namespace: api
     labels:
         type: service
@@ -20,7 +20,7 @@ spec:
                 service: user
         spec:
             containers:
-                - name: user-api
+                - name: user-service
                   image: ghcr.io/ridesaver/user_service:latest
                   ports:
                       - containerPort: 80
@@ -35,21 +35,21 @@ spec:
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-    name: user-api
+    name: user-service
     namespace: api
 spec:
     scaleTargetRef:
         apiVersion: apps/v1
         kind: Deployment
-        name: user-api
-    minReplicas: 2 # Maintain at least two for redundancy in case on fails
+        name: user-service
+    minReplicas: 1 # Maintain at least one for redundancy in case on fails
     maxReplicas: 10
     targetCPUUtilizationPercentage: 50
 ---
 apiVersion: v1
 kind: Service
 metadata:
-    name: user-api
+    name: user-service
     namespace: api
     labels:
         type: service
