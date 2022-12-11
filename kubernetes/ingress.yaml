@@ -10,6 +10,7 @@ spec:
     tls:
         - hosts:
               - ride-saver.online
+          secretName: ingress-certificate
     rules:
         - host: ride-saver.online
           http:
