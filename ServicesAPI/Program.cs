@@ -69,7 +69,7 @@ if (app.Environment.IsDevelopment())
     dataContext.Database.Migrate();
 }*/
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
