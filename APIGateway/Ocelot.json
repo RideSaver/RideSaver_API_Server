@@ -8,31 +8,31 @@
         },
         "Routes": [
             {
-                "UpstreamPathTemplate": "/authentication/login",
+                "UpstreamPathTemplate": "/api/authentication/login",
                 "UpstreamHttpMethod": [ "GET" ],
                 "DownstreamPathTemplate": "/api/v1/auth/login",
                 "RouteIsCaseSensitive": false,
-                "ServiceName": "auth-service.api.svc.cluster.local",
+                "ServiceName": "auth-service",
                 "ServiceNameSpace": "api",
                 "DownstreamScheme": "http"
             },
 
             {
-                "UpstreamPathTemplate": "/authentication/verifytoken",
+                "UpstreamPathTemplate": "/api/authentication/verifytoken",
                 "UpstreamHttpMethod": [ "GET" ],
                 "DownstreamPathTemplate": "/api/v1/auth/verifytoken",
-                "ServiceName": "auth-service.api.svc.cluster.local",
+                "ServiceName": "auth-service",
                 "ServiceNameSpace": "api",
                 "RouteIsCaseSensitive": false,
                 "DownstreamScheme": "http"
             },
 
             {
-                "UpstreamPathTemplate": "/estimates",
+                "UpstreamPathTemplate": "/api/estimates",
                 "UpstreamHttpMethod": [ "GET" ],
                 "DownstreamPathTemplate": "/api/v1/estimates",
                 "RouteIsCaseSensitive": false,
-                "ServiceName": "estimate-api.api.svc.cluster.local",
+                "ServiceName": "estimate-api",
                 "ServiceNameSpace": "api",
                 "DownstreamScheme": "http",
                 "AuthenticationOptions": {
@@ -41,10 +41,10 @@
             },
 
             {
-                "UpstreamPathTemplate": "/estimates/refresh",
+                "UpstreamPathTemplate": "/api/estimates/refresh",
                 "UpstreamHttpMethod": [ "GET" ],
                 "DownstreamPathTemplate": "/api/v1/estimates/refresh",
-                "ServiceName": "estimate-api.api.svc.cluster.local",
+                "ServiceName": "estimate-api",
                 "ServiceNameSpace": "api",
                 "RouteIsCaseSensitive": false,
                 "DownstreamScheme": "http",
@@ -54,10 +54,10 @@
             },
 
             {
-                "UpstreamPathTemplate": "/location/autocomplete",
+                "UpstreamPathTemplate": "/api/location/autocomplete",
                 "UpstreamHttpMethod": [ "GET" ],
                 "DownstreamPathTemplate": "/api/v1/location/autocomplete",
-                "ServiceName": "location-api.api.svc.cluster.local",
+                "ServiceName": "location-api",
                 "ServiceNameSpace": "api",
                 "RouteIsCaseSensitive": false,
                 "DownstreamScheme": "http",
@@ -67,9 +67,9 @@
             },
 
             {
-                "UpstreamPathTemplate": "rides/{rideId}",
+                "UpstreamPathTemplate": "/api/rides/{rideId}",
                 "UpstreamHttpMethod": [ "DELETE" ],
-                "ServiceName": "request-api.api.svc.cluster.local",
+                "ServiceName": "request-api",
                 "ServiceNameSpace": "api",
                 "DownstreamPathTemplate": "/api/v1/rides/{rideId}",
                 "RouteIsCaseSensitive": false,
@@ -80,11 +80,11 @@
             },
 
             {
-                "UpstreamPathTemplate": "/rides/{rideId}",
+                "UpstreamPathTemplate": "/api/rides/{rideId}",
                 "UpstreamHttpMethod": [ "GET" ],
                 "DownstreamPathTemplate": "/api/v1/rides/{rideId}",
                 "RouteIsCaseSensitive": false,
-                "ServiceName": "request-api.api.svc.cluster.local",
+                "ServiceName": "request-api",
                 "ServiceNameSpace": "api",
                 "DownstreamScheme": "http",
                 "AuthenticationOptions": {
@@ -93,11 +93,11 @@
             },
 
             {
-                "UpstreamPathTemplate": "/rides/request/{estimateId}",
+                "UpstreamPathTemplate": "/api/rides/request/{estimateId}",
                 "UpstreamHttpMethod": [ "POST" ],
                 "DownstreamPathTemplate": "/api/v1/rides/request/{estimateId}",
                 "RouteIsCaseSensitive": false,
-                "ServiceName": "request-api.api.svc.cluster.local",
+                "ServiceName": "request-api",
                 "ServiceNameSpace": "api",
                 "DownstreamScheme": "http",
                 "AuthenticationOptions": {
@@ -106,11 +106,11 @@
             },
 
             {
-                "UpstreamPathTemplate": "/providers",
+                "UpstreamPathTemplate": "/api/providers",
                 "UpstreamHttpMethod": [ "GET" ],
                 "DownstreamPathTemplate": "/api/v1/providers",
                 "RouteIsCaseSensitive": false,
-                "ServiceName": "services-api.api.svc.cluster.local",
+                "ServiceName": "services-api",
                 "ServiceNameSpace": "api",
                 "DownstreamScheme": "http",
                 "AuthenticationOptions": {
@@ -119,10 +119,10 @@
             },
 
             {
-                "UpstreamPathTemplate": "/user/info/{username}",
+                "UpstreamPathTemplate": "/api/user/info/{username}",
                 "UpstreamHttpMethod": [ "GET" ],
                 "DownstreamPathTemplate": "/api/v1/user/info/{username}",
-                "ServiceName": "user-service.api.svc.cluster.local",
+                "ServiceName": "user-service",
                 "ServiceNameSpace": "api",
                 "RouteIsCaseSensitive": false,
                 "DownstreamScheme": "http",
@@ -132,10 +132,10 @@
             },
 
             {
-                "UpstreamPathTemplate": "/user/info/{username}/ridehistory",
+                "UpstreamPathTemplate": "/api/user/info/{username}/ridehistory",
                 "UpstreamHttpMethod": [ "GET" ],
                 "DownstreamPathTemplate": "/api/v1/user/{username}/rideHistory",
-                "ServiceName": "user-service.api.svc.cluster.local",
+                "ServiceName": "user-service",
                 "ServiceNameSpace": "api",
                 "RouteIsCaseSensitive": false,
                 "DownstreamScheme": "http",
@@ -145,10 +145,10 @@
             },
 
             {
-                "UpstreamPathTemplate": "/user/info/{username}",
+                "UpstreamPathTemplate": "/api/user/info/{username}",
                 "UpstreamHttpMethod": [ "PATCH" ],
                 "DownstreamPathTemplate": "/api/v1/user/info/{username}",
-                "ServiceName": "user-service.api.svc.cluster.local",
+                "ServiceName": "user-service",
                 "ServiceNameSpace": "api",
                 "RouteIsCaseSensitive": false,
                 "DownstreamScheme": "http",
@@ -158,10 +158,10 @@
             },
 
             {
-                "UpstreamPathTemplate": "/user/signup",
+                "UpstreamPathTemplate": "/api/user/signup",
                 "UpstreamHttpMethod": [ "POST" ],
                 "DownstreamPathTemplate": "/api/v1/user/signup",
-                "ServiceName": "user-service.api.svc.cluster.local",
+                "ServiceName": "user-service",
                 "ServiceNameSpace": "api",
                 "RouteIsCaseSensitive": false,
                 "DownstreamScheme": "http"
