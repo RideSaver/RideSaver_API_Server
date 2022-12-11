@@ -4,11 +4,12 @@ metadata:
     name: ridesaver-ingress
     namespace: server
     annotations:
+        kubernetes.io/ingress.class: nginx
         cert-manager.io/cluster-issuer: letsencrypt-production
 spec:
     tls:
         - hosts:
-              - ridesaver.online
+              - ride-saver.online
     rules:
         - host: ride-saver.online
           http:
