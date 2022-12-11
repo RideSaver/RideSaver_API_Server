@@ -11,7 +11,7 @@
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "auth-service",
+                    "Host": "auth-service.api.svc.cluster.local",
                     "Port": 80
                 }
             ]
@@ -27,7 +27,7 @@
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "auth-service",
+                    "Host": "auth-service.api.svc.cluster.local",
                     "Port": 80
                 }
             ]
@@ -40,7 +40,7 @@
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "estimate-api",
+                    "Host": "estimate-api.api.svc.cluster.local",
                     "Port": 80
                 }
             ]
@@ -53,7 +53,7 @@
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "estimate-api",
+                    "Host": "estimate-api.api.svc.cluster.local",
                     "Port": 80
                 }
             ]
@@ -66,7 +66,7 @@
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "location-api",
+                    "Host": "location-api.api.svc.cluster.local",
                     "Port": 80
                 }
             ]
@@ -79,7 +79,7 @@
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "request-api",
+                    "Host": "request-api.api.svc.cluster.local",
                     "Port": 80
                 }
             ]
@@ -92,7 +92,7 @@
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "request-api",
+                    "Host": "request-api.api.svc.cluster.local",
                     "Port": 80
                 }
             ]
@@ -105,7 +105,7 @@
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "request-api",
+                    "Host": "request-api.api.svc.cluster.local",
                     "Port": 80
                 }
             ]
@@ -118,7 +118,7 @@
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "services-api",
+                    "Host": "services-api.api.svc.cluster.local",
                     "Port": 80
                 }
             ]
@@ -134,7 +134,7 @@
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "user-service",
+                    "Host": "user-service.api.svc.cluster.local",
                     "Port": 80
                 }
             ]
@@ -150,7 +150,7 @@
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "user-service",
+                    "Host": "user-service.api.svc.cluster.local",
                     "Port": 80
                 }
             ]
@@ -163,7 +163,7 @@
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "user-service",
+                    "Host": "user-service.api.svc.cluster.local",
                     "Port": 80
                 }
             ]
