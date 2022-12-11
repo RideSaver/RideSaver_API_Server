@@ -34,7 +34,9 @@ builder.Services.AddAuthentication(options =>
     });
 
 builder.Configuration.AddJsonFile("ocelot.json");
-builder.Services.AddOcelot(builder.Configuration);
+builder.Services
+    .AddOcelot(builder.Configuration)
+    .AddKubernetes();
 
 var app = builder.Build();
 
@@ -49,7 +51,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseOcelot()
-    .AddKubernetes()
     .Wait();
 
 app.UseAuthorization();
