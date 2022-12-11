@@ -35,6 +35,7 @@ namespace AuthService.Controllers
             if (!await _authenticationRepository.AuthenticateUserAsync(userLogin)) return Unauthorized();
 
             var userInfo = await _authenticationRepository.GetUserAsync(userLogin.Username);
+            _logger.LogInformation("[AuthenticationController] Login(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
 
             return new OkObjectResult(_tokenService.GenerateToken(userInfo));
         }

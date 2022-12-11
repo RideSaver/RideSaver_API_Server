@@ -86,6 +86,7 @@ namespace UserService
                 dataContext.Database.Migrate();
             }*/
 
+            app.UseHttpLogging();
             app.UseForwardedHeaders();
             app.UseHttpsRedirection();
             app.UseAuthorization();

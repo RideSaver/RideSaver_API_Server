@@ -77,12 +77,10 @@ if (app.Environment.IsDevelopment())
     var dataContext = scope.ServiceProvider.GetRequiredService<ServiceContext>();
     dataContext.Database.Migrate();
 }*/
+
+app.UseHttpLogging();
 app.UseForwardedHeaders();
-
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

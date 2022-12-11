@@ -27,6 +27,9 @@ builder.Services.AddDbContext<AuthContext>(options =>
 });
 
 
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 builder.Services.AddGrpc();
 builder.Services.AddGrpcClient<Authentication.AuthenticationClient>(o =>
 {
@@ -78,12 +81,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseHttpLogging();
 app.UseForwardedHeaders();
-
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

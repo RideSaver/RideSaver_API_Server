@@ -15,10 +15,16 @@ namespace UserService.Controllers
     public class UserController : UserApiController
     {
         private readonly IUserRepository _userRepository;
+        private readonly ILogger _logger;
 
-        public UserController(IUserRepository userRepository) => _userRepository = userRepository;
+        public UserController(IUserRepository userRepository, ILogger logger)
+        {
+            _userRepository = userRepository;
+            _logger = logger;
+        }
         public override async Task<IActionResult> SignUp([FromBody] PatchUserRequest patchUserRequest) // returns HTTP 200 OK response
         {
+            _logger.LogInformation("[UserController] SignUp(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
             using (var scope = new TransactionScope())
             {
                 await _userRepository.CreateUserAsync(patchUserRequest);
@@ -30,6 +36,7 @@ namespace UserService.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override async Task<IActionResult> DeleteUser([FromRoute(Name = "username"), Required] string username) // returns HTTP 200 OK response
         {
+            _logger.LogInformation("[UserController] DeleteUser(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
             await _userRepository.DeleteUserAsync(username);
             return new OkResult(); // [STATUS: 200 OK]
         }
@@ -37,6 +44,7 @@ namespace UserService.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override async Task<IActionResult> GetUser([FromRoute(Name = "username"), Required] string username) // returns HTTP 200 OK response with "user" instance
         {
+            _logger.LogInformation("[UserController] GetUser(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
             var user = await _userRepository.GetUserAsync(username);
             if (user is not null) return new OkObjectResult(user); // [STATUS: 200 OK || user]
             return new NoContentResult(); // [STATUS: 204 NO CONTENT]
@@ -45,6 +53,7 @@ namespace UserService.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override async Task<IActionResult> PatchUser([FromRoute(Name = "username"), Required] string username, [FromBody] PatchUserRequest patchUserRequest) // returns HTTP 200 OK response
         {
+            _logger.LogInformation("[UserController] PatchUser(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
             using (var scope = new TransactionScope())
             {
                 await _userRepository.UpdateUserAsync(username, patchUserRequest);
@@ -56,6 +65,7 @@ namespace UserService.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override async Task<IActionResult> GetHistory([FromRoute(Name = "username"), Required] string username) // returns HTTP 200 OK response with List<Ride>
         {
+            _logger.LogInformation("[UserController] GetHistory(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
             return new OkObjectResult(await _userRepository.GetUserHistoryASync(username));
         }
 
