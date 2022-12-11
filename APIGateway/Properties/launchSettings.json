@@ -1,31 +1,12 @@
 {
-    "$schema": "https://json.schemastore.org/launchsettings.json",
-    "iisSettings": {
-        "windowsAuthentication": false,
-        "anonymousAuthentication": true,
-        "iisExpress": {
-            "applicationUrl": "http://localhost:16768",
-            "sslPort": 44324
+    "https_port": 443,
+    "http_port":  80,
+    "Logging": {
+        "LogLevel": {
+            "Default": "Information",
+            "Microsoft": "Warning",
+            "Microsoft.Hosting.Lifetime": "Information"
         }
     },
-    "profiles": {
-        "APIGateway": {
-            "commandName": "Project",
-            "dotnetRunMessages": true,
-            "launchBrowser": true,
-            "launchUrl": "swagger",
-            "applicationUrl": "https://localhost:5000;",
-            "environmentVariables": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
-            }
-        },
-        "IIS Express": {
-            "commandName": "IISExpress",
-            "launchBrowser": true,
-            "launchUrl": "swagger",
-            "environmentVariables": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
-            }
-        }
-    }
+    "AllowedHosts": "*"
 }
