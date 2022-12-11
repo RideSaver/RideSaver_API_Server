@@ -72,7 +72,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpLogging();
 app.UseForwardedHeaders();
-//.UseHttpsRedirection();
+app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();

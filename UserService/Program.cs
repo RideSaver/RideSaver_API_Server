@@ -88,7 +88,7 @@ namespace UserService
 
             app.UseHttpLogging();
             app.UseForwardedHeaders();
-            //.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             app.UseAuthorization();
             app.MapControllers();
             app.Run();
