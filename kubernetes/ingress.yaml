@@ -6,8 +6,8 @@ metadata:
     annotations:
         kubernetes.io/ingress.class: nginx
         cert-manager.io/cluster-issuer: letsencrypt-production
-ingressClassName: nginx
 spec:
+    ingressClassName: nginx
     tls:
         - hosts:
               - ride-saver.online
