@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +8,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LocationAPI.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     public class LocationController : LocationApiController
     {

@@ -10,17 +10,18 @@ using RideSaver.Server.Models;
 
 namespace AuthService.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
         private readonly ITokenService _tokenService;
         private readonly IAuthenticationRepository _authenticationRepository;
+        private readonly ILogger _logger;
 
-        public AuthenticationController(ITokenService tokenService, IAuthenticationRepository authenticationRepository)
+        public AuthenticationController(ITokenService tokenService, IAuthenticationRepository authenticationRepository, ILogger logger)
         {
             _authenticationRepository = authenticationRepository;
             _tokenService = tokenService;
+            _logger = logger;
         }
 
         [HttpPost]

@@ -10,7 +10,6 @@ using UserService.Repository;
 
 namespace UserService.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     public class UserController : UserApiController
     {

@@ -7,7 +7,6 @@ using ServicesAPI.Repository;
 
 namespace ServicesAPI.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     public class ServicesController : ServicesApiController
     {

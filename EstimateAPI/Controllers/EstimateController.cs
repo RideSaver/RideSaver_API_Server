@@ -1,4 +1,4 @@
-﻿using EstimateAPI.Repository;
+using EstimateAPI.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +8,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EstimateAPI.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     public class EstimateController : EstimateApiController
     {
