@@ -40,4 +40,4 @@ ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
 WORKDIR /app
 COPY --from=builder /server/publish ./
 
-ENTRYPOINT ["./RequestAPI", "--urls", "http://0.0.0.0:80"]
+ENTRYPOINT ["./RequestAPI", "--urls", "http://0.0.0.0:443"]

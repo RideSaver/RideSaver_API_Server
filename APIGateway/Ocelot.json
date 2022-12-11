@@ -12,7 +12,7 @@
                 "RouteIsCaseSensitive": false,
                 "ServiceName": "auth-service",
                 "ServiceNameSpace": "api",
-                "DownstreamScheme": "http"
+                "DownstreamScheme": "https"
             },
 
             {
@@ -22,7 +22,7 @@
                 "RouteIsCaseSensitive": false,
                 "ServiceName": "estimate-api",
                 "ServiceNameSpace": "api",
-                "DownstreamScheme": "http",
+                "DownstreamScheme": "https",
                 "AuthenticationOptions": {
                     "AuthenticationProviderKey": "APIGatewayAuthentication"
                 }
@@ -35,7 +35,7 @@
                 "ServiceName": "estimate-api",
                 "ServiceNameSpace": "api",
                 "RouteIsCaseSensitive": false,
-                "DownstreamScheme": "http",
+                "DownstreamScheme": "https",
                 "AuthenticationOptions": {
                     "AuthenticationProviderKey": "APIGatewayAuthentication"
                 }
@@ -48,7 +48,7 @@
                 "ServiceName": "location-api",
                 "ServiceNameSpace": "api",
                 "RouteIsCaseSensitive": false,
-                "DownstreamScheme": "http",
+                "DownstreamScheme": "https",
                 "AuthenticationOptions": {
                     "AuthenticationProviderKey": "APIGatewayAuthentication"
                 }
@@ -61,7 +61,7 @@
                 "ServiceNameSpace": "api",
                 "DownstreamPathTemplate": "/api/v1/rides/{rideId}",
                 "RouteIsCaseSensitive": false,
-                "DownstreamScheme": "http",
+                "DownstreamScheme": "https",
                 "AuthenticationOptions": {
                     "AuthenticationProviderKey": "APIGatewayAuthentication"
                 }
@@ -74,7 +74,7 @@
                 "RouteIsCaseSensitive": false,
                 "ServiceName": "request-api",
                 "ServiceNameSpace": "api",
-                "DownstreamScheme": "http",
+                "DownstreamScheme": "https",
                 "AuthenticationOptions": {
                     "AuthenticationProviderKey": "APIGatewayAuthentication"
                 }
@@ -87,7 +87,7 @@
                 "RouteIsCaseSensitive": false,
                 "ServiceName": "request-api",
                 "ServiceNameSpace": "api",
-                "DownstreamScheme": "http",
+                "DownstreamScheme": "https",
                 "AuthenticationOptions": {
                     "AuthenticationProviderKey": "APIGatewayAuthentication"
                 }
@@ -100,7 +100,7 @@
                 "RouteIsCaseSensitive": false,
                 "ServiceName": "services-api",
                 "ServiceNameSpace": "api",
-                "DownstreamScheme": "http",
+                "DownstreamScheme": "https",
                 "AuthenticationOptions": {
                     "AuthenticationProviderKey": "APIGatewayAuthentication"
                 }
@@ -113,7 +113,7 @@
                 "ServiceName": "user-service",
                 "ServiceNameSpace": "api",
                 "RouteIsCaseSensitive": false,
-                "DownstreamScheme": "http",
+                "DownstreamScheme": "https",
                 "AuthenticationOptions": {
                     "AuthenticationProviderKey": "APIGatewayAuthentication"
                 }
@@ -126,7 +126,7 @@
                 "ServiceName": "user-service",
                 "ServiceNameSpace": "api",
                 "RouteIsCaseSensitive": false,
-                "DownstreamScheme": "http",
+                "DownstreamScheme": "https",
                 "AuthenticationOptions": {
                     "AuthenticationProviderKey": "APIGatewayAuthentication"
                 }
@@ -139,7 +139,7 @@
                 "ServiceName": "user-service",
                 "ServiceNameSpace": "api",
                 "RouteIsCaseSensitive": false,
-                "DownstreamScheme": "http",
+                "DownstreamScheme": "https",
                 "AuthenticationOptions": {
                     "AuthenticationProviderKey": "APIGatewayAuthentication"
                 }
@@ -152,7 +152,7 @@
                 "ServiceName": "user-service",
                 "ServiceNameSpace": "api",
                 "RouteIsCaseSensitive": false,
-                "DownstreamScheme": "http"
+                "DownstreamScheme": "https"
             }
         ]
     }

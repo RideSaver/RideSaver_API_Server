@@ -41,4 +41,4 @@ WORKDIR /app
 COPY --from=builder /server/publish ./
 COPY Ocelot.json ocelot.json
 
-ENTRYPOINT ["./APIGateway", "--urls", "http://0.0.0.0:80"]
+ENTRYPOINT ["./APIGateway", "--urls", "http://0.0.0.0:443"]
