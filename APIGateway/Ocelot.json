@@ -1,172 +1,157 @@
 {
     "GlobalConfiguration": {
-        "BaseUrl": "http://ride-saver.online"
-    },
-    "Routes": [
-        {
-            "UpstreamPathTemplate": "/apigateway/AuthService/Login",
-            "UpstreamHttpMethod": ["GET"],
-            "DownstreamPathTemplate": "/api/v1/auth/login",
-            "RouteIsCaseSensitive": false,
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "auth-service.api.svc.cluster.local",
-                    "Port": 80
-                }
-            ]
+        "ServiceDiscoveryProvider": {
+            "Namespace": "server",
+            "Type": "KubernetesServiceDiscoveryProvider"
+
         },
-        {
-            "UpstreamPathTemplate": "/apigateway/AuthService/VerifyToken",
-            "UpstreamHttpMethod": ["GET"],
-            "DownstreamPathTemplate": "/api/v1/auth/verifytoken",
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": "APIGatewayAuthentication"
+        "Routes": [
+            {
+                "UpstreamPathTemplate": "/authentication/login",
+                "UpstreamHttpMethod": [ "GET" ],
+                "DownstreamPathTemplate": "/api/v1/auth/login",
+                "RouteIsCaseSensitive": false,
+                "ServiceName": "auth-service.api.svc.cluster.local",
+                "ServiceNameSpace": "api",
+                "DownstreamScheme": "http"
             },
-            "RouteIsCaseSensitive": false,
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "auth-service.api.svc.cluster.local",
-                    "Port": 80
-                }
-            ]
-        },
-        {
-            "UpstreamPathTemplate": "/apigateway/Estimates",
-            "UpstreamHttpMethod": ["GET"],
-            "DownstreamPathTemplate": "/api/v1/estimates",
-            "RouteIsCaseSensitive": false,
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "estimate-api.api.svc.cluster.local",
-                    "Port": 80
-                }
-            ]
-        },
-        {
-            "UpstreamPathTemplate": "/apigateway/Estimates/Refresh",
-            "UpstreamHttpMethod": ["GET"],
-            "DownstreamPathTemplate": "/api/v1/estimates/refresh",
-            "RouteIsCaseSensitive": false,
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "estimate-api.api.svc.cluster.local",
-                    "Port": 80
-                }
-            ]
-        },
-        {
-            "UpstreamPathTemplate": "/apigateway/Location/Autocomplete",
-            "UpstreamHttpMethod": ["GET"],
-            "DownstreamPathTemplate": "/api/v1/location/autocomplete",
-            "RouteIsCaseSensitive": false,
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "location-api.api.svc.cluster.local",
-                    "Port": 80
-                }
-            ]
-        },
-        {
-            "UpstreamPathTemplate": "/apigateway/Rides/{rideId}",
-            "UpstreamHttpMethod": ["DELETE"],
-            "DownstreamPathTemplate": "/api/v1/rides/{rideId}",
-            "RouteIsCaseSensitive": false,
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "request-api.api.svc.cluster.local",
-                    "Port": 80
-                }
-            ]
-        },
-        {
-            "UpstreamPathTemplate": "/apigateway/Rides/{rideId}",
-            "UpstreamHttpMethod": ["GET"],
-            "DownstreamPathTemplate": "/api/v1/rides/{rideId}",
-            "RouteIsCaseSensitive": false,
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "request-api.api.svc.cluster.local",
-                    "Port": 80
-                }
-            ]
-        },
-        {
-            "UpstreamPathTemplate": "/apigateway/Rides/Request/{estimateId}",
-            "UpstreamHttpMethod": ["POST"],
-            "DownstreamPathTemplate": "/api/v1/rides/request/{estimateId}",
-            "RouteIsCaseSensitive": false,
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "request-api.api.svc.cluster.local",
-                    "Port": 80
-                }
-            ]
-        },
-        {
-            "UpstreamPathTemplate": "/apigateway/Providers",
-            "UpstreamHttpMethod": ["GET"],
-            "DownstreamPathTemplate": "/api/v1/providers",
-            "RouteIsCaseSensitive": false,
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "services-api.api.svc.cluster.local",
-                    "Port": 80
-                }
-            ]
-        },
-        {
-            "UpstreamPathTemplate": "/apigateway/User/Info/{username}",
-            "UpstreamHttpMethod": ["GET"],
-            "DownstreamPathTemplate": "/api/v1/user/info/{username}",
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": "APIGatewayAuthentication"
+
+            {
+                "UpstreamPathTemplate": "/authentication/verifytoken",
+                "UpstreamHttpMethod": [ "GET" ],
+                "DownstreamPathTemplate": "/api/v1/auth/verifytoken",
+                "ServiceName": "auth-service.api.svc.cluster.local",
+                "ServiceNameSpace": "api",
+                "RouteIsCaseSensitive": false,
+                "DownstreamScheme": "http"
             },
-            "RouteIsCaseSensitive": false,
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "user-service.api.svc.cluster.local",
-                    "Port": 80
+
+            {
+                "UpstreamPathTemplate": "/estimates",
+                "UpstreamHttpMethod": [ "GET" ],
+                "DownstreamPathTemplate": "/api/v1/estimates",
+                "RouteIsCaseSensitive": false,
+                "ServiceName": "estimate-api.api.svc.cluster.local",
+                "ServiceNameSpace": "api",
+                "DownstreamScheme": "http",
+                "AuthenticationOptions": {
+                    "AuthenticationProviderKey": "APIGatewayAuthentication"
                 }
-            ]
-        },
-        {
-            "UpstreamPathTemplate": "/apigateway/User/Info/{username}",
-            "UpstreamHttpMethod": ["PATCH"],
-            "DownstreamPathTemplate": "/api/v1/user/info/{username}",
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": "APIGatewayAuthentication"
             },
-            "RouteIsCaseSensitive": false,
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "user-service.api.svc.cluster.local",
-                    "Port": 80
+
+            {
+                "UpstreamPathTemplate": "/estimates/refresh",
+                "UpstreamHttpMethod": [ "GET" ],
+                "DownstreamPathTemplate": "/api/v1/estimates/refresh",
+                "ServiceName": "estimate-api.api.svc.cluster.local",
+                "ServiceNameSpace": "api",
+                "RouteIsCaseSensitive": false,
+                "DownstreamScheme": "http",
+                "AuthenticationOptions": {
+                    "AuthenticationProviderKey": "APIGatewayAuthentication"
                 }
-            ]
-        },
-        {
-            "UpstreamPathTemplate": "/apigateway/User/Signup",
-            "UpstreamHttpMethod": ["POST"],
-            "DownstreamPathTemplate": "/api/v1/user/signup",
-            "RouteIsCaseSensitive": false,
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "user-service.api.svc.cluster.local",
-                    "Port": 80
+            },
+
+            {
+                "UpstreamPathTemplate": "/location/autocomplete",
+                "UpstreamHttpMethod": [ "GET" ],
+                "DownstreamPathTemplate": "/api/v1/location/autocomplete",
+                "ServiceName": "location-api.api.svc.cluster.local",
+                "ServiceNameSpace": "api",
+                "RouteIsCaseSensitive": false,
+                "DownstreamScheme": "http",
+                "AuthenticationOptions": {
+                    "AuthenticationProviderKey": "APIGatewayAuthentication"
                 }
-            ]
-        }
-    ]
+            },
+
+            {
+                "UpstreamPathTemplate": "rides/{rideId}",
+                "UpstreamHttpMethod": [ "DELETE" ],
+                "ServiceName": "request-api.api.svc.cluster.local",
+                "ServiceNameSpace": "api",
+                "DownstreamPathTemplate": "/api/v1/rides/{rideId}",
+                "RouteIsCaseSensitive": false,
+                "DownstreamScheme": "http",
+                "AuthenticationOptions": {
+                    "AuthenticationProviderKey": "APIGatewayAuthentication"
+                }
+            },
+
+            {
+                "UpstreamPathTemplate": "/rides/{rideId}",
+                "UpstreamHttpMethod": [ "GET" ],
+                "DownstreamPathTemplate": "/api/v1/rides/{rideId}",
+                "RouteIsCaseSensitive": false,
+                "ServiceName": "request-api.api.svc.cluster.local",
+                "ServiceNameSpace": "api",
+                "DownstreamScheme": "http",
+                "AuthenticationOptions": {
+                    "AuthenticationProviderKey": "APIGatewayAuthentication"
+                }
+            },
+
+            {
+                "UpstreamPathTemplate": "/rides/request/{estimateId}",
+                "UpstreamHttpMethod": [ "POST" ],
+                "DownstreamPathTemplate": "/api/v1/rides/request/{estimateId}",
+                "RouteIsCaseSensitive": false,
+                "ServiceName": "request-api.api.svc.cluster.local",
+                "ServiceNameSpace": "api",
+                "DownstreamScheme": "http",
+                "AuthenticationOptions": {
+                    "AuthenticationProviderKey": "APIGatewayAuthentication"
+                }
+            },
+
+            {
+                "UpstreamPathTemplate": "/providers",
+                "UpstreamHttpMethod": [ "GET" ],
+                "DownstreamPathTemplate": "/api/v1/providers",
+                "RouteIsCaseSensitive": false,
+                "ServiceName": "services-api.api.svc.cluster.local",
+                "ServiceNameSpace": "api",
+                "DownstreamScheme": "http",
+                "AuthenticationOptions": {
+                    "AuthenticationProviderKey": "APIGatewayAuthentication"
+                }
+            },
+
+            {
+                "UpstreamPathTemplate": "/user/info/{username}",
+                "UpstreamHttpMethod": [ "GET" ],
+                "DownstreamPathTemplate": "/api/v1/user/info/{username}",
+                "ServiceName": "user-service.api.svc.cluster.local",
+                "ServiceNameSpace": "api",
+                "RouteIsCaseSensitive": false,
+                "DownstreamScheme": "http",
+                "AuthenticationOptions": {
+                    "AuthenticationProviderKey": "APIGatewayAuthentication"
+                }
+            },
+
+            {
+                "UpstreamPathTemplate": "/user/info/{username}",
+                "UpstreamHttpMethod": [ "PATCH" ],
+                "DownstreamPathTemplate": "/api/v1/user/info/{username}",
+                "ServiceName": "user-service.api.svc.cluster.local",
+                "ServiceNameSpace": "api",
+                "RouteIsCaseSensitive": false,
+                "DownstreamScheme": "http",
+                "AuthenticationOptions": {
+                    "AuthenticationProviderKey": "APIGatewayAuthentication"
+                }
+            },
+
+            {
+                "UpstreamPathTemplate": "/user/signup",
+                "UpstreamHttpMethod": [ "POST" ],
+                "DownstreamPathTemplate": "/api/v1/user/signup",
+                "ServiceName": "user-service.api.svc.cluster.local",
+                "ServiceNameSpace": "api",
+                "RouteIsCaseSensitive": false,
+                "DownstreamScheme": "http"
+            }
+        ]
+    }
 }

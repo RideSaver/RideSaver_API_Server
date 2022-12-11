@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using InternalAPI;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,12 @@ builder.Services.AddGrpcClient<Authentication.AuthenticationClient>(o =>
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
 
 builder.Services.AddAuthentication(options =>
 {
@@ -67,11 +74,13 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseForwardedHeaders();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseForwardedHeaders();
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

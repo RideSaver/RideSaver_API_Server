@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using InternalAPI;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +27,14 @@ builder.Services.AddTransient<IRequestRepository, RequestRepository>();
 builder.Services.AddGrpc();
 builder.Services.AddGrpcClient<Services.ServicesClient>(o =>
 {
-    o.Address = new Uri($"https://services.api:80");
+    o.Address = new Uri("https://services.api:80");
+});
+
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 });
 
 builder.Services.AddAuthentication(options =>
@@ -57,11 +65,13 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseForwardedHeaders();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseForwardedHeaders();
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

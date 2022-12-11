@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.IdentityModel.Tokens;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
@@ -34,10 +35,13 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
-builder.Configuration.AddJsonFile("ocelot.json");
-builder.Services
-    .AddOcelot(builder.Configuration)
-    .AddKubernetes();
+builder.Configuration.AddJsonFile("Ocelot.json");
+builder.Services.AddOcelot(builder.Configuration).AddKubernetes();
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
 
 var app = builder.Build();
 
@@ -46,13 +50,15 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-
+    app.UseForwardedHeaders();
 }
+
+app.UseForwardedHeaders();
+
 
 app.UseHttpsRedirection();
 
-app.UseOcelot()
-    .Wait();
+app.UseOcelot().Wait();
 
 app.UseAuthorization();
 

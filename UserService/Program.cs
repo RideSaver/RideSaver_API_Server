@@ -7,6 +7,7 @@ using System.Text;
 using UserService.Data;
 using UserService.Repository;
 using InternalAPI;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace UserService
 {
@@ -61,7 +62,13 @@ namespace UserService
                 o.Address = new Uri("https://authentication.api:80");
             });
 
-           
+
+            builder.Services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
+
             builder.Services.AddTransient<IUserRepository, UserRepository>();
 
             var app = builder.Build();
@@ -79,7 +86,8 @@ namespace UserService
                 dataContext.Database.Migrate();
             }*/
 
-            //app.UseHttpsRedirection();
+            app.UseForwardedHeaders();
+            app.UseHttpsRedirection();
             app.UseAuthorization();
             app.MapControllers();
             app.Run();

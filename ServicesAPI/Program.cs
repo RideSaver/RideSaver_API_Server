@@ -1,5 +1,6 @@
 using InternalAPI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ServicesAPI.Data;
@@ -49,6 +50,13 @@ builder.Services.AddAuthentication(options =>
             };
        });
 
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
+
 builder.Services.AddSingleton<IServiceRegistry, ServiceRegistry>();
 builder.Services.AddTransient<IInternalServices, InternalServices>(); 
 builder.Services.AddTransient<IServiceRepository, ServiceRepository>();
@@ -59,6 +67,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseForwardedHeaders();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
@@ -68,8 +77,9 @@ if (app.Environment.IsDevelopment())
     var dataContext = scope.ServiceProvider.GetRequiredService<ServiceContext>();
     dataContext.Database.Migrate();
 }*/
+app.UseForwardedHeaders();
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

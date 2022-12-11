@@ -9,6 +9,7 @@ using System.ComponentModel.DataAnnotations;
 namespace LocationAPI.Controllers
 {
     [ApiController]
+    [Route("api/v1/[controller]")]
     public class LocationController : LocationApiController
     {
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]

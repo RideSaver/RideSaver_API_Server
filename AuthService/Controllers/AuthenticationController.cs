@@ -11,6 +11,7 @@ using RideSaver.Server.Models;
 namespace AuthService.Controllers
 {
     [ApiController]
+    [Route("api/v1/[controller]")]
     public class AuthenticationController : ControllerBase
     {
         private readonly ITokenService _tokenService;
