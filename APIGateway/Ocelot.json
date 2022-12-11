@@ -1,8 +1,8 @@
 {
     "GlobalConfiguration": {
         "ServiceDiscoveryProvider": {
-            "Namespace": "server",
-            "Port": 80,
+            "Host": "127.0.0.1",
+            "Namespace": "service",
             "Type": "KubernetesServiceDiscoveryProvider"
 
         },
