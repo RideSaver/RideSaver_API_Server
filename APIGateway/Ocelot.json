@@ -1,7 +1,8 @@
 {
     "GlobalConfiguration": {
         "ServiceDiscoveryProvider": {
-            "Namespace": "api",
+            "Namespace": "server",
+            "Port": 80,
             "Type": "KubernetesServiceDiscoveryProvider"
 
         },
@@ -121,6 +122,19 @@
                 "UpstreamPathTemplate": "/user/info/{username}",
                 "UpstreamHttpMethod": [ "GET" ],
                 "DownstreamPathTemplate": "/api/v1/user/info/{username}",
+                "ServiceName": "user-service.api.svc.cluster.local",
+                "ServiceNameSpace": "api",
+                "RouteIsCaseSensitive": false,
+                "DownstreamScheme": "http",
+                "AuthenticationOptions": {
+                    "AuthenticationProviderKey": "APIGatewayAuthentication"
+                }
+            },
+
+            {
+                "UpstreamPathTemplate": "/user/info/{username}/ridehistory",
+                "UpstreamHttpMethod": [ "GET" ],
+                "DownstreamPathTemplate": "/api/v1/user/{username}/rideHistory",
                 "ServiceName": "user-service.api.svc.cluster.local",
                 "ServiceNameSpace": "api",
                 "RouteIsCaseSensitive": false,
