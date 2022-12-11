@@ -55,7 +55,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpLogging();
 app.UseForwardedHeaders();
-app.UseHttpsRedirection();
+//.UseHttpsRedirection();
 app.UseOcelot().Wait();
 app.UseAuthorization();
 app.MapControllers();
