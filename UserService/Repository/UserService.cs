@@ -31,8 +31,8 @@ namespace UserService.Repository
             {
                 Id = userInfo.Id.ToString(),
                 Username = userInfo.Username,
-                PasswordSalt = BytesToString(userInfo.passwordSalt!),
-                PasswordHash = BytesToString(userInfo.passwordHash!),
+                PasswordSalt = BytesToString(userInfo.PasswordSalt!),
+                PasswordHash = BytesToString(userInfo.PasswordHash!),
                 Email = userInfo.Email,
             };
 
@@ -47,8 +47,8 @@ namespace UserService.Repository
             {
                 Id = model.Id.ToString(),
                 Username = model.Username,
-                PasswordSalt = BytesToString(model.passwordSalt!),
-                PasswordHash = BytesToString(model.passwordHash!),
+                PasswordSalt = BytesToString(model.PasswordSalt!),
+                PasswordHash = BytesToString(model.PasswordHash!),
                 Email = model.Email
             };
 

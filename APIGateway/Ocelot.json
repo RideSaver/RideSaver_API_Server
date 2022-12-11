@@ -1,12 +1,6 @@
 {
     "GlobalConfiguration": {
-        "ServiceDiscoveryProvider": {
-            "Host": "192.168.0.13",
-            "Port": 443,
-            "Token": "txpc696iUhbVoudg164r93CxDTrKRVWG",
-            "Namespace": "api",
-            "Type": "kube"
-        }
+        "BaseUrl": "http://ride-saver.online"
     },
     "Routes": [
         {
@@ -14,7 +8,7 @@
             "UpstreamHttpMethod": ["GET"],
             "DownstreamPathTemplate": "/api/v1/auth/login",
             "RouteIsCaseSensitive": false,
-            "DownstreamScheme": "https",
+            "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
                     "Host": "auth-service",
@@ -30,7 +24,7 @@
                 "AuthenticationProviderKey": "APIGatewayAuthentication"
             },
             "RouteIsCaseSensitive": false,
-            "DownstreamScheme": "https",
+            "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
                     "Host": "auth-service",
@@ -43,7 +37,7 @@
             "UpstreamHttpMethod": ["GET"],
             "DownstreamPathTemplate": "/api/v1/estimates",
             "RouteIsCaseSensitive": false,
-            "DownstreamScheme": "https",
+            "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
                     "Host": "estimate-api",
@@ -56,7 +50,7 @@
             "UpstreamHttpMethod": ["GET"],
             "DownstreamPathTemplate": "/api/v1/estimates/refresh",
             "RouteIsCaseSensitive": false,
-            "DownstreamScheme": "https",
+            "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
                     "Host": "estimate-api",
@@ -69,7 +63,7 @@
             "UpstreamHttpMethod": ["GET"],
             "DownstreamPathTemplate": "/api/v1/location/autocomplete",
             "RouteIsCaseSensitive": false,
-            "DownstreamScheme": "https",
+            "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
                     "Host": "location-api",
@@ -82,7 +76,7 @@
             "UpstreamHttpMethod": ["DELETE"],
             "DownstreamPathTemplate": "/api/v1/rides/{rideId}",
             "RouteIsCaseSensitive": false,
-            "DownstreamScheme": "https",
+            "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
                     "Host": "request-api",
@@ -95,7 +89,7 @@
             "UpstreamHttpMethod": ["GET"],
             "DownstreamPathTemplate": "/api/v1/rides/{rideId}",
             "RouteIsCaseSensitive": false,
-            "DownstreamScheme": "https",
+            "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
                     "Host": "request-api",
@@ -108,7 +102,7 @@
             "UpstreamHttpMethod": ["POST"],
             "DownstreamPathTemplate": "/api/v1/rides/request/{estimateId}",
             "RouteIsCaseSensitive": false,
-            "DownstreamScheme": "https",
+            "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
                     "Host": "request-api",
@@ -121,7 +115,7 @@
             "UpstreamHttpMethod": ["GET"],
             "DownstreamPathTemplate": "/api/v1/providers",
             "RouteIsCaseSensitive": false,
-            "DownstreamScheme": "https",
+            "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
                     "Host": "services-api",
@@ -137,7 +131,7 @@
                 "AuthenticationProviderKey": "APIGatewayAuthentication"
             },
             "RouteIsCaseSensitive": false,
-            "DownstreamScheme": "https",
+            "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
                     "Host": "user-service",
@@ -153,7 +147,7 @@
                 "AuthenticationProviderKey": "APIGatewayAuthentication"
             },
             "RouteIsCaseSensitive": false,
-            "DownstreamScheme": "https",
+            "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
                     "Host": "user-service",
@@ -166,7 +160,7 @@
             "UpstreamHttpMethod": ["POST"],
             "DownstreamPathTemplate": "/api/v1/user/signup",
             "RouteIsCaseSensitive": false,
-            "DownstreamScheme": "https",
+            "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
                     "Host": "user-service",

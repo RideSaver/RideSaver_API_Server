@@ -25,12 +25,13 @@ builder.Services.AddDbContext<AuthContext>(options =>
         });
 });
 
-builder.Services.AddGrpcClient<Authentication.AuthenticationClient>(o =>
-{
-    o.Address = new Uri($"https://user.api");
-});
 
 builder.Services.AddGrpc();
+builder.Services.AddGrpcClient<Authentication.AuthenticationClient>(o =>
+{
+    o.Address = new Uri($"https://user.api:80");
+});
+
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
 

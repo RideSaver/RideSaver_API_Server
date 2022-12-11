@@ -26,7 +26,7 @@ namespace AuthService.Repository
 
             if (userInfo is null) return false;
             if(userInfo.Username != userLogin.Username) return false;
-            if (!Security.Argon2.VerifyHash(userLogin.Password, userInfo.passwordHash!, userInfo.passwordSalt!)) return false;
+            if (!Security.Argon2.VerifyHash(userLogin.Password, userInfo.PasswordHash!, userInfo.PasswordSalt!)) return false;
             return true;
         }
 

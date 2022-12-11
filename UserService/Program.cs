@@ -55,13 +55,13 @@ namespace UserService
                 };
             });
 
-
+            builder.Services.AddGrpc();
             builder.Services.AddGrpcClient<Authentication.AuthenticationClient>(o =>
             {
-                o.Address = new Uri($"https://authentication.api");
+                o.Address = new Uri("https://authentication.api:80");
             });
 
-            builder.Services.AddGrpc();
+           
             builder.Services.AddTransient<IUserRepository, UserRepository>();
 
             var app = builder.Build();

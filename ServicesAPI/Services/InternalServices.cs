@@ -6,14 +6,16 @@ using ServicesAPI.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Transactions;
+using static DataAccess.Models.ServiceFeaturesModel;
+using Google.Protobuf.Collections;
 
-namespace ServicesAPI.Controllers
+namespace ServicesAPI.Services
 {
     // Summary: Handles all requests for estimates
-    public class InternalServicesController : Services.ServicesBase
+    public class InternalServices : InternalAPI.Services.ServicesBase, IInternalServices
     {
         private readonly ServiceContext _serviceContext;
-        public InternalServicesController(ServiceContext serviceContext) => _serviceContext = serviceContext;
+        public InternalServices(ServiceContext serviceContext) => _serviceContext = serviceContext;
         public override async Task<ServiceModel> GetServiceByHash(GetServiceByHashRequest request, ServerCallContext context)
         {
             var EstimateId = new SqlParameter("@EstimateId", request.Hash);
@@ -29,9 +31,10 @@ namespace ServicesAPI.Controllers
             using (var scope = new TransactionScope())
             {
                 IList<ServicesModel> services = (IList<ServicesModel>)_serviceContext.Services.ToListAsync();
-                foreach(var service in services)
+                foreach (var service in services)
                 {
-                    await responseStream.WriteAsync(new ServiceModel {
+                    await responseStream.WriteAsync(new ServiceModel
+                    {
                         Name = service.Name,
                         ClientId = service.ClientId,
                     });
@@ -48,36 +51,64 @@ namespace ServicesAPI.Controllers
                     Id = new Guid(request.Id.ToByteArray()),
                     Name = request.Name,
                     ClientId = request.ClientName,
-                    ProviderId  = new Guid()
+                    ProviderId = new Guid(),
+                    ServiceFeatures = ConvertServiceFeaturesToServiceFeaturesModel(request.Features)
                 };
 
                 _serviceContext.Services.Add(service);
-                foreach(var features in request.Features)
+                foreach (var features in request.Features)
                 {
                     var feature = new ServiceFeaturesModel { ServiceId = new Guid(request.Id.ToByteArray()) };
-                    switch(features)
+                    switch (features)
                     {
                         case ServiceFeatures.Shared:
-                            feature.Feature = ServiceFeaturesModel.Features.shared;
+                            feature.Feature = Features.shared;
                             break;
                         case ServiceFeatures.Cash:
-                            feature.Feature = ServiceFeaturesModel.Features.cash;
+                            feature.Feature = Features.cash;
                             break;
                         case ServiceFeatures.ProfessionalDriver:
-                            feature.Feature = ServiceFeaturesModel.Features.professional_driver;
+                            feature.Feature = Features.professional_driver;
                             break;
                         case ServiceFeatures.SelfDriving:
-                            feature.Feature = ServiceFeaturesModel.Features.self_driving;
+                            feature.Feature = Features.self_driving;
                             break;
                         default:
                             continue;
                     }
                     _serviceContext.ServicesFeatures.Add(feature);
                 }
-                _serviceContext.SaveChanges();   
+                _serviceContext.SaveChanges();
             }
 
             return (Task<Empty>)Task.CompletedTask;
+        }
+
+        public static List<ServiceFeaturesModel> ConvertServiceFeaturesToServiceFeaturesModel(RepeatedField<ServiceFeatures> serviceFeatures)
+        {
+            var serviceFeaturesList = new List<ServiceFeaturesModel>();
+            foreach (var serviceFeature in serviceFeatures)
+            {
+                var serviceFeaturesModel = new ServiceFeaturesModel();
+                switch (serviceFeature)
+                {
+                    case ServiceFeatures.Shared:
+                        serviceFeaturesModel.Feature = Features.shared;
+                        break;
+                    case ServiceFeatures.Cash:
+                        serviceFeaturesModel.Feature = Features.cash;
+                        break;
+                    case ServiceFeatures.ProfessionalDriver:
+                        serviceFeaturesModel.Feature = Features.professional_driver;
+                        break;
+                    case ServiceFeatures.SelfDriving:
+                        serviceFeaturesModel.Feature = Features.self_driving;
+                        break;
+                    default: continue;
+                }
+                serviceFeaturesList.Add(serviceFeaturesModel);
+            }
+            return serviceFeaturesList;
         }
     }
 }

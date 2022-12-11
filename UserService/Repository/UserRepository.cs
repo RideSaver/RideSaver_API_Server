@@ -71,8 +71,8 @@ namespace UserService.Repository
                     CreatedAt = DateTime.Now,
                     Email = userInfo.Email,
                     PhoneNumber = userInfo.PhoneNumber,
-                    passwordSalt = salt,
-                    passwordHash = Security.Argon2.HashPassword(userInfo.Password, salt)
+                    PasswordSalt = salt,
+                    PasswordHash = Security.Argon2.HashPassword(userInfo.Password, salt)
                 };
 
                 await _userContext.AddAsync(user);
@@ -110,10 +110,10 @@ namespace UserService.Repository
             byte[] newSalt = Security.Argon2.CreateSalt();
             if(userModel is not null)
             {
-                if(!Security.Argon2.VerifyHash(userInfo.Password, userModel.passwordHash!, userModel.passwordSalt!))
+                if(!Security.Argon2.VerifyHash(userInfo.Password, userModel.PasswordHash!, userModel.PasswordSalt!))
                 {
-                    userModel.passwordHash = Security.Argon2.HashPassword(userInfo.Password, newSalt);
-                    userModel.passwordSalt = newSalt;
+                    userModel.PasswordHash = Security.Argon2.HashPassword(userInfo.Password, newSalt);
+                    userModel.PasswordSalt = newSalt;
                 }
                 userModel.Username = userInfo.Username;
                 userModel.Email = userInfo.Email;

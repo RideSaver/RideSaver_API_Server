@@ -1,8 +1,11 @@
+using InternalAPI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ServicesAPI.Data;
+using ServicesAPI.Registry;
 using ServicesAPI.Repository;
+using ServicesAPI.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,8 +49,10 @@ builder.Services.AddAuthentication(options =>
             };
        });
 
-
+builder.Services.AddSingleton<IServiceRegistry, ServiceRegistry>();
+builder.Services.AddTransient<IInternalServices, InternalServices>(); 
 builder.Services.AddTransient<IServiceRepository, ServiceRepository>();
+builder.Services.AddGrpc();
 
 var app = builder.Build();
 

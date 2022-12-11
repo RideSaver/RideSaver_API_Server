@@ -37,8 +37,8 @@ namespace AuthService.Repository
                 Id = new Guid(response.Id),
                 Username = response.Username,
                 Email = response.Email,
-                passwordSalt = Encoding.ASCII.GetBytes(response.PasswordSalt),
-                passwordHash = Encoding.ASCII.GetBytes(response.PasswordHash),
+                PasswordSalt = Encoding.ASCII.GetBytes(response.PasswordSalt),
+                PasswordHash = Encoding.ASCII.GetBytes(response.PasswordHash),
             };
 
             return userInfo;
@@ -52,23 +52,12 @@ namespace AuthService.Repository
                 Id = new Guid(response.Id),
                 Username = response.Username,
                 Email = response.Email,
-                passwordSalt = Encoding.ASCII.GetBytes(response.PasswordSalt),
-                passwordHash = Encoding.ASCII.GetBytes(response.PasswordHash),
+                PasswordSalt = Encoding.ASCII.GetBytes(response.PasswordSalt),
+                PasswordHash = Encoding.ASCII.GetBytes(response.PasswordHash),
             };
 
             await _authContext.UserCredentials.AddAsync(userInfo);
             return new Empty();
-        }
-
-        static string BytesToString(byte[] bytes)
-        {
-            using (MemoryStream stream = new MemoryStream(bytes))
-            {
-                using (StreamReader streamReader = new StreamReader(stream))
-                {
-                    return streamReader.ReadToEnd();
-                }
-            }
         }
     }
 }

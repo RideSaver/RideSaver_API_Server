@@ -53,7 +53,7 @@ namespace RequestAPI.Repository
             while(token.IsCancellationRequested)
             {
                 await this.RefreshClients();
-                System.Threading.Thread.Sleep(10000); //  Check every 10 seconds
+                Thread.Sleep(10000); //  Check every 10 seconds
             }
         }
         public async Task RefreshClients()

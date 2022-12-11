@@ -10,7 +10,6 @@ namespace ServicesAPI.Repository
     public class ServiceRepository : IServiceRepository
     {
         private readonly ServiceContext _serviceContext;
-
         public ServiceRepository(ServiceContext serviceContext) => _serviceContext = serviceContext;
 
         public async Task<List<RideService>> GetAvailableServices()
@@ -36,7 +35,7 @@ namespace ServicesAPI.Repository
         {
             var serviceProviders = new List<ServiceProvider>();
             var _providersList = await _serviceContext.Providers.ToListAsync();
-            foreach(var provider in _providersList)
+            foreach (var provider in _providersList)
             {
                 var serviceProvider = new ServiceProvider()
                 {

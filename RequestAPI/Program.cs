@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using InternalAPI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,11 +17,17 @@ builder.Services.AddControllers(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.Configure<ClientDiscoveryOptions>(
-    builder.Configuration.GetSection(ClientDiscoveryOptions.Position));
+builder.Services.Configure<ClientDiscoveryOptions>(builder.Configuration.GetSection(ClientDiscoveryOptions.Position));
+
 
 builder.Services.AddSingleton<IClientRepository, ClientRepository>();
 builder.Services.AddTransient<IRequestRepository, RequestRepository>();
+
+builder.Services.AddGrpc();
+builder.Services.AddGrpcClient<Services.ServicesClient>(o =>
+{
+    o.Address = new Uri($"https://services.api:80");
+});
 
 builder.Services.AddAuthentication(options =>
 {

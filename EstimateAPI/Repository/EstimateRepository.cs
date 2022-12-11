@@ -3,14 +3,25 @@ using RideSaver.Server.Models;
 using Google.Protobuf.Collections;
 using InternalAPI;
 using Grpc.Core;
+using Grpc.Net.ClientFactory;
 
 namespace EstimateAPI.Repository
 {
     public class EstimateRepository : IEstimateRepository
     {
         public readonly IClientRepository _clientRepository;
+        private readonly Services.ServicesClient _servicesClient;
+        private readonly Estimates.EstimatesClient _uberEstimatesClient;
+        private readonly Estimates.EstimatesClient _lyftEstimatesClient;
 
-        public EstimateRepository(IClientRepository clientRepository) => _clientRepository = clientRepository;
+
+        public EstimateRepository(IClientRepository clientRepository, Services.ServicesClient servicesClient, GrpcClientFactory grpcClientFactory)
+        {
+            _clientRepository = clientRepository;
+            _servicesClient = servicesClient;
+            _uberEstimatesClient = grpcClientFactory.CreateClient<Estimates.EstimatesClient>("UberClient");
+            _lyftEstimatesClient = grpcClientFactory.CreateClient<Estimates.EstimatesClient>("LyftClient");
+        }
 
         public async Task<List<Estimate>> GetRideEstimatesAsync(Location startPoint, Location endPoint, List<Guid> services, int? seats)
         {
@@ -83,14 +94,16 @@ namespace EstimateAPI.Repository
 
         public async Task<List<Estimate>> GetRideEstimatesRefreshAsync(List<Guid> ids) // TBA
         {
-            List<Estimate> estimates = new List<Estimate>();
-            List<Task<Estimate>> rideEstimatesRefreshTasks = new List<Task<Estimate>>();
-            var servicesClient = new Services.ServicesClient(GrpcChannel.ForAddress($"https://services.api"));
+            List<Estimate> estimates = new();
+            List<Task<Estimate>> rideEstimatesRefreshTasks = new();
+
             foreach(var id in ids)
             {
-                var service = await servicesClient.GetServiceByHashAsync(new GetServiceByHashRequest {
+                var service = await _servicesClient.GetServiceByHashAsync(new GetServiceByHashRequest
+                {
                     Hash = Google.Protobuf.ByteString.CopyFrom(id.ToByteArray(), 0, 4)
                 });
+
                 rideEstimatesRefreshTasks.Add(GetRideEstimateRefreshAsync(_clientRepository.Clients[service.ClientId], id));
             }
 
@@ -114,7 +127,7 @@ namespace EstimateAPI.Repository
             var estimateRefreshReplyModel = await client.GetEstimateRefreshAsync(clientRequested);
             var estimate = new Estimate()
             {
-                Id = new Guid(estimateRefreshReplyModel.EstimateId), // TBA: IMPLEMENT EXCEPTION HANDLING
+                Id = new Guid(estimateRefreshReplyModel.EstimateId),
                 InvalidTime = estimateRefreshReplyModel.CreatedTime.ToDateTime(),
 
                 Price = new PriceWithCurrency()

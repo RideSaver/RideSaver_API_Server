@@ -3,6 +3,7 @@ using EstimateAPI.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using InternalAPI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,22 @@ builder.Services.Configure<ClientDiscoveryOptions>(builder.Configuration.GetSect
 
 builder.Services.AddSingleton<IClientRepository, ClientRepository>();
 builder.Services.AddTransient<IEstimateRepository, EstimateRepository>();
+
+builder.Services.AddGrpc();
+builder.Services.AddGrpcClient<Services.ServicesClient>(o =>
+{
+    o.Address = new Uri("https://services-api:80");
+});
+
+builder.Services.AddGrpcClient<Estimates.EstimatesClient>("UberClient", o =>
+{
+    o.Address = new Uri("https://uber-client:80");
+});
+
+builder.Services.AddGrpcClient<Estimates.EstimatesClient>("LyftClient", o =>
+{
+    o.Address = new Uri("https://lyft-client:80");
+});
 
 builder.Services.AddAuthentication(options =>
 {
