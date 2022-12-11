@@ -48,7 +48,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseOcelot().Wait();
+app.UseOcelot()
+    .AddKubernetes()
+    .Wait();
 
 app.UseAuthorization();
 
