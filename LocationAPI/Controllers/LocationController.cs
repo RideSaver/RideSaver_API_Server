@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations;
 namespace LocationAPI.Controllers
 {
     [ApiController]
-    [Route("/api/[controller]")]
+    [Route("[controller]")]
     public class LocationController : LocationApiController
     {
         private readonly ILogger<LocationController> _logger;

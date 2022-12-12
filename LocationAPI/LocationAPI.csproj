@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.11" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
-	  <PackageReference Include="RideSaver.Server" Version="0.0.9" />
+	  <PackageReference Include="RideSaver.Server" Version="0.1.0" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
   </ItemGroup>
 

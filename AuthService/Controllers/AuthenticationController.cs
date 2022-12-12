@@ -11,7 +11,7 @@ using RideSaver.Server.Models;
 namespace AuthService.Controllers
 {
     [ApiController]
-    [Route("/api/[controller]")]
+    [Route("[controller]")]
     public class AuthenticationController : ControllerBase
     {
         private readonly ITokenService _tokenService;
@@ -26,7 +26,7 @@ namespace AuthService.Controllers
         }
 
         [HttpPost]
-        [Route("/api/v1/authentication/login")]
+        [Route("/user/login")]
         [Consumes("application/json")]
         [ValidateModelState]
         public async Task<IActionResult> Login([FromBody] UserLogin userLogin)

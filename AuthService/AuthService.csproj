@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
@@ -21,7 +21,7 @@
         <PackageReference Include="RideSaver.DataAccess" Version="0.0.8" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
         <PackageReference Include="RideSaver.InternalAPI" Version="0.0.8" />
-		<PackageReference Include="RideSaver.Server" Version="0.0.9" />
+		<PackageReference Include="RideSaver.Server" Version="0.1.0" />
         <PackageReference Include="Google.Protobuf" Version="3.21.11" />
         <PackageReference Include="Grpc.Core.Api" Version="2.50.0" />
         <PackageReference Include="Grpc.Net.Client" Version="2.50.0" />
