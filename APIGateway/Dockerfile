@@ -39,6 +39,6 @@ ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
 # Copy
 WORKDIR /app
 COPY --from=builder /server/publish ./
-COPY ocelot.json ocelot.json
+COPY Ocelot.json ocelot.json
 
 ENTRYPOINT ["dotnet", "APIGateway.dll"]

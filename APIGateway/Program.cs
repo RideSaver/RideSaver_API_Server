@@ -35,7 +35,7 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
-builder.Configuration.AddJsonFile("ocelot.json");
+builder.Configuration.AddJsonFile("Ocelot.json");
 builder.Services.AddOcelot(builder.Configuration).AddKubernetes();
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
