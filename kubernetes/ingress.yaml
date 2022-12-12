@@ -37,13 +37,6 @@ spec:
                             name: auth-service
                             port:
                                 number: 80
-                  - path: /user/signup
-                    pathType: Exact
-                    backend:
-                        service:
-                            name: auth-service
-                            port:
-                                number: 80
                   - path: /api/estimates
                     pathType: Prefix
                     backend:
