@@ -54,6 +54,6 @@ spec:
         - port: 443
           name: https
         - port: 8080
-          name: http
+          name: service-port
     selector:
         type: api-gateway
