@@ -40,7 +40,7 @@ ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
 # Copy
 WORKDIR /app
 COPY --from=builder /server/publish ./
-COPY Ocelot.json ocelot.json
+COPY ocelot.Development.json ocelot.json
 
 ENV ASPNETCORE_URLS http://*:8080
 ENV ASPNETCORE_ENVIRONMENT=Development
