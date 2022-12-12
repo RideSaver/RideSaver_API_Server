@@ -5,7 +5,7 @@ metadata:
     namespace: server
     annotations:
         cert-manager.io/cluster-issuer: letsencrypt-production
-        nginx.ingress.kubernetes.io/auth-url: https://auth/api/v1/authorize
+        nginx.ingress.kubernetes.io/auth-url: http://auth/api/v1/authorize
         nginx.ingress.kubernetes.io/auth-request-redirect: $host/login
         nginx.ingress.kubernetes.io/no-auth-locations: /api/login,/api/signup
         # Disable auth for all non-api resources
