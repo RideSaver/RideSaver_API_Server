@@ -4,9 +4,7 @@ ARG github_username
 ARG github_token
 ARG TARGETPLATFORM
 
-# Install tools
-RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends default-jre
+
 
 
 WORKDIR /server
