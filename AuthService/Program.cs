@@ -63,7 +63,7 @@ builder.Services.AddAuthentication(options =>
                 ValidateLifetime = false,
                 RequireExpirationTime = true,
                 ClockSkew = TimeSpan.Zero
-                
+
           };
     });
 
@@ -86,6 +86,16 @@ else
 {
     app.UseExceptionHandler("/Error");
 }
+
+app.Use(async (context, next) =>
+        {
+            Console.WriteLine("Serving Request");
+            // Do loging
+            // Do work that doesn't write to the Response.
+            await next.Invoke();
+            // Do logging or other work that doesn't write to the Response.
+            Console.WriteLine("Request Served");
+        });
 
 app.UseHttpLogging();
 //app.UseForwardedHeaders();
