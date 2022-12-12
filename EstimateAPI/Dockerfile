@@ -41,6 +41,6 @@ WORKDIR /app
 COPY --from=builder /server/publish ./
 
 ENV ASPNETCORE_ENVIRONMENT=Development
-ENV ASPNETCORE_URLS=https://+:443;http://+:80
+ENV ASPNETCORE_URLS=http://+:80
 
 ENTRYPOINT ["./EstimateAPI", "--urls", "https://0.0.0.0:443", "http://0.0.0.0:80"]

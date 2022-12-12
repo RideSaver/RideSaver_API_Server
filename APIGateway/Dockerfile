@@ -42,7 +42,7 @@ COPY --from=builder /server/publish ./
 COPY ocelot.Development.json ocelot.json
 
 ENV ASPNETCORE_ENVIRONMENT=Development
-ENV ASPNETCORE_URLS=https://+:443;http://+:80
+ENV ASPNETCORE_URLS=http://+:80
 
 ENTRYPOINT ["./APIGateway", "--urls", "https://0.0.0.0:443", "http://0.0.0.0:80"]
 
