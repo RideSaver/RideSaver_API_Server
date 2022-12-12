@@ -59,7 +59,9 @@ else
 
 app.UseHttpLogging();
 app.UseForwardedHeaders();
-app.UseHttpsRedirection();
+
+//app.UseHttpsRedirection();
+
 app.UseAuthorization();
 app.MapControllers();
 

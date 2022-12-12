@@ -43,4 +43,4 @@ COPY --from=builder /server/publish ./
 ENV ASPNETCORE_ENVIRONMENT=Development
 ENV ASPNETCORE_URLS=http://+:80
 
-ENTRYPOINT ["./RequestAPI", "--urls", "https://0.0.0.0:443", "http://0.0.0.0:80"]
+ENTRYPOINT ["./RequestAPI", "--urls", "http://0.0.0.0:80"]

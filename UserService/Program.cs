@@ -57,7 +57,7 @@ namespace UserService
             builder.Services.AddGrpc();
             builder.Services.AddGrpcClient<Authentication.AuthenticationClient>(o =>
             {
-                o.Address = new Uri("https://authentication.api:443");
+                o.Address = new Uri("http://authentication.api:80");
             });
 
 
@@ -93,7 +93,9 @@ namespace UserService
 
             app.UseHttpLogging();
             app.UseForwardedHeaders();
-            app.UseHttpsRedirection();
+
+            //app.UseHttpsRedirection();
+
             app.UseAuthorization();
             app.MapControllers();
 
