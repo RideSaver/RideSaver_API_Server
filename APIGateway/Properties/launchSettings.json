@@ -1,5 +1,15 @@
 {
     "profiles": {
+        "Debug": {
+            "commandName": "Project",
+            "dotnetRunMessages": true,
+            "launchBrowser": true,
+            "launchUrl": "swagger",
+            "applicationUrl": "https://localhost:7105;http://localhost:5105",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        },
         "Development": {
             "commandName": "Project",
             "dotnetRunMessages": true,

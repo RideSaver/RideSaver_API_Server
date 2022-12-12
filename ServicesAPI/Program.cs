@@ -57,7 +57,7 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
         ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 });
 
-builder.Services.AddSingleton<IServiceRegistry, ServiceRegistry>();
+builder.Services.AddTransient<IServiceRegistry, ServiceRegistry>();
 builder.Services.AddTransient<IInternalServices, InternalServices>(); 
 builder.Services.AddTransient<IServiceRepository, ServiceRepository>();
 builder.Services.AddGrpc();

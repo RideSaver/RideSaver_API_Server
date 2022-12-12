@@ -3,29 +3,26 @@ using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Grpc.Net.Client;
 using InternalAPI;
-using Microsoft.AspNetCore.Identity;
+using RideSaver.Server.Models;
 using UserService.Data;
+using UserService.Repository;
 
-namespace UserService.Repository
+namespace UserService.AuthServices
 {
-    public class UserService : Authentication.AuthenticationBase
+    public class AuthService : Authentication.AuthenticationBase , IAuthService
     {
         private readonly Authentication.AuthenticationClient _authClient;
-        private readonly IUserRepository _userRepository;
         private readonly UserContext _userContext;
-        private readonly GrpcChannel _channel;
-        public UserService(Authentication.AuthenticationClient authClient, UserContext userContext, IUserRepository userRepository)
+        public AuthService(Authentication.AuthenticationClient authClient, UserContext userContext)
         {
-            _userRepository = userRepository;
             _userContext = userContext;
             _authClient = authClient;
-            _channel = GrpcChannel.ForAddress($"http://authentication.api");
         }
         public override async Task<IdentityResponse> GetIdentity(IdentityRequest request, ServerCallContext context)
         {
             if (request is null) return null;
             var userName = request.Username;
-            var userInfo = await _userRepository.GetUserModelAsync(userName);
+            var userInfo =  await _userContext.Users.FindAsync(userName);
             if (userInfo is null) return null;
             var response = new IdentityResponse()
             {
@@ -41,8 +38,6 @@ namespace UserService.Repository
 
         public async Task<Empty> PostIdentityToAuthService(UserModel model)
         {
-            var client = new Authentication.AuthenticationClient(_channel);
-
             var userModel = new IdentityResponse()
             {
                 Id = model.Id.ToString(),
@@ -52,7 +47,7 @@ namespace UserService.Repository
                 Email = model.Email
             };
 
-            await client.AddIdentityAsync(userModel);
+            await _authClient.AddIdentityAsync(userModel);
             return new Empty();
         }
 

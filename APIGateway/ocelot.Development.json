@@ -2,22 +2,24 @@
     "GlobalConfiguration": {
         "ServiceDiscoveryProvider": {
             "Namespace": "service",
-            "Type": "KubernetesServiceDiscoveryProvider"
+            "Type": "KubernetesServiceDiscoveryProvider",
+            "Port":  443
         },
         "Routes": [
             {
+                "UseServiceDiscovery": true,
                 "UpstreamPathTemplate": "/api/authentication/login",
-                "UpstreamHttpMethod": [ "POST" ],
+                "UpstreamHttpMethod": [ "Post" ],
                 "DownstreamPathTemplate": "/api/v1/authentication/login",
                 "RouteIsCaseSensitive": false,
                 "ServiceName": "auth-service",
                 "ServiceNameSpace": "api",
                 "DownstreamScheme": "https"
             },
-
             {
+                "UseServiceDiscovery": true,
                 "UpstreamPathTemplate": "/api/estimates",
-                "UpstreamHttpMethod": [ "GET" ],
+                "UpstreamHttpMethod": [ "Get" ],
                 "DownstreamPathTemplate": "/api/v1/estimates",
                 "RouteIsCaseSensitive": false,
                 "ServiceName": "estimate-api",
@@ -27,10 +29,10 @@
                     "AuthenticationProviderKey": "APIGatewayAuthentication"
                 }
             },
-
             {
+                "UseServiceDiscovery": true,
                 "UpstreamPathTemplate": "/api/estimates/refresh",
-                "UpstreamHttpMethod": [ "GET" ],
+                "UpstreamHttpMethod": [ "Get" ],
                 "DownstreamPathTemplate": "/api/v1/estimates/refresh",
                 "ServiceName": "estimate-api",
                 "ServiceNameSpace": "api",
@@ -40,23 +42,20 @@
                     "AuthenticationProviderKey": "APIGatewayAuthentication"
                 }
             },
-
             {
+                "UseServiceDiscovery": true,
                 "UpstreamPathTemplate": "/api/location/autocomplete",
-                "UpstreamHttpMethod": [ "GET" ],
+                "UpstreamHttpMethod": [ "Get" ],
                 "DownstreamPathTemplate": "/api/v1/location/autocomplete",
                 "ServiceName": "location-api",
                 "ServiceNameSpace": "api",
                 "RouteIsCaseSensitive": false,
-                "DownstreamScheme": "https",
-                "AuthenticationOptions": {
-                    "AuthenticationProviderKey": "APIGatewayAuthentication"
-                }
+                "DownstreamScheme": "https"
             },
-
             {
+                "UseServiceDiscovery": true,
                 "UpstreamPathTemplate": "/api/rides/{rideId}",
-                "UpstreamHttpMethod": [ "DELETE" ],
+                "UpstreamHttpMethod": [ "Delete", "Get" ],
                 "ServiceName": "request-api",
                 "ServiceNameSpace": "api",
                 "DownstreamPathTemplate": "/api/v1/rides/{rideId}",
@@ -66,23 +65,10 @@
                     "AuthenticationProviderKey": "APIGatewayAuthentication"
                 }
             },
-
             {
-                "UpstreamPathTemplate": "/api/rides/{rideId}",
-                "UpstreamHttpMethod": [ "GET" ],
-                "DownstreamPathTemplate": "/api/v1/rides/{rideId}",
-                "RouteIsCaseSensitive": false,
-                "ServiceName": "request-api",
-                "ServiceNameSpace": "api",
-                "DownstreamScheme": "https",
-                "AuthenticationOptions": {
-                    "AuthenticationProviderKey": "APIGatewayAuthentication"
-                }
-            },
-
-            {
+                "UseServiceDiscovery": true,
                 "UpstreamPathTemplate": "/api/rides/request/{estimateId}",
-                "UpstreamHttpMethod": [ "POST" ],
+                "UpstreamHttpMethod": [ "Post" ],
                 "DownstreamPathTemplate": "/api/v1/rides/request/{estimateId}",
                 "RouteIsCaseSensitive": false,
                 "ServiceName": "request-api",
@@ -92,10 +78,10 @@
                     "AuthenticationProviderKey": "APIGatewayAuthentication"
                 }
             },
-
             {
+                "UseServiceDiscovery": true,
                 "UpstreamPathTemplate": "/api/providers",
-                "UpstreamHttpMethod": [ "GET" ],
+                "UpstreamHttpMethod": [ "Get" ],
                 "DownstreamPathTemplate": "/api/v1/providers",
                 "RouteIsCaseSensitive": false,
                 "ServiceName": "services-api",
@@ -105,10 +91,10 @@
                     "AuthenticationProviderKey": "APIGatewayAuthentication"
                 }
             },
-
             {
+                "UseServiceDiscovery": true,
                 "UpstreamPathTemplate": "/api/user/info/{username}",
-                "UpstreamHttpMethod": [ "GET" ],
+                "UpstreamHttpMethod": [ "Get", "Patch" ],
                 "DownstreamPathTemplate": "/api/v1/user/info/{username}",
                 "ServiceName": "user-service",
                 "ServiceNameSpace": "api",
@@ -118,10 +104,10 @@
                     "AuthenticationProviderKey": "APIGatewayAuthentication"
                 }
             },
-
             {
+                "UseServiceDiscovery": true,
                 "UpstreamPathTemplate": "/api/user/info/{username}/ridehistory",
-                "UpstreamHttpMethod": [ "GET" ],
+                "UpstreamHttpMethod": [ "Get" ],
                 "DownstreamPathTemplate": "/api/v1/user/{username}/rideHistory",
                 "ServiceName": "user-service",
                 "ServiceNameSpace": "api",
@@ -131,21 +117,8 @@
                     "AuthenticationProviderKey": "APIGatewayAuthentication"
                 }
             },
-
             {
-                "UpstreamPathTemplate": "/api/user/info/{username}",
-                "UpstreamHttpMethod": [ "PATCH" ],
-                "DownstreamPathTemplate": "/api/v1/user/info/{username}",
-                "ServiceName": "user-service",
-                "ServiceNameSpace": "api",
-                "RouteIsCaseSensitive": false,
-                "DownstreamScheme": "https",
-                "AuthenticationOptions": {
-                    "AuthenticationProviderKey": "APIGatewayAuthentication"
-                }
-            },
-
-            {
+                "UseServiceDiscovery": true,
                 "UpstreamPathTemplate": "/api/user/signup",
                 "UpstreamHttpMethod": [ "POST" ],
                 "DownstreamPathTemplate": "/api/v1/user/signup",

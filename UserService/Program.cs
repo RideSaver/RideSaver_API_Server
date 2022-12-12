@@ -67,6 +67,7 @@ namespace UserService
                     ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             });
 
+            builder.Services.AddTransient<AuthServices.IAuthService, AuthServices.AuthService>();
             builder.Services.AddTransient<IUserRepository, UserRepository>();
 
             var app = builder.Build();

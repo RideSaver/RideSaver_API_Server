@@ -34,7 +34,6 @@ RUN apk add --no-cache libstdc++ libintl
 
 EXPOSE 80
 EXPOSE 443
-EXPOSE 8080
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
 
 # Copy
@@ -42,8 +41,7 @@ WORKDIR /app
 COPY --from=builder /server/publish ./
 COPY ocelot.Development.json ocelot.json
 
-ENV ASPNETCORE_URLS http://*:8080
 ENV ASPNETCORE_ENVIRONMENT=Development
 
-ENTRYPOINT ["./APIGateway", "--urls", "http://0.0.0.0:443", "http://0.0.0.0:80", "http://0.0.0.0:8080"]
+ENTRYPOINT ["./APIGateway", "--urls", "https://0.0.0.0:443", "http://0.0.0.0:80"]
 

@@ -34,14 +34,12 @@ RUN apk add --no-cache libstdc++ libintl icu
 
 EXPOSE 80
 EXPOSE 443
-EXPOSE 8080
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
 
 # Copy
 WORKDIR /app
 COPY --from=builder /server/publish ./
 
-ENV ASPNETCORE_URLS http://*:8080
-ENV ASPNETCORE_ENVIRONMENT=Staging
+ENV ASPNETCORE_ENVIRONMENT=Development
 
-ENTRYPOINT ["./UserService", "--urls", "http://0.0.0.0:443", "http://0.0.0.0:80", "http://0.0.0.0:8080"]
+ENTRYPOINT ["./UserService", "--urls", "http://0.0.0.0:443", "http://0.0.0.0:80"]

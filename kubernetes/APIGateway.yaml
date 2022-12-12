@@ -22,7 +22,6 @@ spec:
                   ports:
                       - containerPort: 80
                       - containerPort: 443
-                      - containerPort: 8080
             imagePullSecrets:
                 - name: ridesaver-registry-credentials
 ---
@@ -53,7 +52,5 @@ spec:
           name: http
         - port: 443
           name: https
-        - port: 8080
-          name: service-port
     selector:
         type: api-gateway

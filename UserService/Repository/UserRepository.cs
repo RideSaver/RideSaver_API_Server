@@ -1,21 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using RideSaver.Server.Models;
 using DataAccess.Models;
-using System.Text;
 using UserService.Data;
-using Konscious.Security.Cryptography;
-using Microsoft.AspNetCore.Identity;
 
 namespace UserService.Repository
 {
     public class UserRepository : IUserRepository
     {
         private readonly UserContext _userContext;
-        private readonly UserService _userService;
-        public UserRepository(UserContext userContext, UserService userService)
+        private readonly AuthServices.IAuthService _authService;
+        public UserRepository(UserContext userContext, AuthServices.IAuthService authService)
         {
             _userContext = userContext;
-            _userService = userService;
+            _authService = authService;
         }
         public async Task SaveAsync() => await _userContext.SaveChangesAsync();
         public List<UserModel> GetUserModels() => _userContext.Users.ToList();
@@ -38,7 +35,6 @@ namespace UserService.Repository
 
             return userList;
         }
-
         public async Task<User> GetUserAsync(string username)
         {
             var userModel = await GetUserModelAsync(username);
@@ -76,7 +72,7 @@ namespace UserService.Repository
                 };
 
                 await _userContext.AddAsync(user);
-                await _userService.PostIdentityToAuthService(user); // Sends the new model to the auth-service to be added to the DB for authentication
+                await _authService.PostIdentityToAuthService(user);
                 await SaveAsync();
             }
         }

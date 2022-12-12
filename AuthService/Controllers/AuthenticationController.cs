@@ -26,7 +26,7 @@ namespace AuthService.Controllers
         }
 
         [HttpPost]
-        [Route("/api/v1/auth/login")]
+        [Route("/api/v1/authentication/login")]
         [Consumes("application/json")]
         [ValidateModelState]
         public async Task<IActionResult> Login([FromBody] UserLogin userLogin)
