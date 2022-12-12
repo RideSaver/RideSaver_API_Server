@@ -61,11 +61,11 @@ namespace UserService
             });
 
 
-            builder.Services.Configure<ForwardedHeadersOptions>(options =>
-            {
-                options.ForwardedHeaders =
-                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-            });
+            /*builder.Services.Configure<ForwardedHeadersOptions>(options =>
+              {
+                  options.ForwardedHeaders =
+                      ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+              });*/
 
             builder.Services.AddTransient<AuthServices.IAuthService, AuthServices.AuthService>();
             builder.Services.AddTransient<IUserRepository, UserRepository>();
@@ -77,7 +77,7 @@ namespace UserService
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-                app.UseForwardedHeaders();
+               // app.UseForwardedHeaders();
                 app.UseExceptionHandler("/Error");
             }
             else
@@ -92,7 +92,7 @@ namespace UserService
             }*/
 
             app.UseHttpLogging();
-            app.UseForwardedHeaders();
+            //app.UseForwardedHeaders();
 
             //app.UseHttpsRedirection();
 

@@ -12,11 +12,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-builder.Services.Configure<ForwardedHeadersOptions>(options =>
+/*builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders =
         ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-});
+});*/
 
 builder.Services.AddAuthentication(options =>
 {
@@ -49,7 +49,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseForwardedHeaders();
+    //app.UseForwardedHeaders();
     app.UseExceptionHandler("/Error");
 }
 else
@@ -58,7 +58,7 @@ else
 }
 
 app.UseHttpLogging();
-app.UseForwardedHeaders();
+//app.UseForwardedHeaders();
 
 //app.UseHttpsRedirection();
 
