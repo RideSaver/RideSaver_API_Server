@@ -13,8 +13,8 @@ namespace EstimateAPI.Controllers
     public class EstimateController : EstimateApiController
     {
         private readonly IEstimateRepository _estimateRepository;
-        private readonly ILogger _logger;
-        public EstimateController(IEstimateRepository estimateRepository, ILogger logger)
+        private readonly ILogger<EstimateController> _logger;
+        public EstimateController(IEstimateRepository estimateRepository, ILogger<EstimateController> logger)
         {
             _estimateRepository = estimateRepository;
             _logger = logger;

@@ -13,8 +13,8 @@ namespace RequestAPI.Controllers
     public class RequestController : RequestApiController
     {
         private readonly IRequestRepository _requestRepository;
-        private readonly ILogger _logger;
-        public RequestController(IRequestRepository requestRepository, ILogger logger)
+        private readonly ILogger<RequestController> _logger;
+        public RequestController(IRequestRepository requestRepository, ILogger<RequestController> logger)
         {
             _requestRepository = requestRepository;
             _logger = logger;

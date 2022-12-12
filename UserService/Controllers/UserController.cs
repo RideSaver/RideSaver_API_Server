@@ -15,9 +15,9 @@ namespace UserService.Controllers
     public class UserController : UserApiController
     {
         private readonly IUserRepository _userRepository;
-        private readonly ILogger _logger;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserRepository userRepository, ILogger logger)
+        public UserController(IUserRepository userRepository, ILogger<UserController> logger)
         {
             _userRepository = userRepository;
             _logger = logger;

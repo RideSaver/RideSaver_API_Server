@@ -67,9 +67,14 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseForwardedHeaders();
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseForwardedHeaders();
+    app.UseExceptionHandler("/Error");
+}
+else
+{
+    app.UseExceptionHandler("/Error");
 }
 
 /*using (var scope = app.Services.CreateScope())
@@ -83,4 +88,7 @@ app.UseForwardedHeaders();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
+app.Logger.LogInformation("[ServicesAPI] Finished middleware configuration.. starting the service.");
+
 app.Run();

@@ -35,7 +35,7 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
-builder.Configuration.AddJsonFile("Ocelot.json");
+builder.Configuration.AddJsonFile("ocelot.json");
 builder.Services.AddOcelot(builder.Configuration).AddKubernetes();
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
@@ -51,6 +51,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
     app.UseForwardedHeaders();
+    app.UseExceptionHandler("/Error");
+}
+else
+{
+    app.UseExceptionHandler("/Error");
 }
 
 app.UseHttpLogging();
@@ -59,4 +64,8 @@ app.UseHttpsRedirection();
 app.UseOcelot().Wait();
 app.UseAuthorization();
 app.MapControllers();
+
+app.Logger.LogInformation("[API-Gateway] Finished middleware configuration.. starting the service.");
+
+
 app.Run();

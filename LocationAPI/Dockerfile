@@ -40,4 +40,4 @@ ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
 WORKDIR /app
 COPY --from=builder /server/publish ./
 
-ENTRYPOINT ["./LocationAPI", "--urls", "http://0.0.0.0:443"]
+ENTRYPOINT ["dotnet", "LocationAPI.dll"]

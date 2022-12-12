@@ -8,7 +8,7 @@
             {
                 "UpstreamPathTemplate": "/api/authentication/login",
                 "UpstreamHttpMethod": [ "POST" ],
-                "DownstreamPathTemplate": "/api/v1/auth/login",
+                "DownstreamPathTemplate": "/api/v1/authentication/login",
                 "RouteIsCaseSensitive": false,
                 "ServiceName": "auth-service",
                 "ServiceNameSpace": "api",

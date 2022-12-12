@@ -1,6 +1,4 @@
-using DataAccess.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -8,6 +6,7 @@ using UserService.Data;
 using UserService.Repository;
 using InternalAPI;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Logging;
 
 namespace UserService
 {
@@ -30,7 +29,6 @@ namespace UserService
                         x.UseNetTopologySuite();
                     });
             });
-
 
             builder.Services.AddAuthentication(options =>
             {
@@ -59,7 +57,7 @@ namespace UserService
             builder.Services.AddGrpc();
             builder.Services.AddGrpcClient<Authentication.AuthenticationClient>(o =>
             {
-                o.Address = new Uri("https://authentication.api:80");
+                o.Address = new Uri("https://authentication.api:443");
             });
 
 
@@ -78,6 +76,12 @@ namespace UserService
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+                app.UseForwardedHeaders();
+                app.UseExceptionHandler("/Error");
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
             }
 
             /*using (var scope = app.Services.CreateScope())
@@ -91,6 +95,9 @@ namespace UserService
             app.UseHttpsRedirection();
             app.UseAuthorization();
             app.MapControllers();
+
+            app.Logger.LogInformation("[UserService] Finished middleware configuration.. starting the service.");
+
             app.Run();
         }
     }

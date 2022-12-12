@@ -12,8 +12,8 @@ namespace ServicesAPI.Controllers
     public class ServicesController : ServicesApiController
     {
         private readonly IServiceRepository _serviceRepository;
-        private readonly ILogger _logger;
-        public ServicesController(IServiceRepository serviceRepository, ILogger logger)
+        private readonly ILogger<ServicesController> _logger;
+        public ServicesController(IServiceRepository serviceRepository, ILogger<ServicesController> logger)
         {
             _serviceRepository = serviceRepository;
             _logger = logger;
