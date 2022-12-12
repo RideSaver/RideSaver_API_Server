@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations;
 namespace EstimateAPI.Controllers
 {
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("/api/[controller]")]
     public class EstimateController : EstimateApiController
     {
         private readonly IEstimateRepository _estimateRepository;

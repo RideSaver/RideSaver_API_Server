@@ -9,6 +9,7 @@ using System.ComponentModel.DataAnnotations;
 namespace RequestAPI.Controllers
 {
     [ApiController]
+    [Route("/api/[controller]")]
     public class RequestController : RequestApiController
     {
         private readonly IRequestRepository _requestRepository;

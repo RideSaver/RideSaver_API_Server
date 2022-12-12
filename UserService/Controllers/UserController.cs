@@ -11,6 +11,7 @@ using UserService.Repository;
 namespace UserService.Controllers
 {
     [ApiController]
+    [Route("/api/[controller]")]
     public class UserController : UserApiController
     {
         private readonly IUserRepository _userRepository;
