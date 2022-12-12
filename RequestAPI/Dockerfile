@@ -34,10 +34,14 @@ RUN apk add --no-cache libstdc++ libintl
 
 EXPOSE 80
 EXPOSE 443
+EXPOSE 8080
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
 
 # Copy
 WORKDIR /app
 COPY --from=builder /server/publish ./
 
-ENTRYPOINT ["dotnet", "RequestAPI.dll"]
+ENV ASPNETCORE_URLS http://*:8080
+ENV ASPNETCORE_ENVIRONMENT=Staging
+
+ENTRYPOINT ["./RequestAPI", "--urls", "http://0.0.0.0:443", "http://0.0.0.0:80", "http://0.0.0.0:8080"]

@@ -25,6 +25,7 @@ spec:
                   ports:
                       - containerPort: 80
                       - containerPort: 443
+                      - containerPort: 8080
                 - name: request-memcache
                   image: memcached:1.6-alpine
                   ports:
@@ -60,6 +61,8 @@ spec:
           name: http
         - port: 443
           name: https
+        - port: 8080
+          name: http
     selector:
         type: service
         service: request
