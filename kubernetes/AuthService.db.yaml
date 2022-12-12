@@ -2,7 +2,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
     name: authservice-mssql-data
-    namespace: api
+    namespace: server
 spec:
     accessModes:
         - ReadWriteOnce
@@ -14,7 +14,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
     name: authservice-mssql-deployment
-    namespace: api
+    namespace: server
 spec:
     replicas: 1
     selector:
@@ -54,7 +54,7 @@ apiVersion: v1
 kind: Service
 metadata:
     name: authservice-mssql
-    namespace: api
+    namespace: server
 spec:
     selector:
         app: mssql

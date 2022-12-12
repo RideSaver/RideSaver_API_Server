@@ -5,6 +5,14 @@ metadata:
     namespace: server
     annotations:
         cert-manager.io/cluster-issuer: letsencrypt-production
+        nginx.ingress.kubernetes.io/auth-url: https://auth/api/v1/authorize
+        nginx.ingress.kubernetes.io/auth-request-redirect: $host/login
+        nginx.ingress.kubernetes.io/no-auth-locations: /api/login,/api/signup
+        # Disable auth for all non-api resources
+        nginx.ingress.kubernetes.io/auth-snippet: |
+            if ( $request_uri !~ "^/api" ) {
+                return 200;
+            }
 spec:
     ingressClassName: nginx
     tls:
@@ -15,17 +23,66 @@ spec:
         - host: ride-saver.online
           http:
               paths:
-                  - path: /api
-                    pathType: Prefix
-                    backend:
-                        service:
-                            name: api-gateway
-                            port:
-                                number: 443
                   - path: /
                     pathType: Prefix
                     backend:
                         service:
                             name: ui-server
+                            port:
+                                number: 80
+                  - path: /user/login
+                    pathType: Exact
+                    backend:
+                        service:
+                            name: auth-service
+                            port:
+                                number: 80
+                  - path: /user/signup
+                    pathType: Exact
+                    backend:
+                        service:
+                            name: auth-service
+                            port:
+                                number: 80
+                  - path: /api/estimates
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: estimate-api
+                            port:
+                                number: 80
+                  - path: /api/location
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: location-api
+                            port:
+                                number: 80
+                  - path: /api/rides
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: request-api
+                            port:
+                                number: 80
+                  - path: /api/providers
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: services-api
+                            port:
+                                number: 80
+                  - path: /api/services
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: services-api
+                            port:
+                                number: 80
+                  - path: /api/user
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: user-service
                             port:
                                 number: 80

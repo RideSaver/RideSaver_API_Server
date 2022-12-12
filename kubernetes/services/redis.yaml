@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
     name: backend-redis
-    namespace: api
+    namespace: server
 spec:
     serviceName: backend-redis
     replicas: 3
@@ -11,7 +11,7 @@ spec:
             app: backend-redis
     template:
         metadata:
-            namespace: api
+            namespace: server
             labels:
                 app: backend-redis
         spec:

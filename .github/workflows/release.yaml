@@ -26,7 +26,6 @@ jobs:
         strategy:
             matrix:
                 image:
-                    - api_gateway
                     - estimate_api
                     - location_api
                     - request_api
@@ -105,5 +104,7 @@ jobs:
               run: |
                   kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.10.1/cert-manager.yaml
                   kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml
+            - name: Wait for previous deploy to finish
+              run: sleep 1
             - name: Trigger deploy
               run: kubectl apply -f kubernetes

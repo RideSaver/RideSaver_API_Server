@@ -1,14 +1,5 @@
 target "docker-metadata-action" {}
 
-target "api_gateway" {
-  inherits = ["docker-metadata-action"]
-  context = "APIGateway"
-  dockerfile = "Dockerfile"
-  platforms = [
-    "linux/amd64"
-  ]
-}
-
 target "estimate_api" {
   inherits = ["docker-metadata-action"]
   context = "EstimateAPI"
