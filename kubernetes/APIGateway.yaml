@@ -4,7 +4,7 @@ metadata:
   name: api-gateway-conf
   namespace: server
 data:
-  /etc/nginx/nginx.conf: |
+  nginx.conf: |
     user www www; ## Default: nobody
     worker_processes 5; ## Default: 1
     error_log logs/error.log;
@@ -75,7 +75,7 @@ data:
             }
         }
     }
-  /etc/nginx/proxy.conf: |
+  proxy.conf: |
     proxy_redirect          off;
     proxy_set_header        Host            $host;
     proxy_set_header        X-Real-IP       $remote_addr;
@@ -86,7 +86,7 @@ data:
     proxy_send_timeout      90;
     proxy_read_timeout      90;
     proxy_buffers           32 4k;
-  /etc/nginx/auth.conf: |
+  auth.conf: |
     ;auth_request /auth/validate;
 
 ---
@@ -115,6 +115,9 @@ spec:
           ports:
             - containerPort: 80
             - containerPort: 443
+          volumeMounts:
+              - name: api-gateway-conf
+                mountPath: /etc/nginx
       volumes:
         - name: api-gateway-conf
           configMap:
