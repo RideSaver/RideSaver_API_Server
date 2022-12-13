@@ -106,8 +106,7 @@ spec:
     metadata:
       namespace: server
       labels:
-        type: service
-        service: authentication
+        type: api-gateway
     spec:
       containers:
         - name: api-gateway
