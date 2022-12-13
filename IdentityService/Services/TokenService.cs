@@ -36,7 +36,7 @@ namespace IdentityService.Services
             {
                 Issuer = _configuration["Jwt:Issuer"],
                 Subject = Claims,
-                Expires = DateTime.Now + ExpiryDuration,
+                //Expires = DateTime.Now + ExpiryDuration,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
@@ -86,7 +86,7 @@ namespace IdentityService.Services
                 var symmetricKey = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!);
                 var validationParameters = new TokenValidationParameters()
                 {
-                    RequireExpirationTime = true,
+                    //RequireExpirationTime = true,
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     IssuerSigningKey = new SymmetricSecurityKey(symmetricKey)

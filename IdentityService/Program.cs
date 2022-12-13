@@ -47,7 +47,7 @@ namespace UserService
                     ValidateAudience = false,
                     ValidateIssuer = false,
                     ValidateLifetime = false,
-                    RequireExpirationTime = true,
+                    //RequireExpirationTime = true,
                     ClockSkew = TimeSpan.Zero
 
                 };

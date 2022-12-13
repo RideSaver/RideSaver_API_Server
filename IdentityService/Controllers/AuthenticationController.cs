@@ -13,9 +13,9 @@ namespace IdentityService.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthenticationRepository _authenticationRepository;
-        private readonly Logger<AuthenticationController> _logger;
+        private readonly ILogger<AuthenticationController> _logger;
 
-        public AuthenticationController(IAuthenticationRepository authenticationRepository, Logger<AuthenticationController> logger)
+        public AuthenticationController(IAuthenticationRepository authenticationRepository, ILogger<AuthenticationController> logger)
         {
             _authenticationRepository = authenticationRepository;
             _logger = logger;
