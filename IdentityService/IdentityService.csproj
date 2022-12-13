@@ -29,8 +29,4 @@
       <PackageReference Include="Grpc.Tools" Version="2.51.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\Migrations\" />
-  </ItemGroup>
-
 </Project>
