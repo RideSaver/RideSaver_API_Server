@@ -73,6 +73,8 @@ data:
                 proxy_method            get;
                 proxy_set_header        Content-Length "";
                 proxy_set_header        X-Original-URI $request_uri;
+                proxy_set_header        Accept-Encoding "";
+                proxy_set_header        Accept "";
             }
         }
     }
