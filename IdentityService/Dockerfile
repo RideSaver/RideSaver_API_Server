@@ -38,4 +38,4 @@ ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
 WORKDIR /app
 COPY --from=builder /server/publish ./
 
-ENTRYPOINT ["./UserService", "--urls", "http://0.0.0.0:80"]
+ENTRYPOINT ["./IdentityService", "--urls", "http://0.0.0.0:80"]
