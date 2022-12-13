@@ -1,31 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: user-service
+    name: identity-service
     namespace: api
     labels:
         type: service
-        service: user
+        service: identity
 spec:
     selector:
         matchLabels:
             type: service
-            service: user
+            service: identity
     replicas: 1
     template:
         metadata:
             namespace: api
             labels:
                 type: service
-                service: user
+                service: identity
         spec:
             containers:
-                - name: user-service
-                  image: ghcr.io/ridesaver/user_service:latest
+                - name: identity-service
+                  image: ghcr.io/ridesaver/identity_service:latest
                   ports:
                       - containerPort: 80
                       - containerPort: 443
-                - name: user-memcache
+                - name: identity-memcache
                   image: memcached:1.6-alpine
                   ports:
                       - containerPort: 11211
@@ -35,13 +35,13 @@ spec:
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-    name: user-service
+    name: identity-service
     namespace: api
 spec:
     scaleTargetRef:
         apiVersion: apps/v1
         kind: Deployment
-        name: user-service
+        name: identity-service
     minReplicas: 1 # Maintain at least one for redundancy in case on fails
     maxReplicas: 10
     targetCPUUtilizationPercentage: 50
@@ -49,11 +49,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-    name: user-service
+    name: identity-service
     namespace: api
     labels:
         type: service
-        service: user
+        service: identity
 spec:
     ports:
         - port: 80
@@ -62,4 +62,4 @@ spec:
           name: https
     selector:
         type: service
-        service: user
+        service: identity

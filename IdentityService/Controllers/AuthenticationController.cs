@@ -31,14 +31,10 @@ namespace IdentityService.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("validate-token")]
-        public async Task<IActionResult> ValidateToken(HttpAuthenticationContext context)
+        [HttpGet("validate-token")]
+        public async Task<IActionResult> ValidateToken([FromHeader(Name="token")] string? token)
         {
-            var token = context.Request.Headers.GetValues("token").FirstOrDefault();
-
-            _logger.LogInformation("[AuthenticationController] ValidateToken(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
-
-            if (token == null) return new BadRequestResult();
+            if (token == null) return new UnauthorizedResult();
 
             var isValid = await _authenticationRepository.ValidateToken(token);
             if (!isValid) return new UnauthorizedResult();

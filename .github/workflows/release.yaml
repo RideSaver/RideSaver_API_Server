@@ -30,8 +30,7 @@ jobs:
                     - location_api
                     - request_api
                     - services_api
-                    - user_service
-                    - auth_service
+                    - identity_service
         steps:
             - name: Check out the repo
               uses: actions/checkout@v3
