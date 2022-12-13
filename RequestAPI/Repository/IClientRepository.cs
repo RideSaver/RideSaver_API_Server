@@ -1,5 +1,4 @@
-﻿using Grpc.Net.Client;
-using InternalAPI;
+﻿using InternalAPI;
 
 namespace RequestAPI.Repository
 {

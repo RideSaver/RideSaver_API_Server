@@ -13,7 +13,7 @@ namespace ServicesAPI.Data
         public DbSet<ServiceFeaturesModel> ServicesFeatures { get; set; }
         public ServiceContext(DbContextOptions<ServiceContext> options) : base(options) { }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder) 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ProviderModel>()
                  .Property(t => t.Id)

@@ -1,6 +1,5 @@
-using Grpc.Net.Client;
-using RideSaver.Server.Models;
 using InternalAPI;
+using RideSaver.Server.Models;
 
 namespace RequestAPI.Repository
 {
@@ -20,16 +19,16 @@ namespace RequestAPI.Repository
                 Hash = Google.Protobuf.ByteString.CopyFrom(rideId.ToByteArray(), 0, 4)
             });
 
-            if(service.Name == null)
+            if (service.Name == null)
             {
                 throw new NotImplementedException();
             }
 
-            if(!_clientRepository.Clients.ContainsKey(service.Name))
+            if (!_clientRepository.Clients.ContainsKey(service.Name))
             {
                 // Refresh cache, in case the service came up during the 10s cache window
                 await _clientRepository.RefreshClients();
-                if(!_clientRepository.Clients.ContainsKey(service.Name))
+                if (!_clientRepository.Clients.ContainsKey(service.Name))
                 {
                     throw new NotImplementedException(); // Should never happen, SQL has a service that does not exist in K8s
                 }

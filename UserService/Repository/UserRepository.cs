@@ -1,18 +1,15 @@
-using Microsoft.EntityFrameworkCore;
-using RideSaver.Server.Models;
 using DataAccess.Models;
-using UserService.Data;
+using RideSaver.Server.Models;
+using IdentityService.Data;
 
-namespace UserService.Repository
+namespace IdentityService.Repository
 {
     public class UserRepository : IUserRepository
     {
         private readonly UserContext _userContext;
-        private readonly AuthServices.IAuthService _authService;
-        public UserRepository(UserContext userContext, AuthServices.IAuthService authService)
+        public UserRepository(UserContext userContext)
         {
             _userContext = userContext;
-            _authService = authService;
         }
         public async Task SaveAsync() => await _userContext.SaveChangesAsync();
         public List<UserModel> GetUserModels() => _userContext.Users.ToList();
@@ -21,7 +18,7 @@ namespace UserService.Repository
         {
             var userList = new List<User>();
             var userModels = GetUserModels();
-            foreach(var user in userModels)
+            foreach (var user in userModels)
             {
                 var userInfo = new User()
                 {
@@ -38,7 +35,7 @@ namespace UserService.Repository
         public async Task<User> GetUserAsync(string username)
         {
             var userModel = await GetUserModelAsync(username);
-            if(userModel is not null)
+            if (userModel is not null)
             {
                 var userInfo = new User()
                 {
@@ -57,7 +54,7 @@ namespace UserService.Repository
         }
         public async Task CreateUserAsync(PatchUserRequest userInfo)
         {
-            if(userInfo is not null)
+            if (userInfo is not null)
             {
                 var salt = Security.Argon2.CreateSalt();
                 var user = new UserModel()
@@ -72,7 +69,6 @@ namespace UserService.Repository
                 };
 
                 await _userContext.AddAsync(user);
-                await _authService.PostIdentityToAuthService(user);
                 await SaveAsync();
             }
         }
@@ -80,7 +76,7 @@ namespace UserService.Repository
         public async Task DeleteUserAsync(string username)
         {
             var userModel = await _userContext.Users.FindAsync(username);
-            if(userModel is not null)
+            if (userModel is not null)
             {
                 _userContext.Users.Remove(userModel);
                 await SaveAsync();
@@ -89,24 +85,24 @@ namespace UserService.Repository
         public async Task<List<RideHistoryModel>> GetUserHistoryASync(string username)
         {
             var userModel = await _userContext.Users.FindAsync(username);
-            if(userModel is not null)
+            if (userModel is not null)
             {
                 return userModel.RideHistory?.ToList();
             }
             else
             {
                 List<RideHistoryModel>? emptyRideHistory = null;
-                return emptyRideHistory; 
+                return emptyRideHistory;
             }
         }
-       
+
         public async Task UpdateUserAsync(string username, PatchUserRequest userInfo)
         {
             var userModel = await _userContext.Users.FindAsync(username);
             byte[] newSalt = Security.Argon2.CreateSalt();
-            if(userModel is not null)
+            if (userModel is not null)
             {
-                if(!Security.Argon2.VerifyHash(userInfo.Password, userModel.PasswordHash!, userModel.PasswordSalt!))
+                if (!Security.Argon2.VerifyHash(userInfo.Password, userModel.PasswordHash!, userModel.PasswordSalt!))
                 {
                     userModel.PasswordHash = Security.Argon2.HashPassword(userInfo.Password, newSalt);
                     userModel.PasswordSalt = newSalt;

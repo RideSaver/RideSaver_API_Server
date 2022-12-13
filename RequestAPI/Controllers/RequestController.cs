@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RequestAPI.Repository;
 using RideSaver.Server.Controllers;
@@ -19,22 +18,17 @@ namespace RequestAPI.Controllers
             _requestRepository = requestRepository;
             _logger = logger;
         }
-
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override async Task<IActionResult> CancelRide([FromRoute(Name = "rideId"), Required] string rideId)
         {
             _logger.LogInformation("[RequestController] CancelRide(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
             return new OkObjectResult(await _requestRepository.CancelRideRequestAsync(new Guid(rideId)));
         }
-
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override async Task<IActionResult> GetRide([FromRoute(Name = "rideId"), Required] string rideId)
         {
             _logger.LogInformation("[RequestController] GetRide(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
             return new OkObjectResult(await _requestRepository.GetRideRequestAsync(new Guid(rideId)));
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override async Task<IActionResult> RequestRide([FromRoute(Name = "estimateId"), Required] string estimateId)
         {
             _logger.LogInformation("[RequestController] RequestRide(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());

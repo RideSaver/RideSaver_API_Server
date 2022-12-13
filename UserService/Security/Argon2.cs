@@ -2,7 +2,7 @@ using Konscious.Security.Cryptography;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace UserService.Security
+namespace IdentityService.Security
 {
     public static class Argon2
     {

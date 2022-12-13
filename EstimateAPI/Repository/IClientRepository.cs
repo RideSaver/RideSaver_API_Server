@@ -1,4 +1,3 @@
-using Grpc.Net.Client;
 using InternalAPI;
 
 namespace EstimateAPI.Repository

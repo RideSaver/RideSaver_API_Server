@@ -1,7 +1,7 @@
+using EstimateAPI.Configuration;
 using Grpc.Net.Client;
 using InternalAPI;
 using k8s;
-using EstimateAPI.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace EstimateAPI.Repository
@@ -16,7 +16,7 @@ namespace EstimateAPI.Repository
         private string _namespace;
         public Dictionary<string, Estimates.EstimatesClient> Clients { get; private set; }
 
-        public ClientRepository(IOptions<ClientDiscoveryOptions> options) : this(options.Value.Namespace, options) {}
+        public ClientRepository(IOptions<ClientDiscoveryOptions> options) : this(options.Value.Namespace, options) { }
 
         public ClientRepository(string Namespace, IOptions<ClientDiscoveryOptions> options)
         {
@@ -38,7 +38,7 @@ namespace EstimateAPI.Repository
 
             // Construct the label filter
             List<string> labelStrs = new();
-            foreach(var option in _options.Labels)
+            foreach (var option in _options.Labels)
             {
                 labelStrs.Add($"{option.Key}={option.Value}");
             }
@@ -54,7 +54,7 @@ namespace EstimateAPI.Repository
         // Summary: Updates the clients every 10 seconds
         public async Task Run(CancellationToken token)
         {
-            while(token.IsCancellationRequested)  // Run until cancelled
+            while (token.IsCancellationRequested)  // Run until cancelled
             {
                 await RefreshClients();
                 Thread.Sleep(10000); //  Check every 10 seconds
@@ -64,7 +64,7 @@ namespace EstimateAPI.Repository
         {
             var list = await _kubernetes.CoreV1.ListNamespacedServiceAsync(_namespace, labelSelector: _labelStr);
             Dictionary<string, Estimates.EstimatesClient> Clients = new();
-            foreach(var client in list)
+            foreach (var client in list)
             {
                 GrpcChannel channel = GrpcChannel.ForAddress($"https://{client.Metadata.Name}.client");
                 Clients.Add(client.Metadata.Name, new Estimates.EstimatesClient(channel));

@@ -1,7 +1,7 @@
 using DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace UserService.Data
+namespace IdentityService.Data
 {
     public class UserContext : DbContext
     {

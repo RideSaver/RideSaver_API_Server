@@ -1,12 +1,11 @@
+using IdentityService.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using UserService.Data;
-using UserService.Repository;
-using InternalAPI;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.Extensions.Logging;
+using IdentityService.Data;
+using IdentityService.Repository;
+
 
 namespace UserService
 {
@@ -25,7 +24,8 @@ namespace UserService
             builder.Services.AddDbContext<UserContext>(options =>
             {
                 options.UseSqlServer(
-                    builder.Configuration.GetConnectionString("UserDB"), x => {
+                    builder.Configuration.GetConnectionString("UserDB"), x =>
+                    {
                         x.UseNetTopologySuite();
                     });
             });
@@ -35,8 +35,7 @@ namespace UserService
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
- 
-            .AddJwtBearer("APIGatewayAuthentication", cfg =>
+            .AddJwtBearer("Authentication", cfg =>
             {
                 cfg.RequireHttpsMetadata = true;
                 cfg.SaveToken = true;
@@ -44,7 +43,7 @@ namespace UserService
                 {
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = "AuthService",
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
                     ValidateAudience = false,
                     ValidateIssuer = false,
                     ValidateLifetime = false,
@@ -54,21 +53,10 @@ namespace UserService
                 };
             });
 
-            builder.Services.AddGrpc();
-            builder.Services.AddGrpcClient<Authentication.AuthenticationClient>(o =>
-            {
-                o.Address = new Uri("http://authentication.api:80");
-            });
-
-
-            /*builder.Services.Configure<ForwardedHeadersOptions>(options =>
-              {
-                  options.ForwardedHeaders =
-                      ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-              });*/
-
-            builder.Services.AddTransient<AuthServices.IAuthService, AuthServices.AuthService>();
+            builder.Services.AddTransient<IAuthService, AuthService>();
+            builder.Services.AddTransient<ITokenService, TokenService>();
             builder.Services.AddTransient<IUserRepository, UserRepository>();
+            builder.Services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
 
             var app = builder.Build();
 
@@ -77,28 +65,13 @@ namespace UserService
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-               // app.UseForwardedHeaders();
                 app.UseExceptionHandler("/Error");
             }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-            }
-
-            /*using (var scope = app.Services.CreateScope())
-            {
-                var dataContext = scope.ServiceProvider.GetRequiredService<UserContext>();
-                dataContext.Database.Migrate();
-            }*/
-
-            app.UseHttpLogging();
-            //app.UseForwardedHeaders();
-
-            //app.UseHttpsRedirection();
 
             app.UseAuthorization();
             app.MapControllers();
 
+            app.UseHttpLogging();
             app.Logger.LogInformation("[UserService] Finished middleware configuration.. starting the service.");
 
             app.Run();

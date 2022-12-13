@@ -1,10 +1,6 @@
-using EstimateAPI.Repository;
 using EstimateAPI.Configuration;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using EstimateAPI.Repository;
 using InternalAPI;
-using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,37 +30,6 @@ builder.Services.AddGrpcClient<Estimates.EstimatesClient>("LyftClient", o =>
 {
     o.Address = new Uri("https://lyft-client:80");
 });
-
-
-/*builder.Services.Configure<ForwardedHeadersOptions>(options =>
-{
-    options.ForwardedHeaders =
-        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-});*/
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-
-            .AddJwtBearer("APIGatewayAuthentication", cfg =>
-            {
-                cfg.RequireHttpsMetadata = true;
-                cfg.SaveToken = true;
-                cfg.TokenValidationParameters = new TokenValidationParameters()
-                {
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = "AuthService",
-                    ValidateAudience = false,
-                    ValidateIssuer = false,
-                    ValidateLifetime = false,
-                    RequireExpirationTime = true,
-                    ClockSkew = TimeSpan.Zero
-                };
-            });
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -72,7 +37,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    //app.UseForwardedHeaders();
     app.UseExceptionHandler("/Error");
 }
 else
@@ -81,10 +45,6 @@ else
 }
 
 app.UseHttpLogging();
-//app.UseForwardedHeaders();
-
-//app.UseHttpsRedirection();
-
 app.UseAuthorization();
 app.MapControllers();
 

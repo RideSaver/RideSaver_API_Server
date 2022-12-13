@@ -2,9 +2,10 @@ using DataAccess.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
-namespace AuthService.Services
+namespace IdentityService.Services
 {
     public class TokenService : ITokenService
     {
@@ -29,7 +30,7 @@ namespace AuthService.Services
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var encryptionKey = _configuration["Jwt:Key"];
-            var key = Encoding.UTF8.GetBytes(encryptionKey!); 
+            var key = Encoding.UTF8.GetBytes(encryptionKey!);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Issuer = _configuration["Jwt:Issuer"],
@@ -42,6 +43,36 @@ namespace AuthService.Services
             var tokenString = tokenHandler.WriteToken(token);
 
             return tokenString;
+        }
+
+        public async Task<bool> ValidateToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+
+            var validation = await tokenHandler.ValidateTokenAsync(token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                ValidateIssuer = true,
+                ValidIssuer = _configuration["Jwt:Issuer"],
+                IssuerSigningKey = key
+            });
+
+            if (!validation.IsValid) return false;
+            return true;
+        }
+
+        public RefreshToken GenerateRefreshToken()
+        {
+            var RNG = RandomNumberGenerator.Create();
+            var randomBytes = new byte[64];
+            RNG.GetBytes(randomBytes);
+            return new RefreshToken
+            {
+                Token = Convert.ToBase64String(randomBytes),
+                Expires = DateTime.UtcNow.AddDays(7),
+                Created = DateTime.UtcNow
+            };
         }
 
         public ClaimsPrincipal GetPrincipal(string token)
@@ -65,7 +96,7 @@ namespace AuthService.Services
                 return principal;
             }
 
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogInformation("[TokenService::GetPrincipal::Exception] " + ex.Message);
                 return null;

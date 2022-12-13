@@ -1,6 +1,4 @@
-using InternalAPI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ServicesAPI.Data;
@@ -26,39 +24,8 @@ builder.Services.AddDbContext<ServiceContext>(options =>
         });
 });
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-
-      .AddJwtBearer("APIGatewayAuthentication", cfg =>
-      {
-            cfg.RequireHttpsMetadata = true;
-            cfg.SaveToken = true;
-            cfg.TokenValidationParameters = new TokenValidationParameters()
-            {
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = "AuthService",
-                    ValidateAudience = false,
-                    ValidateIssuer = false,
-                    ValidateLifetime = false,
-                    RequireExpirationTime = true,
-                    ClockSkew = TimeSpan.Zero
-
-            };
-       });
-
-
-/*builder.Services.Configure<ForwardedHeadersOptions>(options =>
-{
-    options.ForwardedHeaders =
-        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-});*/
-
 builder.Services.AddTransient<IServiceRegistry, ServiceRegistry>();
-builder.Services.AddTransient<IInternalServices, InternalServices>(); 
+builder.Services.AddTransient<IInternalServices, InternalServices>();
 builder.Services.AddTransient<IServiceRepository, ServiceRepository>();
 builder.Services.AddGrpc();
 
@@ -69,7 +36,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    //app.UseForwardedHeaders();
     app.UseExceptionHandler("/Error");
 }
 else
@@ -77,16 +43,7 @@ else
     app.UseExceptionHandler("/Error");
 }
 
-/*using (var scope = app.Services.CreateScope())
-{
-    var dataContext = scope.ServiceProvider.GetRequiredService<ServiceContext>();
-    dataContext.Database.Migrate();
-}*/
-
 app.UseHttpLogging();
-//app.UseForwardedHeaders();
-
-//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 app.MapControllers();

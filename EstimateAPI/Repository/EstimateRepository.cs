@@ -1,9 +1,8 @@
-using Grpc.Net.Client;
-using RideSaver.Server.Models;
 using Google.Protobuf.Collections;
-using InternalAPI;
 using Grpc.Core;
 using Grpc.Net.ClientFactory;
+using InternalAPI;
+using RideSaver.Server.Models;
 
 namespace EstimateAPI.Repository
 {
@@ -66,7 +65,7 @@ namespace EstimateAPI.Repository
             };
 
             var estimatesReplyModel = client.GetEstimates(clientRequested);
-            await foreach(var estimatesReply in estimatesReplyModel.ResponseStream.ReadAllAsync())
+            await foreach (var estimatesReply in estimatesReplyModel.ResponseStream.ReadAllAsync())
             {
                 var estimate = new Estimate()
                 {
@@ -97,7 +96,7 @@ namespace EstimateAPI.Repository
             List<Estimate> estimates = new();
             List<Task<Estimate>> rideEstimatesRefreshTasks = new();
 
-            foreach(var id in ids)
+            foreach (var id in ids)
             {
                 var service = await _servicesClient.GetServiceByHashAsync(new GetServiceByHashRequest
                 {
@@ -152,7 +151,7 @@ namespace EstimateAPI.Repository
             var fieldList = field.ToList();
             var locationList = new List<Location>();
 
-            foreach(var f in fieldList)
+            foreach (var f in fieldList)
             {
                 var location = new Location()
                 {
@@ -163,7 +162,8 @@ namespace EstimateAPI.Repository
                 };
 
                 locationList.Add(location);
-;            }
+                ;
+            }
             return locationList;
         }
     }

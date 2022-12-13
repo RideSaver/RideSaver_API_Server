@@ -1,8 +1,8 @@
 using Grpc.Net.Client;
 using InternalAPI;
 using k8s;
-using RequestAPI.Configuration;
 using Microsoft.Extensions.Options;
+using RequestAPI.Configuration;
 
 namespace RequestAPI.Repository
 {
@@ -15,7 +15,7 @@ namespace RequestAPI.Repository
         private string _namespace;
         public Dictionary<string, Requests.RequestsClient> Clients { get; private set; }
 
-        public ClientRepository(IOptions<ClientDiscoveryOptions> options) : this(options.Value.Namespace, options) {}
+        public ClientRepository(IOptions<ClientDiscoveryOptions> options) : this(options.Value.Namespace, options) { }
 
         ClientRepository(string Namespace, IOptions<ClientDiscoveryOptions> options)
         {
@@ -34,7 +34,7 @@ namespace RequestAPI.Repository
 
             // Construct the label filter
             List<string> labelStrs = new List<string>();
-            foreach(var option in _options.Labels)
+            foreach (var option in _options.Labels)
             {
                 labelStrs.Add($"{option.Key}={option.Value}");
             }
@@ -50,7 +50,7 @@ namespace RequestAPI.Repository
         public async Task Run(CancellationToken token)
         {
             // Run until cancelled
-            while(token.IsCancellationRequested)
+            while (token.IsCancellationRequested)
             {
                 await this.RefreshClients();
                 Thread.Sleep(10000); //  Check every 10 seconds
@@ -60,7 +60,7 @@ namespace RequestAPI.Repository
         {
             var list = await _kubernetes.CoreV1.ListNamespacedServiceAsync(this._namespace, labelSelector: _labelStr);
             Dictionary<string, Requests.RequestsClient> Clients = new Dictionary<string, Requests.RequestsClient>();
-            foreach(var client in list)
+            foreach (var client in list)
             {
                 GrpcChannel channel = GrpcChannel.ForAddress($"https://{client.Metadata.Name}.client");
                 Clients.Add(client.Metadata.Name, new Requests.RequestsClient(channel));
