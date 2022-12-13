@@ -30,46 +30,45 @@ data:
 
         server {
             listen 80 443;
-            access_log logs/domain2.access.log main;
 
-            location /api/user/login {
-                proxy_pass http://auth-service.api/user/login;
-            }
-
-            location /api/estimates {
+            location /api/v1/estimates {
                 include /etc/nginx/auth.conf;
                 proxy_pass http://estimate-api.api/api/estimates;
             }
 
-            location /api/location {
+            location /api/v1/location {
                 include /etc/nginx/auth.conf;
                 proxy_pass http://location-api.api/api/location;
             }
 
-            location /api/rides {
+            location /api/v1/rides {
                 include /etc/nginx/auth.conf;
                 proxy_pass http://request-api.api/api/rides;
             }
 
-            location /api/providers {
+            location /api/v1/providers {
                 include /etc/nginx/auth.conf;
                 proxy_pass http://services-api.api/api/providers;
             }
 
-            location /api/services {
+            location /api/v1/services {
                 include /etc/nginx/auth.conf;
                 proxy_pass http://services-api.api/api/services;
             }
 
-            location /api/user {
+            location /api/v1/user {
                 include /etc/nginx/auth.conf;
-                proxy_pass http://services-api.api/api/services;
+                proxy_pass http://identity-service.api/api/users;
+            }
+
+            location /user/v1/login {
+                proxy_pass http://identity-service.api/authentication/authenticate;
             }
 
 
             location = /auth/validate {
                 internal;
-                proxy_pass              http://auth-service/auth/validate;
+                proxy_pass              http://identity-service/authentication/validate-token;
                 proxy_pass_request_body off;
                 proxy_set_header        Content-Length "";
                 proxy_set_header        X-Original-URI $request_uri;
