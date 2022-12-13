@@ -24,7 +24,7 @@ namespace UserService
             builder.Services.AddDbContext<UserContext>(options =>
             {
                 options.UseSqlServer(
-                    builder.Configuration.GetConnectionString("UserDB"), x =>
+                    builder.Configuration.GetConnectionString("IdentityDB"), x =>
                     {
                         x.UseNetTopologySuite();
                     });
