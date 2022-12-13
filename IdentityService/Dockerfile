@@ -12,7 +12,7 @@ WORKDIR /server
 RUN echo $github_token | base64
 RUN dotnet nuget add source --username $github_username --password $github_token --store-password-in-clear-text --name github "https://nuget.pkg.github.com/RideSaver/index.json"
 
-COPY UserService.csproj .
+COPY IdentityService.csproj .
 RUN dotnet restore
 
 # Copy all files

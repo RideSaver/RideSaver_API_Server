@@ -44,12 +44,3 @@ target "identity_service" {
     "linux/amd64"
   ]
 }
-
-target "auth_service" {
-  inherits = ["docker-metadata-action"]
-  context = "AuthService"
-  dockerfile = "Dockerfile"
-  platforms = [
-    "linux/amd64"
-  ]
-}

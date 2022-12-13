@@ -31,7 +31,6 @@ jobs:
                     - request_api
                     - services_api
                     - identity_service
-                    - auth_service
         steps:
             - name: Check out the repo
               uses: actions/checkout@v3
