@@ -1,0 +1,151 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-gateway-conf
+  namespace: server
+data:
+  /etc/nginx/nginx.conf: |
+    user www www; ## Default: nobody
+    worker_processes 5; ## Default: 1
+    error_log logs/error.log;
+    pid logs/nginx.pid;
+    worker_rlimit_nofile 8192;
+
+    events {
+        worker_connections 4096; ## Default: 1024
+    }
+
+    http {
+        include /etc/nginx/proxy.conf;
+        include /etc/nginx/auth.conf;
+
+        default_type application/octet-stream;
+        log_format main '$remote_addr - $remote_user [$time_local] $status '
+        '"$request" $body_bytes_sent "$http_referer" '
+        '"$http_user_agent" "$http_x_forwarded_for"';
+        access_log logs/access.log main;
+        sendfile on;
+        tcp_nopush on;
+        server_names_hash_bucket_size 128; # this seems to be required for some vhosts
+
+        server {
+            listen 80 443;
+            access_log logs/domain2.access.log main;
+
+            location /api/user/login {
+                proxy_pass http://auth-service.api/user/login;
+            }
+
+            location /api/estimates {
+                include /etc/nginx/auth.conf;
+                proxy_pass http://estimate-api.api/api/estimates;
+            }
+
+            location /api/location {
+                include /etc/nginx/auth.conf;
+                proxy_pass http://location-api.api/api/location;
+            }
+
+            location /api/rides {
+                include /etc/nginx/auth.conf;
+                proxy_pass http://request-api.api/api/rides;
+            }
+
+            location /api/providers {
+                include /etc/nginx/auth.conf;
+                proxy_pass http://services-api.api/api/providers;
+            }
+
+            location /api/services {
+                include /etc/nginx/auth.conf;
+                proxy_pass http://services-api.api/api/services;
+            }
+
+            location /api/user {
+                include /etc/nginx/auth.conf;
+                proxy_pass http://services-api.api/api/services;
+            }
+
+
+            location = /auth/validate {
+                internal;
+                proxy_pass              http://auth-service/auth/validate;
+                proxy_pass_request_body off;
+                proxy_set_header        Content-Length "";
+                proxy_set_header        X-Original-URI $request_uri;
+            }
+        }
+    }
+  /etc/nginx/proxy.conf: |
+    proxy_redirect          off;
+    proxy_set_header        Host            $host;
+    proxy_set_header        X-Real-IP       $remote_addr;
+    proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+    client_max_body_size    10m;
+    client_body_buffer_size 128k;
+    proxy_connect_timeout   90;
+    proxy_send_timeout      90;
+    proxy_read_timeout      90;
+    proxy_buffers           32 4k;
+  /etc/nginx/auth.conf: |
+    ;auth_request /auth/validate;
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: server
+  labels:
+    type: api-gateway
+spec:
+  selector:
+    matchLabels:
+      type: api-gateway
+  replicas: 1
+  template:
+    metadata:
+      namespace: server
+      labels:
+        type: service
+        service: authentication
+    spec:
+      containers:
+        - name: api-gateway
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+      volumes:
+        - name: api-gateway-conf
+          configMap:
+            name: api-gateway-conf
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: api-gateway
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: api-gateway
+  minReplicas: 1 # Maintain at least one for redundancy in case on fails
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway
+  namespace: server
+  labels:
+    type: api-gateway
+spec:
+  ports:
+    - port: 80
+      name: http
+    - port: 443
+      name: https
+  selector:
+    type: api-gateway

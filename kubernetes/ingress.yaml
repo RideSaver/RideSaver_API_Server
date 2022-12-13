@@ -34,48 +34,13 @@ spec:
                     pathType: Exact
                     backend:
                         service:
-                            name: auth-service
+                            name: api-gateway
                             port:
                                 number: 80
-                  - path: /api/estimates
+                  - path: /api
                     pathType: Prefix
                     backend:
                         service:
-                            name: estimate-api
-                            port:
-                                number: 80
-                  - path: /api/location
-                    pathType: Prefix
-                    backend:
-                        service:
-                            name: location-api
-                            port:
-                                number: 80
-                  - path: /api/rides
-                    pathType: Prefix
-                    backend:
-                        service:
-                            name: request-api
-                            port:
-                                number: 80
-                  - path: /api/providers
-                    pathType: Prefix
-                    backend:
-                        service:
-                            name: services-api
-                            port:
-                                number: 80
-                  - path: /api/services
-                    pathType: Prefix
-                    backend:
-                        service:
-                            name: services-api
-                            port:
-                                number: 80
-                  - path: /api/user
-                    pathType: Prefix
-                    backend:
-                        service:
-                            name: user-service
+                            name: api-gateway
                             port:
                                 number: 80
