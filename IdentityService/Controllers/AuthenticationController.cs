@@ -26,7 +26,7 @@ namespace IdentityService.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("validate-token")]
+        [HttpGet("validate-token")]
         public async Task<IActionResult> ValidateToken(HttpAuthenticationContext context)
         {
             var token = context.Request.Headers.GetValues("token").FirstOrDefault();

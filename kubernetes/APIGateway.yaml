@@ -70,6 +70,7 @@ data:
                 internal;
                 proxy_pass              http://identity-service.api/authentication/validate-token;
                 proxy_pass_request_body off;
+                proxy_method            get;
                 proxy_set_header        Content-Length "";
                 proxy_set_header        X-Original-URI $request_uri;
             }
@@ -87,7 +88,7 @@ data:
     proxy_read_timeout      90;
     proxy_buffers           32 4k;
   auth.conf: |
-    #auth_request /auth/validate;
+    auth_request /auth/validate;
 
 ---
 apiVersion: apps/v1
