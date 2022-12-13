@@ -18,14 +18,14 @@ namespace IdentityService.Repository
             return (await _authService.Authenticate(model));
         }
 
-        public async Task<AuthenticateResponse> RefreshToken(RefreshToken model)
+        public async Task<AuthenticateResponse> RefreshToken(string token)
         {
-            return (await _authService.RefreshToken(model.Token));
+            return (await _authService.RefreshToken(token));
         }
 
-        public async Task<bool> RevokeToken(RevokeTokenRequest model)
+        public async Task<bool> RevokeToken(string token)
         {
-            return (await _authService.RevokeToken(model.Token));
+            return (await _authService.RevokeToken(token));
         }
 
         public async Task<bool> ValidateToken(string token)

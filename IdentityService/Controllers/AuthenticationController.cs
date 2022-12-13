@@ -41,16 +41,24 @@ namespace IdentityService.Controllers
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken([FromBody] RefreshToken model)
+        public async Task<IActionResult> RefreshToken(HttpAuthenticationContext context)
         {
-            return new OkObjectResult(await _authenticationRepository.RefreshToken(model));
+            var token = context.Request.Headers.GetValues("refresh_token").FirstOrDefault();
+
+            if (token == null) return new BadRequestResult();
+
+            return new OkObjectResult(await _authenticationRepository.RefreshToken(token));
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("revoke-token")]
-        public async Task<IActionResult> RevokeToken([FromBody] RevokeTokenRequest model)
+        public async Task<IActionResult> RevokeToken(HttpAuthenticationContext context)
         {
-            return new OkObjectResult(await _authenticationRepository.RevokeToken(model));
+            var token = context.Request.Headers.GetValues("revoke_token").FirstOrDefault();
+
+            if (token == null) return new BadRequestResult();
+
+            return new OkObjectResult(await _authenticationRepository.RevokeToken(token));
         }
     }
 }
