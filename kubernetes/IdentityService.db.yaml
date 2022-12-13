@@ -1,7 +1,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-    name: userservice-mssql-data
+    name: identityservice-mssql-data
     namespace: api
 spec:
     accessModes:
@@ -13,7 +13,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: userservice-mssql-deployment
+    name: identityservice-mssql-deployment
     namespace: api
 spec:
     replicas: 1
@@ -32,7 +32,7 @@ spec:
             securityContext:
                 fsGroup: 10001
             containers:
-                - name: userservice-mssql
+                - name: identityservice-mssql
                   image: mcr.microsoft.com/mssql/server:2019-latest
                   resources:
                   ports:
@@ -45,22 +45,22 @@ spec:
                       - name: MSSQL_SA_PASSWORD
                         value: ST@RTUP_P4SSW0RD
                   volumeMounts:
-                      - name: userservice-mssqldb
+                      - name: identityservice-mssqldb
                         mountPath: /var/opt/mssql
             volumes:
-                - name: userservice-mssqldb
+                - name: identityservice-mssqldb
                   persistentVolumeClaim:
-                      claimName: userservice-mssql-data
+                      claimName: identityservice-mssql-data
 ---
 apiVersion: v1
 kind: Service
 metadata:
-    name: userservice-mssql-deployment
+    name: identityservice-mssql-deployment
     namespace: api
 spec:
     selector:
         app: mssql
-        for: user-api
+        for: identity-api
     ports:
         - protocol: TCP
           port: 1433

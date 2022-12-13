@@ -36,9 +36,9 @@ target "services_api" {
   ]
 }
 
-target "user_service" {
+target "identity_service" {
   inherits = ["docker-metadata-action"]
-  context = "UserService"
+  context = "IdentityService"
   dockerfile = "Dockerfile"
   platforms = [
     "linux/amd64"
