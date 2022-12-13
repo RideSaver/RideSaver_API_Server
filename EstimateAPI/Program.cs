@@ -18,17 +18,17 @@ builder.Services.AddTransient<IEstimateRepository, EstimateRepository>();
 builder.Services.AddGrpc();
 builder.Services.AddGrpcClient<Services.ServicesClient>(o =>
 {
-    o.Address = new Uri("https://services-api:80");
+    o.Address = new Uri("http://services-api:80");
 });
 
 builder.Services.AddGrpcClient<Estimates.EstimatesClient>("UberClient", o =>
 {
-    o.Address = new Uri("https://uber-client:80");
+    o.Address = new Uri("http://uber-client:80");
 });
 
 builder.Services.AddGrpcClient<Estimates.EstimatesClient>("LyftClient", o =>
 {
-    o.Address = new Uri("https://lyft-client:80");
+    o.Address = new Uri("http://lyft-client:80");
 });
 var app = builder.Build();
 
@@ -43,6 +43,8 @@ else
 {
     app.UseExceptionHandler("/Error");
 }
+
+app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Response = true, ExceptionHandlingPath = "/error" });
 
 app.UseHttpLogging();
 app.UseAuthorization();

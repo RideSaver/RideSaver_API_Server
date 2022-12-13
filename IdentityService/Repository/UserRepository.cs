@@ -1,4 +1,4 @@
-using DataAccess.Models;
+using DataAccess.DataModels;
 using RideSaver.Server.Models;
 using IdentityService.Data;
 
@@ -24,7 +24,7 @@ namespace IdentityService.Repository
                 {
                     Email = user.Email,
                     Name = user.Name,
-                    PhoneNumber = user.PhoneNumber
+                    PhoneNumber = user.PhoneNumber,
                 };
 
                 userList.Add(userInfo);
@@ -61,7 +61,6 @@ namespace IdentityService.Repository
                 {
                     Username = userInfo.Username,
                     Name = userInfo.Name,
-                    CreatedAt = DateTime.Now,
                     Email = userInfo.Email,
                     PhoneNumber = userInfo.PhoneNumber,
                     PasswordSalt = salt,

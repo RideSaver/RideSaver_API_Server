@@ -1,10 +1,7 @@
 using InternalAPI;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.IdentityModel.Tokens;
 using RequestAPI.Configuration;
 using RequestAPI.Repository;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +39,8 @@ else
 {
     app.UseExceptionHandler("/Error");
 }
+
+app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Response = true, ExceptionHandlingPath = "/error" });
 
 app.UseHttpLogging();
 app.UseAuthorization();

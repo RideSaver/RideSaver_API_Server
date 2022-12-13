@@ -1,4 +1,4 @@
-using DataAccess.Models;
+using DataAccess.DataModels;
 using System.Security.Claims;
 
 namespace IdentityService.Services

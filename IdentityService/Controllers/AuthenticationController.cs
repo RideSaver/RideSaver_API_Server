@@ -13,16 +13,21 @@ namespace IdentityService.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthenticationRepository _authenticationRepository;
+        private readonly Logger<AuthenticationController> _logger;
 
-        public AuthenticationController(IAuthenticationRepository authenticationRepository)
+        public AuthenticationController(IAuthenticationRepository authenticationRepository, Logger<AuthenticationController> logger)
         {
             _authenticationRepository = authenticationRepository;
+            _logger = logger;
         }
         [AllowAnonymous]
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate([FromBody] AuthenticateRequest model)
         {
-            return new OkObjectResult(await _authenticationRepository.Authenticate(model));
+            _logger.LogInformation("[AuthenticationController] Authenticate(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
+            var auth = await _authenticationRepository.Authenticate(model);
+            if (auth is null) return new BadRequestResult();
+            return new OkObjectResult(auth);
         }
 
         [AllowAnonymous]
@@ -30,6 +35,8 @@ namespace IdentityService.Controllers
         public async Task<IActionResult> ValidateToken(HttpAuthenticationContext context)
         {
             var token = context.Request.Headers.GetValues("token").FirstOrDefault();
+
+            _logger.LogInformation("[AuthenticationController] ValidateToken(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
 
             if (token == null) return new BadRequestResult();
 
@@ -45,6 +52,8 @@ namespace IdentityService.Controllers
         {
             var token = context.Request.Headers.GetValues("refresh_token").FirstOrDefault();
 
+            _logger.LogInformation("[AuthenticationController] RefreshToken(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
+
             if (token == null) return new BadRequestResult();
 
             return new OkObjectResult(await _authenticationRepository.RefreshToken(token));
@@ -55,6 +64,8 @@ namespace IdentityService.Controllers
         public async Task<IActionResult> RevokeToken(HttpAuthenticationContext context)
         {
             var token = context.Request.Headers.GetValues("revoke_token").FirstOrDefault();
+
+            _logger.LogInformation("[AuthenticationController] RevokeToken(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
 
             if (token == null) return new BadRequestResult();
 

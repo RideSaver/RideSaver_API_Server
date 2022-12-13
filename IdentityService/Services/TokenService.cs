@@ -1,3 +1,4 @@
+using DataAccess.DataModels;
 using DataAccess.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

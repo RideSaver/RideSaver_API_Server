@@ -1,6 +1,3 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +14,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    //app.UseForwardedHeaders();
     app.UseExceptionHandler("/Error");
 }
 else
@@ -26,9 +22,8 @@ else
 }
 
 app.UseHttpLogging();
-//app.UseForwardedHeaders();
 
-//app.UseHttpsRedirection();
+app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Response = true, ExceptionHandlingPath = "/error" });
 
 app.UseAuthorization();
 app.MapControllers();

@@ -1,4 +1,4 @@
-using DataAccess.Models;
+using DataAccess.DataModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace IdentityService.Data
@@ -6,11 +6,7 @@ namespace IdentityService.Data
     public class UserContext : DbContext
     {
         public UserContext(DbContextOptions<UserContext> options) : base(options) { }
-
         public DbSet<UserModel> Users { get; set; }
-        public DbSet<AuthorizationModel> Authorizations { get; set; }
-        public DbSet<RideHistoryModel> RideHistory { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserModel>()
@@ -22,10 +18,6 @@ namespace IdentityService.Data
 
             modelBuilder.Entity<List<Guid>>()
              .HasNoKey();
-
-            modelBuilder.Entity<ProviderModel>()
-                .HasMany(c => c.Authorizations)
-                .WithOne(e => e.ProviderModel);
         }
 
     }

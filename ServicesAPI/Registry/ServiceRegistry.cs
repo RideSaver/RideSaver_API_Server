@@ -1,6 +1,7 @@
+using DataAccess.DataModels;
 using DataAccess.Models;
 using ServicesAPI.Data;
-using static DataAccess.Models.ServiceFeaturesModel;
+using static DataAccess.DataModels.ServiceFeaturesModel;
 
 namespace ServicesAPI.Registry
 {

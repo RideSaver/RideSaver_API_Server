@@ -1,3 +1,4 @@
+using DataAccess.DataModels;
 using DataAccess.Models;
 using Google.Protobuf.Collections;
 using Google.Protobuf.WellKnownTypes;
@@ -7,7 +8,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using ServicesAPI.Data;
 using System.Transactions;
-using static DataAccess.Models.ServiceFeaturesModel;
+using static DataAccess.DataModels.ServiceFeaturesModel;
 
 namespace ServicesAPI.Services
 {
@@ -56,29 +57,6 @@ namespace ServicesAPI.Services
                 };
 
                 _serviceContext.Services.Add(service);
-                foreach (var features in request.Features)
-                {
-                    var feature = new ServiceFeaturesModel { ServiceId = new Guid(request.Id.ToByteArray()) };
-                    switch (features)
-                    {
-                        case ServiceFeatures.Shared:
-                            feature.Feature = Features.shared;
-                            break;
-                        case ServiceFeatures.Cash:
-                            feature.Feature = Features.cash;
-                            break;
-                        case ServiceFeatures.ProfessionalDriver:
-                            feature.Feature = Features.professional_driver;
-                            break;
-                        case ServiceFeatures.SelfDriving:
-                            feature.Feature = Features.self_driving;
-                            break;
-                        default:
-                            continue;
-                    }
-                    _serviceContext.ServicesFeatures.Add(feature);
-                }
-                _serviceContext.SaveChanges();
             }
 
             return (Task<Empty>)Task.CompletedTask;

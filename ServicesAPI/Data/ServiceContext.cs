@@ -1,4 +1,4 @@
-using DataAccess.Models;
+using DataAccess.DataModels;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
@@ -8,9 +8,7 @@ namespace ServicesAPI.Data
     public class ServiceContext : DbContext
     {
         public DbSet<ProviderModel> Providers { get; set; }
-        public DbSet<ServiceAreaModel> ServiceAreas { get; set; }
         public DbSet<ServicesModel> Services { get; set; }
-        public DbSet<ServiceFeaturesModel> ServicesFeatures { get; set; }
         public ServiceContext(DbContextOptions<ServiceContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -24,10 +22,6 @@ namespace ServicesAPI.Data
 
             modelBuilder.Entity<List<Guid>>()
                 .HasNoKey();
-
-            modelBuilder.Entity<ProviderModel>()
-              .HasMany(c => c.Authorizations)
-              .WithOne(e => e.ProviderModel);
         }
 
         public virtual ProviderModel GetProviderForEstimate(string estimateId)

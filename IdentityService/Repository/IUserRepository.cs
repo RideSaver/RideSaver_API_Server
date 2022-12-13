@@ -1,4 +1,4 @@
-using DataAccess.Models;
+using DataAccess.DataModels;
 using RideSaver.Server.Models;
 
 namespace IdentityService.Repository

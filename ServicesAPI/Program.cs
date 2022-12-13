@@ -1,11 +1,8 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using ServicesAPI.Data;
 using ServicesAPI.Registry;
 using ServicesAPI.Repository;
 using ServicesAPI.Services;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +39,8 @@ else
 {
     app.UseExceptionHandler("/Error");
 }
+
+app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Response = true, ExceptionHandlingPath = "/error" });
 
 app.UseHttpLogging();
 

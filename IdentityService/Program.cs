@@ -68,6 +68,7 @@ namespace UserService
                 app.UseExceptionHandler("/Error");
             }
 
+            app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Response = true, ExceptionHandlingPath = "/error" });
             app.UseAuthorization();
             app.MapControllers();
 
