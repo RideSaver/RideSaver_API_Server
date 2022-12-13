@@ -34,12 +34,13 @@ namespace IdentityService.Controllers
         [HttpGet("validate-token")]
         public async Task<IActionResult> ValidateToken([FromHeader(Name="token")] string? token)
         {
-            if (token == null) return new UnauthorizedResult();
+            if (token is null) return new UnauthorizedResult();
 
             var isValid = await _authenticationRepository.ValidateToken(token);
+
             if (!isValid) return new UnauthorizedResult();
 
-            return Ok();
+            return new OkResult();
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]

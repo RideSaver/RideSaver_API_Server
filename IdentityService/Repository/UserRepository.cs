@@ -35,22 +35,16 @@ namespace IdentityService.Repository
         public async Task<User> GetUserAsync(string username)
         {
             var userModel = await GetUserModelAsync(username);
-            if (userModel is not null)
-            {
-                var userInfo = new User()
-                {
-                    Email = userModel.Email,
-                    Name = userModel.Name,
-                    PhoneNumber = userModel.PhoneNumber
-                };
+            if (userModel is null) return null;
 
-                return userInfo;
-            }
-            else
+            var userInfo = new User()
             {
-                return null;
-            }
+                Email = userModel.Email,
+                Name = userModel.Name,
+                PhoneNumber = userModel.PhoneNumber
+            };
 
+            return userInfo;
         }
         public async Task CreateUserAsync(PatchUserRequest userInfo)
         {

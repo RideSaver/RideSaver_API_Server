@@ -47,7 +47,6 @@ namespace UserService
                     ValidateAudience = false,
                     ValidateIssuer = false,
                     ValidateLifetime = false,
-                    //RequireExpirationTime = true,
                     ClockSkew = TimeSpan.Zero
 
                 };
@@ -71,8 +70,8 @@ namespace UserService
             app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Response = true, ExceptionHandlingPath = "/error" });
             app.UseAuthorization();
             app.MapControllers();
-
             app.UseHttpLogging();
+
             app.Logger.LogInformation("[UserService] Finished middleware configuration.. starting the service.");
 
             app.Run();

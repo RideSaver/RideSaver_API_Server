@@ -11,7 +11,7 @@ namespace IdentityService.Services
     public class TokenService : ITokenService
     {
         private readonly IConfiguration _configuration; // appsettings.json configuration
-        private readonly TimeSpan ExpiryDuration = new(2, 0, 0); // 2 hours expiry-duration
+        //private readonly TimeSpan ExpiryDuration = new(2, 0, 0); // 2 hours expiry-duration
         private readonly ILogger _logger;
 
         public TokenService(IConfiguration configuration, ILogger<TokenService> logger)
@@ -49,17 +49,21 @@ namespace IdentityService.Services
         public async Task<bool> ValidateToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
-
+            var encryptionKey = _configuration["Jwt:Key"];
+            var key = Encoding.UTF8.GetBytes(encryptionKey!);
             var validation = await tokenHandler.ValidateTokenAsync(token, new TokenValidationParameters
             {
+                IssuerSigningKey = new SymmetricSecurityKey(key),
                 ValidateIssuerSigningKey = true,
-                ValidateIssuer = true,
                 ValidIssuer = _configuration["Jwt:Issuer"],
-                IssuerSigningKey = key
+                ValidateAudience = false,
+                ValidateIssuer = false,
+                ValidateLifetime = false,
+                ClockSkew = TimeSpan.Zero,
             });
 
             if (!validation.IsValid) return false;
+
             return true;
         }
 
