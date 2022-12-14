@@ -4,10 +4,21 @@ metadata:
   name: identity-service-pvc
   namespace: api
 spec:
-  storageClassName: "" # Empty string must be explicitly set otherwise default StorageClass will be set
+  storageClassName: ""
   volumeName: identity-service-pv
+  volumeMode: FileSystem
   accessModes:
     - ReadWriteMany
+    - ReadWriteOnce
+  resources:
+    storage: 1Gi
+status:
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+  capacity:
+    storage: 1Gi
+  phase: Bound
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -22,6 +33,7 @@ spec:
   volumeMode: Filesystem
   accessModes:
     - ReadWriteMany
+    - ReadWriteOnce
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -82,29 +94,3 @@ spec:
         type: service
         service: identity
 ---
-apiVersion: batch/v1
-kind: Job
-metadata:
-    name: identity-service-migration
-    namespace: api
-spec:
-    template:
-        spec:
-            containers:
-                - name: identity-service-migration
-                  image: ghcr.io/ridesaver/identity_service:latest
-                  command:
-                      - ./efbundle
-                  volumeMounts:
-                      - mountPath: "/data"
-                        name: identity-service-pv
-                - name: identity-memcache
-                  image: memcached:1.6-alpine
-                  ports:
-                      - containerPort: 11211
-            volumes:
-                - name: identity-service-pv
-                  persistentVolumeClaim:
-                      claimName: identity-service-pvc
-            restartPolicy: Never
-    backoffLimit: 4

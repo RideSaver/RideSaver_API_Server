@@ -4,10 +4,21 @@ metadata:
     name: services-service-pvc
     namespace: api
 spec:
-    storageClassName: "" # Empty string must be explicitly set otherwise default StorageClass will be set
+    storageClassName: ""
     volumeName: services-service-pv
+    volumeMode: Filesystem
     accessModes:
       - ReadWriteMany
+      - ReadWriteOnce
+    resources:
+      storage: 1Gi
+status:
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+  capacity:
+    storage: 1Gi
+  phase: Bound
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -22,6 +33,7 @@ spec:
   volumeMode: Filesystem
   accessModes:
     - ReadWriteMany
+    - ReadWriteOnce
 ---
 apiVersion: apps/v1
 kind: Deployment
