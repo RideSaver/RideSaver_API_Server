@@ -17,7 +17,7 @@ RUN dotnet restore
 
 # Copy all files
 COPY . .
-RUN dotnet publish -p:PublishProfile=PublishTrimmed --sc --os="linux-musl" -o publish
+RUN dotnet publish -p:PublishProfile=PublishTrimmed --sc --os="linux" -o publish
 
 FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/runtime:6.0 AS runtime
 # Add labels to add information to the image
