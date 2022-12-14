@@ -10,15 +10,15 @@ ARG TARGETPLATFORM
 WORKDIR /server
 
 RUN dotnet nuget add source --username $github_username --password $github_token --store-password-in-clear-text --name github "https://nuget.pkg.github.com/RideSaver/index.json"
-RUN dotnet tool install --global dotnet-ef --version 7.0.0 && dotnet tool restore
+RUN dotnet tool install --global dotnet-ef
 
 COPY IdentityService.csproj .
-# RUN dotnet restore
+RUN dotnet restore
 
 # Copy all files
 COPY . .
-# RUN dotnet publish -p:PublishProfile=PublishTrimmed --sc --os="linux" -o publish
-RUN dotnet ef migrations bundle --self-contained -r linux-x64
+RUN dotnet publish -p:PublishProfile=PublishTrimmed --sc --os="linux" -o publish
+RUN /root/.dotnet/tools/dotnet-ef migrations bundle --self-contained -r linux-x64
 
 FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/runtime:6.0 AS runtime
 # Add labels to add information to the image

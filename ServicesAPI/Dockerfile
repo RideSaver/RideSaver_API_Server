@@ -18,7 +18,7 @@ RUN dotnet restore
 # Copy all files
 COPY . .
 RUN dotnet publish -p:PublishProfile=PublishTrimmed --sc --os="linux" -o publish
-RUN dotnet ef migrations bundle --self-contained -r linux-x64
+RUN /root/.dotnet/tools/dotnet-ef migrations bundle --self-contained -r linux-x64
 
 FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/runtime:6.0 AS runtime
 # Add labels to add information to the image
