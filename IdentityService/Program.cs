@@ -25,11 +25,6 @@ namespace IdentityService
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddDbContext<UserContext>();
-            using (var scope = host.Services.CreateScope())
-            {
-                var db = scope.ServiceProvider.GetRequiredService<UserContext>();
-                db.Database.Migrate();
-            }
 
             builder.Services.AddAuthentication(options =>
             {
@@ -59,6 +54,11 @@ namespace IdentityService
             builder.Services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
 
             var app = builder.Build();
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<UserContext>();
+                db.Database.Migrate();
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
