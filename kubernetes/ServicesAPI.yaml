@@ -35,6 +35,8 @@ spec:
   accessModes:
     - ReadWriteMany
     - ReadWriteOnce
+  hostPath:
+    path: "/data"
 ---
 apiVersion: apps/v1
 kind: Deployment

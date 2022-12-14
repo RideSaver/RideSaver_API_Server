@@ -6,7 +6,7 @@ metadata:
 spec:
   storageClassName: ""
   volumeName: identity-service-pv
-  volumeMode: FileSystem
+  volumeMode: Filesystem
   accessModes:
     - ReadWriteMany
     - ReadWriteOnce
@@ -29,12 +29,15 @@ metadata:
   labels:
     type: local
 spec:
+  storageClassName: ""
   capacity:
     storage: 1Gi
   volumeMode: Filesystem
   accessModes:
     - ReadWriteMany
     - ReadWriteOnce
+  hostPath:
+    path: "/data"
 ---
 apiVersion: apps/v1
 kind: Deployment
