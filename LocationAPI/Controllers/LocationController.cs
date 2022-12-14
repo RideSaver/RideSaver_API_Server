@@ -1,8 +1,7 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
+using Geocoding;
+using Geocoding.Microsoft;
 using Microsoft.AspNetCore.Mvc;
 using RideSaver.Server.Controllers;
-using RideSaver.Server.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace LocationAPI.Controllers
@@ -12,15 +11,18 @@ namespace LocationAPI.Controllers
     public class LocationController : LocationApiController
     {
         private readonly ILogger<LocationController> _logger;
+        private BingMapsGeocoder geoCoder;
+        private string key = "CVGYROGSUOCdFA9hBI7Zf0OhV2p30kc9MKjq0WmxGskghPuZd3RA_Dhh5Mwu4";
         public LocationController(ILogger<LocationController> logger)
         {
+           
+            geoCoder = new BingMapsGeocoder(key);
             _logger = logger;
         }
-        public override async Task<IActionResult> Autocomplete([FromQuery(Name = "location")] Location location, [FromQuery(Name = "maxResponses"), Range(1, 50)] int? maxResponses)
-        {
-            _logger.LogInformation("[LocationController] Autocomplete(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
 
-            return new OkObjectResult(await Task.FromResult(new List<Location>()));
+        public override Task<IActionResult> Autocomplete([FromQuery(Name = "location")] RideSaver.Server.Models.Location location, [FromQuery(Name = "maxResponses"), Range(1, 50)] int? maxResponses)
+        {
+            throw new NotImplementedException();
         }
     }
 }

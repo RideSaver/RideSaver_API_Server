@@ -1,8 +1,6 @@
-using IdentityService.Services;
 using DataAccess.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Web.Http.Filters;
 using IdentityService.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
@@ -22,6 +20,7 @@ namespace IdentityService.Controllers
         }
         [AllowAnonymous]
         [HttpPost("authenticate")]
+        [Produces("application/json")]
         public async Task<IActionResult> Authenticate([FromBody] AuthenticateRequest model)
         {
             _logger.LogInformation("[AuthenticationController] Authenticate(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
@@ -32,12 +31,11 @@ namespace IdentityService.Controllers
 
         [AllowAnonymous]
         [HttpGet("validate-token")]
+        [Produces("application/json")]
         public async Task<IActionResult> ValidateToken([FromHeader(Name="token")] string? token)
         {
             if (token is null) return new UnauthorizedResult();
-
             var isValid = await _authenticationRepository.ValidateToken(token);
-
             if (!isValid) return new UnauthorizedResult();
 
             return new OkResult();
@@ -45,27 +43,21 @@ namespace IdentityService.Controllers
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken(HttpAuthenticationContext context)
+        [Produces("application/json")]
+        public async Task<IActionResult> RefreshToken([FromHeader(Name="refresh_token")] string? token)
         {
-            var token = context.Request.Headers.GetValues("refresh_token").FirstOrDefault();
-
+            if (token is null) return new UnauthorizedResult();
             _logger.LogInformation("[AuthenticationController] RefreshToken(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
-
-            if (token == null) return new BadRequestResult();
-
             return new OkObjectResult(await _authenticationRepository.RefreshToken(token));
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("revoke-token")]
-        public async Task<IActionResult> RevokeToken(HttpAuthenticationContext context)
+        [Produces("application/json")]
+        public async Task<IActionResult> RevokeTokenRefreshToken([FromHeader(Name ="revoke_token")] string? token)
         {
-            var token = context.Request.Headers.GetValues("revoke_token").FirstOrDefault();
-
+            if (token is null) return new BadRequestResult();
             _logger.LogInformation("[AuthenticationController] RevokeToken(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
-
-            if (token == null) return new BadRequestResult();
-
             return new OkObjectResult(await _authenticationRepository.RevokeToken(token));
         }
     }

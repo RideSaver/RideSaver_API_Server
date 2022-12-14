@@ -7,7 +7,7 @@ using IdentityService.Data;
 using IdentityService.Repository;
 
 
-namespace UserService
+namespace IdentityService
 {
     public class Program
     {

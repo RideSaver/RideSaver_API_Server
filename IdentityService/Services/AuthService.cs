@@ -6,6 +6,7 @@ using RideSaver.Server.Models;
 using IdentityService.Data;
 using System.Security.Claims;
 using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityService.Services
 {
@@ -19,7 +20,6 @@ namespace IdentityService.Services
             _tokenService = tokenService;
             _userContext = userContext;
         }
-
         public async Task<AuthenticateResponse> Authenticate(AuthenticateRequest model)
         {
             var userInfo = await _userContext.Users.FirstAsync(u => u.Username == model.Username);

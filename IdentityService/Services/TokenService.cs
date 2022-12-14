@@ -34,10 +34,10 @@ namespace IdentityService.Services
             var key = Encoding.UTF8.GetBytes(encryptionKey!);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
                 Issuer = _configuration["Jwt:Issuer"],
-                Subject = Claims,
+                Subject = Claims
                 //Expires = DateTime.Now + ExpiryDuration,
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
             var token = tokenHandler.CreateJwtSecurityToken(tokenDescriptor);
@@ -51,7 +51,7 @@ namespace IdentityService.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             var encryptionKey = _configuration["Jwt:Key"];
             var key = Encoding.UTF8.GetBytes(encryptionKey!);
-            var validation = await tokenHandler.ValidateTokenAsync(token, new TokenValidationParameters
+            var tokenValidator = await tokenHandler.ValidateTokenAsync(token, new TokenValidationParameters
             {
                 IssuerSigningKey = new SymmetricSecurityKey(key),
                 ValidateIssuerSigningKey = true,
@@ -62,7 +62,7 @@ namespace IdentityService.Services
                 ClockSkew = TimeSpan.Zero,
             });
 
-            if (!validation.IsValid) return false;
+            if (!tokenValidator.IsValid) return false;
 
             return true;
         }
@@ -90,10 +90,13 @@ namespace IdentityService.Services
                 var symmetricKey = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!);
                 var validationParameters = new TokenValidationParameters()
                 {
-                    //RequireExpirationTime = true,
-                    ValidateIssuer = false,
+                    IssuerSigningKey = new SymmetricSecurityKey(symmetricKey),
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = _configuration["Jwt:Issuer"],
                     ValidateAudience = false,
-                    IssuerSigningKey = new SymmetricSecurityKey(symmetricKey)
+                    ValidateIssuer = false,
+                    ValidateLifetime = false,
+                    ClockSkew = TimeSpan.Zero,
                 };
 
                 var principal = tokenHandler.ValidateToken(token, validationParameters, out SecurityToken securityToken);
