@@ -53,6 +53,7 @@ namespace IdentityService.Repository
                 var salt = Security.Argon2.CreateSalt();
                 var user = new UserModel()
                 {
+                    Id = new Guid(),
                     Username = userInfo.Username,
                     Name = userInfo.Name,
                     Email = userInfo.Email,

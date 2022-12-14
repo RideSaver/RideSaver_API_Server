@@ -11,12 +11,13 @@ namespace LocationAPI.Controllers
     public class LocationController : LocationApiController
     {
         private readonly ILogger<LocationController> _logger;
+
         private BingMapsGeocoder geoCoder;
-        private string key = "CVGYROGSUOCdFA9hBI7Zf0OhV2p30kc9MKjq0WmxGskghPuZd3RA_Dhh5Mwu4";
+        private string API_KEY = "CVGYROGSUOCdFA9hBI7Zf0OhV2p30kc9MKjq0WmxGskghPuZd3RA_Dhh5Mwu4";
+
         public LocationController(ILogger<LocationController> logger)
         {
-           
-            geoCoder = new BingMapsGeocoder(key);
+            geoCoder = new BingMapsGeocoder(API_KEY);
             _logger = logger;
         }
 

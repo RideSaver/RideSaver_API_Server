@@ -12,14 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<ServiceContext>(options =>
-{
-    options.UseSqlServer(
-        $"{builder.Configuration.GetConnectionString("IdentityDB")};User Id={Environment.GetEnvironmentVariable("db-username")};Password={Environment.GetEnvironmentVariable("db-password")}", x =>
-        {
-            x.UseNetTopologySuite();
-        });
-});
+builder.Services.AddDbContext<ServiceContext>();
 
 builder.Services.AddTransient<IServiceRegistry, ServiceRegistry>();
 builder.Services.AddTransient<IInternalServices, InternalServices>();

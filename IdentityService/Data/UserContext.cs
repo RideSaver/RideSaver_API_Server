@@ -1,24 +1,22 @@
 using DataAccess.DataModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NetTopologySuite.Geometries;
 
 namespace IdentityService.Data
 {
     public class UserContext : DbContext
     {
-        public UserContext(DbContextOptions<UserContext> options) : base(options) { }
+        protected readonly IConfiguration Configuration;
         public DbSet<UserModel> Users { get; set; }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+
+        public UserContext(IConfiguration configuration)
         {
-            modelBuilder.Entity<UserModel>()
-                .Property(t => t.Id)
-                .IsRequired()
-                .HasColumnName("Id")
-                .HasColumnType("uniqueidentifier")
-                .HasDefaultValueSql("(newsequentialid())");
-
-            modelBuilder.Entity<List<Guid>>()
-             .HasNoKey();
+            Configuration = configuration;
         }
-
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
+        {
+            options.UseSqlite(Configuration.GetConnectionString("IdentityDB"));
+        }
     }
 }

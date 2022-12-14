@@ -5,7 +5,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using IdentityService.Data;
 using IdentityService.Repository;
-
+using System.Security.Cryptography.Xml;
+using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace IdentityService
 {
@@ -21,14 +24,7 @@ namespace IdentityService
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddDbContext<UserContext>(options =>
-            {
-                options.UseSqlServer(
-                    $"{builder.Configuration.GetConnectionString("IdentityDB")};User Id={Environment.GetEnvironmentVariable("db-username")};Password={Environment.GetEnvironmentVariable("db-password")}", x =>
-                    {
-                        x.UseNetTopologySuite();
-                    });
-            });
+            builder.Services.AddDbContext<UserContext>();
 
             builder.Services.AddAuthentication(options =>
             {

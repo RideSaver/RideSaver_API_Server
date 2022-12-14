@@ -73,5 +73,10 @@ namespace UserService.Controllers
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override Task<IActionResult> GetAvatar([FromRoute(Name = "username"), Required] string username) => throw new NotImplementedException();
+
+        public override Task<IActionResult> Authenticate([FromBody] UserLogin userLogin)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
