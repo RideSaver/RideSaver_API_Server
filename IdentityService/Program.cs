@@ -25,6 +25,11 @@ namespace IdentityService
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddDbContext<UserContext>();
+            using (var scope = host.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<UserContext>();
+                db.Database.Migrate();
+            }
 
             builder.Services.AddAuthentication(options =>
             {

@@ -13,6 +13,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ServiceContext>();
+using (var scope = host.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ServiceContext>();
+    db.Database.Migrate();
+}
 
 builder.Services.AddTransient<IServiceRegistry, ServiceRegistry>();
 builder.Services.AddTransient<IInternalServices, InternalServices>();
