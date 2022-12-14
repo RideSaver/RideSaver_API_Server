@@ -11,7 +11,8 @@ spec:
     - ReadWriteMany
     - ReadWriteOnce
   resources:
-    storage: 1Gi
+    requests:
+      storage: 1Gi
 status:
   accessModes:
     - ReadWriteOnce
