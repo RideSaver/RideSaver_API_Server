@@ -72,8 +72,8 @@ namespace UserService
             app.MapControllers();
             app.UseHttpLogging();
 
-            app.Logger.LogInformation("[UserService] Finished middleware configuration.. starting the service.");
-
+            app.Logger.LogInformation("[IdentityService] Finished middleware configuration. starting the service.");
+            app.Logger.LogInformation($"[IdentityService] Running with DB configuration string: {builder.Configuration.GetConnectionString("IdentityDB")}.")
             app.Run();
         }
     }
