@@ -18,7 +18,7 @@ RUN dotnet restore
 # Copy all files
 COPY . .
 RUN dotnet publish -p:PublishProfile=PublishTrimmed --sc --os="linux" -o publish
-RUN /root/.dotnet/tools/dotnet-ef migrations bundle --self-contained -r linux-x64
+RUN /root/.dotnet/tools/dotnet-ef migrations bundle --self-contained -r linux-x64 --output publish/efbundle
 
 FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/runtime:6.0 AS runtime
 # Add labels to add information to the image
@@ -34,4 +34,4 @@ ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=0
 WORKDIR /app
 COPY --from=builder /server/publish ./
 
-ENTRYPOINT ["./ServicesAPI", "--urls", "http://0.0.0.0:80"]
+CMD ["./ServicesAPI", "--urls", "http://0.0.0.0:80"]

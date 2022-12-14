@@ -78,3 +78,19 @@ spec:
             - ./efbundle
       restartPolicy: Never
   backoffLimit: 4
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: identity-service-migration
+  namespace: api
+spec:
+  template:
+    spec:
+      containers:
+      - name: identity-service-migration
+        image: ghcr.io/ridesaver/identity_service:latest
+        command:
+            - ./efbundle
+      restartPolicy: Never
+  backoffLimit: 4
