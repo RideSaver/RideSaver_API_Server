@@ -1,3 +1,22 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: identity-service-pvc
+  namespace: api
+spec:
+  storageClassName: "" # Empty string must be explicitly set otherwise default StorageClass will be set
+  volumeName: identity-service-pv
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: identity-service-pv
+  namespace: api
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -21,47 +40,23 @@ spec:
         spec:
             containers:
                 - name: identity-service
-                  image: ghcr.io/ridesaver/identity_service:sha-6acd6b4
+                  image: ghcr.io/ridesaver/identity_service:latest
                   ports:
                       - containerPort: 80
                       - containerPort: 443
-                  env:
-                      - name: db-username
-                        valueFrom:
-                        secretKeyRef:
-                            name: identity-service-db-credentials
-                            key: username
-                            optional:
-                                false # same as default; "mysecret" must exist
-                                      # and include a key named "username"
-                      - name: db-password
-                        valueFrom:
-                        secretKeyRef:
-                            name: identity-service-db-credentials
-                            key: password
-                            optional:
-                                false # same as default; "mysecret" must exist
-                                # and include a key named "username"
+                  volumeMounts:
+                      - mountPath: /data
+                        name: identity-service-pv
                 - name: identity-memcache
                   image: memcached:1.6-alpine
                   ports:
                       - containerPort: 11211
+            volumes:
+                - name: identity-service-pv
+                  persistentVolumeClaim:
+                      claimName: identity-service-pvc
             imagePullSecrets:
                 - name: ridesaver-registry-credentials
----
-apiVersion: autoscaling/v1
-kind: HorizontalPodAutoscaler
-metadata:
-    name: identity-service
-    namespace: api
-spec:
-    scaleTargetRef:
-        apiVersion: apps/v1
-        kind: Deployment
-        name: identity-service
-    minReplicas: 1 # Maintain at least one for redundancy in case on fails
-    maxReplicas: 10
-    targetCPUUtilizationPercentage: 50
 ---
 apiVersion: v1
 kind: Service
@@ -91,25 +86,19 @@ spec:
         spec:
             containers:
                 - name: identity-service-migration
-                  image: ghcr.io/ridesaver/identity_service:sha-6acd6b4
+                  image: ghcr.io/ridesaver/identity_service:latest
                   command:
                       - ./efbundle
-                  env:
-                      - name: db-username
-                        valueFrom:
-                        secretKeyRef:
-                            name: identity-service-db-credentials
-                            key: username
-                            optional:
-                                false # same as default; "mysecret" must exist
-                                      # and include a key named "username"
-                      - name: db-password
-                        valueFrom:
-                        secretKeyRef:
-                            name: identity-service-db-credentials
-                            key: password
-                            optional:
-                                false # same as default; "mysecret" must exist
-                                      # and include a key named "username"
+                  volumeMounts:
+                      - mountPath: "/data"
+                        name: identity-service-pv
+                - name: identity-memcache
+                  image: memcached:1.6-alpine
+                  ports:
+                      - containerPort: 11211
+            volumes:
+                - name: identity-service-pv
+                  persistentVolumeClaim:
+                      claimName: identity-service-pvc
             restartPolicy: Never
     backoffLimit: 4

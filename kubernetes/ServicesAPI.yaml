@@ -1,3 +1,22 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: services-service-pvc
+    namespace: api
+spec:
+    storageClassName: "" # Empty string must be explicitly set otherwise default StorageClass will be set
+    volumeName: services-service-pv
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: services-service-pv
+  namespace: api
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -25,43 +44,19 @@ spec:
                   ports:
                       - containerPort: 80
                       - containerPort: 443
-                  env:
-                      - name: db-username
-                        valueFrom:
-                        secretKeyRef:
-                            name: services-service-db-credentials
-                            key: username
-                            optional:
-                                false # same as default; "mysecret" must exist
-                                # and include a key named "username"
-                      - name: db-password
-                        valueFrom:
-                        secretKeyRef:
-                            name: services-service-db-credentials
-                            key: password
-                            optional:
-                                false # same as default; "mysecret" must exist
-                                # and include a key named "username"
+                  volumeMounts:
+                      - mountPath: /data
+                        name: services-service-pv
                 - name: services-memcache
                   image: memcached:1.6-alpine
                   ports:
                       - containerPort: 11211
+            volumes:
+                - name: services-service-pv
+                  persistentVolumeClaim:
+                      claimName: services-service-pvc
             imagePullSecrets:
                 - name: ridesaver-registry-credentials
----
-apiVersion: autoscaling/v1
-kind: HorizontalPodAutoscaler
-metadata:
-    name: services-api
-    namespace: api
-spec:
-    scaleTargetRef:
-        apiVersion: apps/v1
-        kind: Deployment
-        name: services-api
-    minReplicas: 1 # Maintain at least one for redundancy in case on fails
-    maxReplicas: 10
-    targetCPUUtilizationPercentage: 50
 ---
 apiVersion: v1
 kind: Service
@@ -93,22 +88,12 @@ spec:
                   image: services_service:latest
                   command:
                       - ./efbundle
-                  env:
-                      - name: db-username
-                        valueFrom:
-                        secretKeyRef:
-                            name: services-service-db-credentials
-                            key: username
-                            optional:
-                                false # same as default; "mysecret" must exist
-                                # and include a key named "username"
-                      - name: db-password
-                        valueFrom:
-                        secretKeyRef:
-                            name: services-service-db-credentials
-                            key: password
-                            optional:
-                                false # same as default; "mysecret" must exist
-                                # and include a key named "username"
+                  volumeMounts:
+                      - mountPath: "/data"
+                        name: services-service-pv
+            volumes:
+                - name: services-service-pv
+                  persistentVolumeClaim:
+                      claimName: services-service-pvc
             restartPolicy: Never
     backoffLimit: 4
