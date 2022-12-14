@@ -19,16 +19,11 @@ RUN dotnet restore
 COPY . .
 RUN dotnet publish -p:PublishProfile=PublishTrimmed --sc --os="linux-musl" -o publish
 
-FROM --platform=$TARGETPLATFORM alpine:3.16 AS runtime
+FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/runtime:6.0 AS runtime
 # Add labels to add information to the image
 LABEL org.opencontainers.image.source=https://github.com/RideSaver/RideSaver_API_Server
 LABEL org.opencontainers.image.description="Services API Service for RideSaver"
 LABEL org.opencontainers.image.licenses=MIT
-
-# Add tags to define the api image
-
-# Add some libs required by .NET runtime
-RUN apk add --no-cache libstdc++ libintl icu
 
 EXPOSE 80
 EXPOSE 443
