@@ -6,6 +6,8 @@ metadata:
 spec:
     storageClassName: "" # Empty string must be explicitly set otherwise default StorageClass will be set
     volumeName: services-service-pv
+    accessModes:
+      - ReadWriteMany
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -76,24 +78,3 @@ spec:
         type: service
         service: services
 ---
-apiVersion: batch/v1
-kind: Job
-metadata:
-    name: services-service-migration
-spec:
-    template:
-        spec:
-            containers:
-                - name: services-service-migration
-                  image: services_service:latest
-                  command:
-                      - ./efbundle
-                  volumeMounts:
-                      - mountPath: "/data"
-                        name: services-service-pv
-            volumes:
-                - name: services-service-pv
-                  persistentVolumeClaim:
-                      claimName: services-service-pvc
-            restartPolicy: Never
-    backoffLimit: 4

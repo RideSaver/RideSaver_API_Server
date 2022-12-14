@@ -6,6 +6,8 @@ metadata:
 spec:
   storageClassName: "" # Empty string must be explicitly set otherwise default StorageClass will be set
   volumeName: identity-service-pv
+  accessModes:
+    - ReadWriteMany
 ---
 apiVersion: v1
 kind: PersistentVolume
