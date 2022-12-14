@@ -3,23 +3,6 @@ kind: PersistentVolumeClaim
 metadata:
   name: identity-service-pvc
   namespace: api
-spec:
-  storageClassName: ""
-  volumeName: identity-service-pv
-  volumeMode: Filesystem
-  accessModes:
-    - ReadWriteMany
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-status:
-  accessModes:
-    - ReadWriteOnce
-    - ReadWriteMany
-  capacity:
-    storage: 1Gi
-  phase: Bound
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -33,11 +16,6 @@ spec:
   capacity:
     storage: 1Gi
   volumeMode: Filesystem
-  accessModes:
-    - ReadWriteMany
-    - ReadWriteOnce
-  hostPath:
-    path: "/data"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -97,4 +75,3 @@ spec:
     selector:
         type: service
         service: identity
----

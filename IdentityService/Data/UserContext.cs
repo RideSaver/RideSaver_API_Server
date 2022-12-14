@@ -13,6 +13,7 @@ namespace IdentityService.Data
         public UserContext(IConfiguration configuration)
         {
             Configuration = configuration;
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<UserContext, EF6Console.Migrations.Configuration>());
         }
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {

@@ -11,6 +11,7 @@ namespace ServicesAPI.Data
         public ServiceContext(IConfiguration configuration)
         {
             Configuration = configuration;
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<ServiceContext, EF6Console.Migrations.Configuration>());
         }
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
