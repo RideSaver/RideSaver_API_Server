@@ -27,12 +27,18 @@ spec:
                       - containerPort: 443
                   env:
                       - name: db-username
-                        value: identity-service
+                        valueFrom:
+                        secretKeyRef:
+                            name: services-service-db-credentials
+                            key: username
+                            optional:
+                                false # same as default; "mysecret" must exist
+                                # and include a key named "username"
                       - name: db-password
                         valueFrom:
                         secretKeyRef:
-                            name: identity-service-db-password
-                            key: username
+                            name: services-service-db-credentials
+                            key: password
                             optional:
                                 false # same as default; "mysecret" must exist
                                 # and include a key named "username"
@@ -89,14 +95,20 @@ spec:
                       - ./efbundle
                   env:
                       - name: db-username
-                        value: services-service
-                      - name: db-password
                         valueFrom:
                         secretKeyRef:
-                            name: services-service-db-password
+                            name: services-service-db-credentials
                             key: username
                             optional:
                                 false # same as default; "mysecret" must exist
-                                      # and include a key named "username"
+                                # and include a key named "username"
+                      - name: db-password
+                        valueFrom:
+                        secretKeyRef:
+                            name: services-service-db-credentials
+                            key: password
+                            optional:
+                                false # same as default; "mysecret" must exist
+                                # and include a key named "username"
             restartPolicy: Never
     backoffLimit: 4
