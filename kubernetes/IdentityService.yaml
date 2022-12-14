@@ -3,6 +3,13 @@ kind: PersistentVolumeClaim
 metadata:
   name: identity-service-pvc
   namespace: api
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: standard-rwo
+  resources:
+    requests:
+      storage: 8Gi
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -12,10 +19,16 @@ metadata:
   labels:
     type: local
 spec:
-  storageClassName: ""
+  storageClassName: slow
   capacity:
     storage: 1Gi
   volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  nfs:
+    path: /tmp
+    server: 172.17.0.2
 ---
 apiVersion: apps/v1
 kind: Deployment
