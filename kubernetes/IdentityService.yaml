@@ -21,10 +21,27 @@ spec:
         spec:
             containers:
                 - name: identity-service
-                  image: ghcr.io/ridesaver/identity_service:latest
+                  image: ghcr.io/ridesaver/identity_service:sha-6acd6b4
                   ports:
                       - containerPort: 80
                       - containerPort: 443
+                  env:
+                      - name: db-username
+                        valueFrom:
+                        secretKeyRef:
+                            name: identity-service-db-credentials
+                            key: username
+                            optional:
+                                false # same as default; "mysecret" must exist
+                                      # and include a key named "username"
+                      - name: db-password
+                        valueFrom:
+                        secretKeyRef:
+                            name: identity-service-db-credentials
+                            key: password
+                            optional:
+                                false # same as default; "mysecret" must exist
+                                # and include a key named "username"
                 - name: identity-memcache
                   image: memcached:1.6-alpine
                   ports:
@@ -63,3 +80,36 @@ spec:
     selector:
         type: service
         service: identity
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+    name: identity-service-migration
+    namespace: api
+spec:
+    template:
+        spec:
+            containers:
+                - name: identity-service-migration
+                  image: ghcr.io/ridesaver/identity_service:sha-6acd6b4
+                  command:
+                      - ./efbundle
+                  env:
+                      - name: db-username
+                        valueFrom:
+                        secretKeyRef:
+                            name: identity-service-db-credentials
+                            key: username
+                            optional:
+                                false # same as default; "mysecret" must exist
+                                      # and include a key named "username"
+                      - name: db-password
+                        valueFrom:
+                        secretKeyRef:
+                            name: identity-service-db-credentials
+                            key: password
+                            optional:
+                                false # same as default; "mysecret" must exist
+                                      # and include a key named "username"
+            restartPolicy: Never
+    backoffLimit: 4

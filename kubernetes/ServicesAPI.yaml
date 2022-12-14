@@ -25,6 +25,23 @@ spec:
                   ports:
                       - containerPort: 80
                       - containerPort: 443
+                  env:
+                      - name: db-username
+                        valueFrom:
+                        secretKeyRef:
+                            name: services-service-db-credentials
+                            key: username
+                            optional:
+                                false # same as default; "mysecret" must exist
+                                # and include a key named "username"
+                      - name: db-password
+                        valueFrom:
+                        secretKeyRef:
+                            name: services-service-db-credentials
+                            key: password
+                            optional:
+                                false # same as default; "mysecret" must exist
+                                # and include a key named "username"
                 - name: services-memcache
                   image: memcached:1.6-alpine
                   ports:
@@ -63,3 +80,35 @@ spec:
     selector:
         type: service
         service: services
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+    name: services-service-migration
+spec:
+    template:
+        spec:
+            containers:
+                - name: services-service-migration
+                  image: services_service:latest
+                  command:
+                      - ./efbundle
+                  env:
+                      - name: db-username
+                        valueFrom:
+                        secretKeyRef:
+                            name: services-service-db-credentials
+                            key: username
+                            optional:
+                                false # same as default; "mysecret" must exist
+                                # and include a key named "username"
+                      - name: db-password
+                        valueFrom:
+                        secretKeyRef:
+                            name: services-service-db-credentials
+                            key: password
+                            optional:
+                                false # same as default; "mysecret" must exist
+                                # and include a key named "username"
+            restartPolicy: Never
+    backoffLimit: 4

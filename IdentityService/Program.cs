@@ -24,7 +24,7 @@ namespace IdentityService
             builder.Services.AddDbContext<UserContext>(options =>
             {
                 options.UseSqlServer(
-                    builder.Configuration.GetConnectionString("IdentityDB"), x =>
+                    $"{builder.Configuration.GetConnectionString("IdentityDB")};User Id={Environment.GetEnvironmentVariable("db-username")};Password={Environment.GetEnvironmentVariable("db-password")}", x =>
                     {
                         x.UseNetTopologySuite();
                     });
@@ -72,8 +72,8 @@ namespace IdentityService
             app.MapControllers();
             app.UseHttpLogging();
 
-            app.Logger.LogInformation("[UserService] Finished middleware configuration.. starting the service.");
-
+            app.Logger.LogInformation("[IdentityService] Finished middleware configuration. starting the service.");
+            app.Logger.LogInformation($"[IdentityService] Running with DB configuration string: {builder.Configuration.GetConnectionString("IdentityDB")}.");
             app.Run();
         }
     }
