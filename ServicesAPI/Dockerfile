@@ -20,7 +20,7 @@ COPY . .
 RUN dotnet publish -p:PublishProfile=PublishTrimmed --sc --os="linux" -o publish
 RUN /root/.dotnet/tools/dotnet-ef migrations bundle --self-contained -r linux-x64 --output publish/efbundle
 
-FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/runtime:6.0 AS runtime
+FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/runtime:6.0-jammy AS runtime
 # Add labels to add information to the image
 LABEL org.opencontainers.image.source=https://github.com/RideSaver/RideSaver_API_Server
 LABEL org.opencontainers.image.description="Services API Service for RideSaver"
