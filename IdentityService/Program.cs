@@ -24,7 +24,7 @@ namespace UserService
             builder.Services.AddDbContext<UserContext>(options =>
             {
                 options.UseSqlServer(
-                    builder.Configuration.GetConnectionString("IdentityDB"), x =>
+                    $"{builder.Configuration.GetConnectionString("IdentityDB")};User Id={Environment.GetEnvironmentVariable("db-username")};Password={Environment.GetEnvironmentVariable("db-password")}", x =>
                     {
                         x.UseNetTopologySuite();
                     });

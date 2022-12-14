@@ -25,6 +25,17 @@ spec:
                   ports:
                       - containerPort: 80
                       - containerPort: 443
+                  env:
+                      - name: db-username
+                        value: identity-service
+                      - name: db-password
+                        valueFrom:
+                        secretKeyRef:
+                            name: identity-service-db-password
+                            key: username
+                            optional:
+                                false # same as default; "mysecret" must exist
+                                # and include a key named "username"
                 - name: services-memcache
                   image: memcached:1.6-alpine
                   ports:
@@ -67,30 +78,25 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: identity-service-migration
+    name: services-service-migration
 spec:
-  template:
-    spec:
-      containers:
-      - name: identity-service-migration
-        image: identity_service:latest
-        command:
-            - ./efbundle
-      restartPolicy: Never
-  backoffLimit: 4
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: identity-service-migration
-  namespace: api
-spec:
-  template:
-    spec:
-      containers:
-      - name: identity-service-migration
-        image: ghcr.io/ridesaver/identity_service:latest
-        command:
-            - ./efbundle
-      restartPolicy: Never
-  backoffLimit: 4
+    template:
+        spec:
+            containers:
+                - name: services-service-migration
+                  image: services_service:latest
+                  command:
+                      - ./efbundle
+                  env:
+                      - name: db-username
+                        value: services-service
+                      - name: db-password
+                        valueFrom:
+                        secretKeyRef:
+                            name: services-service-db-password
+                            key: username
+                            optional:
+                                false # same as default; "mysecret" must exist
+                                      # and include a key named "username"
+            restartPolicy: Never
+    backoffLimit: 4

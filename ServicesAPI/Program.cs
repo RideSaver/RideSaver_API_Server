@@ -15,7 +15,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ServiceContext>(options =>
 {
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("ServicesDB"), x =>
+        $"{builder.Configuration.GetConnectionString("IdentityDB")};User Id={Environment.GetEnvironmentVariable("db-username")};Password={Environment.GetEnvironmentVariable("db-password")}", x =>
         {
             x.UseNetTopologySuite();
         });
