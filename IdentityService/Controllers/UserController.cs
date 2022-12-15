@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using RideSaver.Server.Controllers;
 using RideSaver.Server.Models;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Transactions;
 
@@ -26,6 +27,25 @@ namespace UserService.Controllers
         [AllowAnonymous]
         public override async Task<IActionResult> SignUp([FromBody] PatchUserRequest patchUserRequest) // returns HTTP 200 OK response
         {
+            if (patchUserRequest is null)
+            {
+                _logger.LogInformation("[UserController] SignUp() -> patchUserRequest IS null!");
+                return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                _logger.LogInformation("[UserController] SignUp() -> Model State is NOT valid!");
+                return BadRequest();
+            }
+
+            if(patchUserRequest.AuthorizedServices is null)
+            {
+                _logger.LogInformation("[UserController] SignUp() -> AuthorizedServics IS null!");
+            }
+
+            _logger.LogInformation($"[UserController] SignUp() -> BEFORE REPO -> Email: {patchUserRequest.Email} Name: {patchUserRequest?.Name} Phone:{patchUserRequest.PhoneNumber} Username: {patchUserRequest.Username} Password: {patchUserRequest.Password}");
+
             await _userRepository.CreateUserAsync(patchUserRequest);
             _logger.LogInformation("[UserController] SignUp(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
             return new NoContentResult(); // [STATUS: 204 NO CONTENT]
