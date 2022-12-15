@@ -38,7 +38,7 @@ namespace EstimateAPI.Repository
         public Estimates.EstimatesClient GetClientByName(string name)
         {
             GrpcChannel channel = GrpcChannel.ForAddress($"https://{client.Metadata.Name}.client");
-            return client.Metadata.Name, new Estimates.EstimatesClient(channel);
+            return new Estimates.EstimatesClient(channel);
         }
         public Estimates.EstimatesClient[] GetClients()
         {
