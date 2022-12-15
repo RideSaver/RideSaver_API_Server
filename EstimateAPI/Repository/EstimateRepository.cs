@@ -22,7 +22,7 @@ namespace EstimateAPI.Repository
         public async Task<List<Estimate>> GetRideEstimatesAsync(Location startPoint, Location endPoint, List<Guid> services, int? seats)
         {
             IEnumerable<Task<List<Estimate>>> estimateTasksQuery =
-                from client in _clientRepository.GetClients()
+                from client in await _clientRepository.GetClients()
                 select GetEstimatesAsync(client.Value, startPoint, endPoint, services, seats);
             List<Task<List<Estimate>>> estimateTasks = estimateTasksQuery.ToList();
             List<Estimate> estimates = new List<Estimate>();
