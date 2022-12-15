@@ -9,12 +9,10 @@ namespace EstimateAPI.Repository
     public class ClientRepository : IClientRepository
     {
         private readonly ClientDiscoveryOptions _options;
-        private CancellationTokenSource _cts;
 
         private readonly IKubernetes _kubernetes;
         private readonly string _labelStr;
         private string _namespace;
-        public Dictionary<string, Estimates.EstimatesClient> Clients { get; private set; }
 
         public ClientRepository(IOptions<ClientDiscoveryOptions> options) : this(options.Value.Namespace, options) { }
 
@@ -22,15 +20,6 @@ namespace EstimateAPI.Repository
         {
             _namespace = Namespace;
             _options = options.Value;
-
-            _cts = new CancellationTokenSource();
-            new Thread(async () =>
-            {
-                await Run(_cts.Token);
-
-            }).Start();
-
-            Clients = new Dictionary<string, Estimates.EstimatesClient>();
 
             // Get the Kubernetes Object
             var config = KubernetesClientConfiguration.InClusterConfig();
@@ -46,28 +35,18 @@ namespace EstimateAPI.Repository
             _labelStr = string.Join(",", labelStrs.ToArray());
         }
 
-        ~ClientRepository()
+        public Estimates.EstimatesClient GetClientByName(string name)
         {
-            _cts.Cancel();
+            GrpcChannel channel = GrpcChannel.ForAddress($"https://{client.Metadata.Name}.client");
+            return client.Metadata.Name, new Estimates.EstimatesClient(channel);
         }
-
-        // Summary: Updates the clients every 10 seconds
-        public async Task Run(CancellationToken token)
-        {
-            while (token.IsCancellationRequested)  // Run until cancelled
-            {
-                await RefreshClients();
-                Thread.Sleep(10000); //  Check every 10 seconds
-            }
-        }
-        public async Task RefreshClients()
+        public Estimates.EstimatesClient[] GetClients()
         {
             var list = await _kubernetes.CoreV1.ListNamespacedServiceAsync(_namespace, labelSelector: _labelStr);
-            Dictionary<string, Estimates.EstimatesClient> Clients = new();
+            List<Estimates.EstimatesClient> Clients = new();
             foreach (var client in list)
             {
-                GrpcChannel channel = GrpcChannel.ForAddress($"https://{client.Metadata.Name}.client");
-                Clients.Add(client.Metadata.Name, new Estimates.EstimatesClient(channel));
+                Clients.Add(GetClientByName(client.Metadata.Name));
             }
             this.Clients = Clients;
         }
