@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using IdentityService.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
 
 namespace IdentityService.Controllers
 {
@@ -60,5 +61,18 @@ namespace IdentityService.Controllers
             _logger.LogInformation("[AuthenticationController] RevokeToken(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
             return new OkObjectResult(await _authenticationRepository.RevokeToken(token));
         }
+
+        [Route("/error-development")]
+        public IActionResult HandleErrorDevelopment([FromServices] IHostEnvironment hostEnvironment)
+        {
+            if (!hostEnvironment.IsDevelopment()) return NotFound();
+
+            var exceptionHandlerFeature = HttpContext.Features.Get<IExceptionHandlerFeature>()!;
+
+            return Problem(detail: exceptionHandlerFeature.Error.StackTrace, title: exceptionHandlerFeature.Error.Message);
+        }
+
+        [Route("/error")]
+        public IActionResult HandleError() => Problem();
     }
 }

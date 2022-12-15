@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using RequestAPI.Repository;
 using RideSaver.Server.Controllers;
@@ -34,5 +35,18 @@ namespace RequestAPI.Controllers
             _logger.LogInformation("[RequestController] RequestRide(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
             return new OkObjectResult(await _requestRepository.CreateRideRequestAsync(new Guid(estimateId)));
         }
+
+        [Route("/error-development")]
+        public IActionResult HandleErrorDevelopment([FromServices] IHostEnvironment hostEnvironment)
+        {
+            if (!hostEnvironment.IsDevelopment()) return NotFound();
+
+            var exceptionHandlerFeature = HttpContext.Features.Get<IExceptionHandlerFeature>()!;
+
+            return Problem(detail: exceptionHandlerFeature.Error.StackTrace, title: exceptionHandlerFeature.Error.Message);
+        }
+
+        [Route("/error")]
+        public IActionResult HandleError() => Problem();
     }
 }

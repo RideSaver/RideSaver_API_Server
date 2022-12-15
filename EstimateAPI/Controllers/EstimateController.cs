@@ -1,6 +1,7 @@
 using EstimateAPI.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using RideSaver.Server.Controllers;
 using RideSaver.Server.Models;
@@ -29,5 +30,18 @@ namespace EstimateAPI.Controllers
             _logger.LogInformation("[EstimateController] RefreshEstimates(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
             return new OkObjectResult(await _estimateRepository.GetRideEstimatesRefreshAsync(ids));
         }
+
+        [Route("/error-development")]
+        public IActionResult HandleErrorDevelopment([FromServices] IHostEnvironment hostEnvironment)
+        {
+            if (!hostEnvironment.IsDevelopment()) return NotFound();
+
+            var exceptionHandlerFeature = HttpContext.Features.Get<IExceptionHandlerFeature>()!;
+
+            return Problem(detail: exceptionHandlerFeature.Error.StackTrace, title: exceptionHandlerFeature.Error.Message);
+        }
+
+        [Route("/error")]
+        public IActionResult HandleError() => Problem();
     }
 }

@@ -1,5 +1,6 @@
 using Geocoding;
 using Geocoding.Microsoft;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using RideSaver.Server.Controllers;
 using System.ComponentModel.DataAnnotations;
@@ -12,8 +13,8 @@ namespace LocationAPI.Controllers
     {
         private readonly ILogger<LocationController> _logger;
 
-        private BingMapsGeocoder geoCoder;
-        private string API_KEY = "CVGYROGSUOCdFA9hBI7Zf0OhV2p30kc9MKjq0WmxGskghPuZd3RA_Dhh5Mwu4";
+        private BingMapsGeocoder geoCoder; // Bings Map GeoCoder
+        private string API_KEY = "CVGYROGSUOCdFA9hBI7Zf0OhV2p30kc9MKjq0WmxGskghPuZd3RA_Dhh5Mwu4"; // Bings Map API Key
 
         public LocationController(ILogger<LocationController> logger)
         {
@@ -25,5 +26,18 @@ namespace LocationAPI.Controllers
         {
             throw new NotImplementedException();
         }
+
+        [Route("/error-development")]
+        public IActionResult HandleErrorDevelopment([FromServices] IHostEnvironment hostEnvironment)
+        {
+            if (!hostEnvironment.IsDevelopment()) return NotFound();
+
+            var exceptionHandlerFeature = HttpContext.Features.Get<IExceptionHandlerFeature>()!;
+
+            return Problem(detail: exceptionHandlerFeature.Error.StackTrace, title: exceptionHandlerFeature.Error.Message);
+        }
+
+        [Route("/error")]
+        public IActionResult HandleError() => Problem();
     }
 }

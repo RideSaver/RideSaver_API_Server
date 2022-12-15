@@ -18,19 +18,16 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseExceptionHandler("/Error");
+    app.UseExceptionHandler("/error-development");
 }
 else
 {
-    app.UseExceptionHandler("/Error");
+    app.UseExceptionHandler("/error");
 }
-
-
-
-app.UseHttpLogging();
 
 app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Response = true, ExceptionHandlingPath = "/error" });
 
+app.UseHttpLogging();
 app.UseAuthorization();
 app.MapControllers();
 
