@@ -7,16 +7,7 @@ namespace ServicesAPI.Data
 {
     public class ServiceContext : DbContext
     {
-        protected readonly IConfiguration Configuration;
-        public ServiceContext(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-        {
-            options.UseSqlite(Configuration.GetConnectionString("ServicesDB"));
-        }
-
+        public ServiceContext(DbContextOptions<ServiceContext> options) : base(options) { }
         public DbSet<ProviderModel> Providers { get; set; }
         public DbSet<ServicesModel> Services { get; set; }
 

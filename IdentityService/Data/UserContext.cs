@@ -7,16 +7,8 @@ namespace IdentityService.Data
 {
     public class UserContext : DbContext
     {
-        protected readonly IConfiguration Configuration;
         public DbSet<UserModel> Users { get; set; }
+        public UserContext(DbContextOptions<UserContext> options) : base(options) { }
 
-        public UserContext(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-        {
-            options.UseSqlite(Configuration.GetConnectionString("IdentityDB"));
-        }
     }
 }

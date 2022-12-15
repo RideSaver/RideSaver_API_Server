@@ -15,26 +15,28 @@ namespace IdentityService.Data.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.1");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("DataAccess.DataModels.ProviderModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("ClientId")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedAt")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -45,23 +47,23 @@ namespace IdentityService.Data.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("ClientId")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedAt")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<Guid>("ProviderId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
@@ -74,34 +76,34 @@ namespace IdentityService.Data.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Avatar")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<byte[]>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("BLOB");
+                        .HasColumnType("longblob");
 
                     b.Property<byte[]>("PasswordSalt")
                         .IsRequired()
-                        .HasColumnType("BLOB");
+                        .HasColumnType("longblob");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -120,10 +122,10 @@ namespace IdentityService.Data.Migrations
                         {
                             b1.Property<Guid>("Id")
                                 .ValueGeneratedOnAdd()
-                                .HasColumnType("TEXT");
+                                .HasColumnType("char(36)");
 
                             b1.Property<Guid>("ServicesModelId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("char(36)");
 
                             b1.HasKey("Id");
 
@@ -139,13 +141,13 @@ namespace IdentityService.Data.Migrations
                         {
                             b1.Property<Guid>("Id")
                                 .ValueGeneratedOnAdd()
-                                .HasColumnType("TEXT");
+                                .HasColumnType("char(36)");
 
                             b1.Property<int>("Feature")
-                                .HasColumnType("INTEGER");
+                                .HasColumnType("int");
 
                             b1.Property<Guid>("ServicesModelId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("char(36)");
 
                             b1.HasKey("Id");
 
@@ -170,20 +172,20 @@ namespace IdentityService.Data.Migrations
                         {
                             b1.Property<Guid>("Id")
                                 .ValueGeneratedOnAdd()
-                                .HasColumnType("TEXT");
+                                .HasColumnType("char(36)");
 
                             b1.Property<string>("RefreshToken")
                                 .IsRequired()
-                                .HasColumnType("TEXT");
+                                .HasColumnType("longtext");
 
                             b1.Property<Guid>("ServiceId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("char(36)");
 
                             b1.Property<Guid>("UserId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("char(36)");
 
                             b1.Property<Guid>("UserModelId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("char(36)");
 
                             b1.HasKey("Id");
 
@@ -199,31 +201,31 @@ namespace IdentityService.Data.Migrations
                         {
                             b1.Property<Guid>("Id")
                                 .ValueGeneratedOnAdd()
-                                .HasColumnType("TEXT");
+                                .HasColumnType("char(36)");
 
                             b1.Property<DateTime>("Created")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("datetime(6)");
 
                             b1.Property<string>("CreatedByIp")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("longtext");
 
                             b1.Property<DateTime>("Expires")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("datetime(6)");
 
                             b1.Property<string>("ReplacedByToken")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("longtext");
 
                             b1.Property<DateTime?>("Revoked")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("datetime(6)");
 
                             b1.Property<string>("RevokedByIp")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("longtext");
 
                             b1.Property<string>("Token")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("longtext");
 
                             b1.Property<Guid>("UserModelId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("char(36)");
 
                             b1.HasKey("Id");
 
@@ -239,29 +241,29 @@ namespace IdentityService.Data.Migrations
                         {
                             b1.Property<Guid>("Id")
                                 .ValueGeneratedOnAdd()
-                                .HasColumnType("TEXT");
+                                .HasColumnType("char(36)");
 
                             b1.Property<string>("Currency")
                                 .IsRequired()
-                                .HasColumnType("TEXT");
+                                .HasColumnType("longtext");
 
                             b1.Property<DateTime>("Date")
                                 .IsConcurrencyToken()
                                 .ValueGeneratedOnAddOrUpdate()
-                                .HasColumnType("TEXT");
+                                .HasColumnType("datetime(6)");
 
                             b1.Property<int>("Price")
-                                .HasColumnType("INTEGER");
+                                .HasColumnType("int");
 
                             b1.Property<Guid>("ServiceId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("char(36)");
 
                             b1.Property<string>("Url")
                                 .IsRequired()
-                                .HasColumnType("TEXT");
+                                .HasColumnType("longtext");
 
                             b1.Property<Guid>("UserModelId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("char(36)");
 
                             b1.HasKey("Id");
 

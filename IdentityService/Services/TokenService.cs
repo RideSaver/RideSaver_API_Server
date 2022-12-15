@@ -62,6 +62,7 @@ namespace IdentityService.Services
                 ClockSkew = TimeSpan.Zero,
             });
 
+
             if (!tokenValidator.IsValid) return false;
 
             return true;

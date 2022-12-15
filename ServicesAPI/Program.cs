@@ -12,7 +12,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<ServiceContext>();
+builder.Services.AddDbContext<ServiceContext>(options =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("ServicesDB");
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+});
+
+
 builder.Services.AddTransient<IServiceRegistry, ServiceRegistry>();
 builder.Services.AddTransient<IInternalServices, InternalServices>();
 builder.Services.AddTransient<IServiceRepository, ServiceRepository>();

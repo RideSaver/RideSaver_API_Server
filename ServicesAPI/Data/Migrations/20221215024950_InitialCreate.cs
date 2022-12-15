@@ -1,39 +1,48 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace ServicesAPI.Data.Migrations
 {
-    /// <inheritdoc />
     public partial class InitialCreate : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateTable(
                 name: "providers",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    ClientId = table.Column<string>(type: "TEXT", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", rowVersion: true, nullable: false)
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Name = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ClientId = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", rowVersion: true, nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_providers", x => x.Id);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "services",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    ClientId = table.Column<string>(type: "TEXT", nullable: false),
-                    ProviderId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", rowVersion: true, nullable: false)
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Name = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ClientId = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ProviderId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", rowVersion: true, nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn)
                 },
                 constraints: table =>
                 {
@@ -44,14 +53,15 @@ namespace ServicesAPI.Data.Migrations
                         principalTable: "providers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "service_areas",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    ServicesModelId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    ServicesModelId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
@@ -62,15 +72,16 @@ namespace ServicesAPI.Data.Migrations
                         principalTable: "services",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "service_features",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Feature = table.Column<int>(type: "INTEGER", nullable: false),
-                    ServicesModelId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Feature = table.Column<int>(type: "int", nullable: false),
+                    ServicesModelId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
@@ -81,7 +92,8 @@ namespace ServicesAPI.Data.Migrations
                         principalTable: "services",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
                 name: "IX_service_areas_ServicesModelId",
@@ -99,7 +111,6 @@ namespace ServicesAPI.Data.Migrations
                 column: "ProviderId");
         }
 
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

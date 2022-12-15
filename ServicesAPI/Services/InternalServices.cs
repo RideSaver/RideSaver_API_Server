@@ -20,7 +20,7 @@ namespace ServicesAPI.Services
         public override async Task<ServiceModel> GetServiceByHash(GetServiceByHashRequest request, ServerCallContext context)
         {
             var EstimateId = new SqlParameter("@EstimateId", request.Hash);
-            var service = await _serviceContext.Services.FromSql($"SELECT * FROM services {EstimateId} = SUBSTRING(HASHBYTES('SHA1', Id), 0, 4))").FirstOrDefaultAsync();
+            var service = await _serviceContext.Services.FromSqlRaw($"SELECT * FROM services {EstimateId} = SUBSTRING(HASHBYTES('SHA1', Id), 0, 4))").FirstOrDefaultAsync();
             return new ServiceModel
             {
                 Name = service?.Name,

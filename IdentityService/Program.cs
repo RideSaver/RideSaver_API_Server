@@ -5,10 +5,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using IdentityService.Data;
 using IdentityService.Repository;
-using System.Security.Cryptography.Xml;
-using Microsoft.Data.Sqlite;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 
 namespace IdentityService
 {
@@ -24,7 +20,12 @@ namespace IdentityService
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddDbContext<UserContext>();
+            builder.Services.AddDbContext<UserContext>(options =>
+            {
+                var connectionString = builder.Configuration.GetConnectionString("IdentityDB");
+                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+            });
+            
 
             builder.Services.AddAuthentication(options =>
             {
