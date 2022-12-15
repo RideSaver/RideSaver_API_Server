@@ -56,13 +56,13 @@ data:
                 proxy_pass http://services-api.api/api/services;
             }
 
-            location /user/v1/login {
+            location /authentication/authenticate {
                 proxy_pass http://identity-service.api/authentication/authenticate;
             }
 
             location /api/v1/user/signup {
                 auth_request off;
-                proxy_pass http://identity-service.api/api/user/signup;
+                proxy_pass http://identity-service.api/Users/signup;
             }
 
             location /api/v1/user {
