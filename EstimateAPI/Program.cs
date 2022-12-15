@@ -19,7 +19,7 @@ builder.Services.AddTransient<IEstimateRepository, EstimateRepository>();
 builder.Services.AddGrpc();
 builder.Services.AddGrpcClient<Services.ServicesClient>(o =>
 {
-    o.Address = new Uri("http://services-api:80");
+    o.Address = new Uri("http://services-api.api:80");
 });
 
 var app = builder.Build();
