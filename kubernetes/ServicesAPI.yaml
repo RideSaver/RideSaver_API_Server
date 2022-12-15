@@ -1,35 +1,3 @@
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: services-service-pvc
-  namespace: api
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: standard-rwo
-  resources:
-    requests:
-      storage: 8Gi
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: services-service-pv
-  namespace: api
-  labels:
-    type: local
-spec:
-  storageClassName: slow
-  capacity:
-    storage: 1Gi
-  volumeMode: Filesystem
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Recycle
-  nfs:
-    path: /tmp
-    server: 172.17.0.2
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -57,17 +25,10 @@ spec:
                   ports:
                       - containerPort: 80
                       - containerPort: 443
-                  volumeMounts:
-                      - mountPath: /data
-                        name: services-service-pv
                 - name: services-memcache
                   image: memcached:1.6-alpine
                   ports:
                       - containerPort: 11211
-            volumes:
-                - name: services-service-pv
-                  persistentVolumeClaim:
-                      claimName: services-service-pvc
             imagePullSecrets:
                 - name: ridesaver-registry-credentials
 ---
@@ -88,4 +49,3 @@ spec:
     selector:
         type: service
         service: services
----
