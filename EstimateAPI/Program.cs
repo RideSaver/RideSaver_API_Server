@@ -22,15 +22,6 @@ builder.Services.AddGrpcClient<Services.ServicesClient>(o =>
     o.Address = new Uri("http://services-api:80");
 });
 
-builder.Services.AddGrpcClient<Estimates.EstimatesClient>("UberClient", o =>
-{
-    o.Address = new Uri("http://uber-client:80");
-});
-
-builder.Services.AddGrpcClient<Estimates.EstimatesClient>("LyftClient", o =>
-{
-    o.Address = new Uri("http://lyft-client:80");
-});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

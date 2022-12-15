@@ -10,16 +10,13 @@ namespace EstimateAPI.Repository
     {
         public readonly IClientRepository _clientRepository;
         private readonly Services.ServicesClient _servicesClient;
-        private readonly Estimates.EstimatesClient _uberEstimatesClient;
-        private readonly Estimates.EstimatesClient _lyftEstimatesClient;
 
 
-        public EstimateRepository(IClientRepository clientRepository, Services.ServicesClient servicesClient, GrpcClientFactory grpcClientFactory)
+
+        public EstimateRepository(IClientRepository clientRepository, Services.ServicesClient servicesClient)
         {
             _clientRepository = clientRepository;
             _servicesClient = servicesClient;
-            _uberEstimatesClient = grpcClientFactory.CreateClient<Estimates.EstimatesClient>("UberClient");
-            _lyftEstimatesClient = grpcClientFactory.CreateClient<Estimates.EstimatesClient>("LyftClient");
         }
 
         public async Task<List<Estimate>> GetRideEstimatesAsync(Location startPoint, Location endPoint, List<Guid> services, int? seats)
