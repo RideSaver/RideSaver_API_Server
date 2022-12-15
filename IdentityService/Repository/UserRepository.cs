@@ -26,7 +26,7 @@ namespace IdentityService.Repository
                 {
                     Email = user.Email,
                     Name = user.Name,
-                    PhoneNumber = user.PhoneNumber,
+                    Phonenumber = user.PhoneNumber,
                 };
 
                 userList.Add(userInfo);
@@ -43,7 +43,7 @@ namespace IdentityService.Repository
             {
                 Email = userModel.Email,
                 Name = userModel.Name,
-                PhoneNumber = userModel.PhoneNumber
+                Phonenumber = userModel.PhoneNumber
             };
 
             return userInfo;
@@ -63,7 +63,7 @@ namespace IdentityService.Repository
                 Username = userInfo.Username,
                 Name = userInfo.Name,
                 Email = userInfo.Email,
-                PhoneNumber = userInfo.PhoneNumber,
+                PhoneNumber = userInfo.Phonenumber,
                 PasswordSalt = salt,
                 PasswordHash = Security.Argon2.HashPassword(userInfo.Password, salt)  
             };
@@ -122,7 +122,7 @@ namespace IdentityService.Repository
                 userModel.Username = userInfo.Username;
                 userModel.Email = userInfo.Email;
                 userModel.Name = userInfo.Name;
-                userModel.PhoneNumber = userInfo.PhoneNumber;
+                userModel.PhoneNumber = userInfo.Phonenumber;
                 _userContext.Update(userModel);
             }
 

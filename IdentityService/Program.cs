@@ -17,7 +17,11 @@ namespace IdentityService
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString;
+            });
+
             builder.Services.AddEndpointsApiExplorer();
 
             builder.Services.AddDbContext<UserContext>(options =>
@@ -26,7 +30,7 @@ namespace IdentityService
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             });
 
-
+            
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -72,6 +76,11 @@ namespace IdentityService
             {
                 app.UseExceptionHandler("/error");
             }
+
+            app.Use(async (context, next) => {
+                context.Request.EnableBuffering();
+                await next();
+            });
 
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {

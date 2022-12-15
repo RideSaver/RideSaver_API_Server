@@ -30,18 +30,14 @@ namespace UserService.Controllers
         [Route("signup")]
         public override async Task<IActionResult> SignUp([FromBody] PatchUserRequest patchUserRequest) // returns HTTP 200 OK response
         {
-            if (patchUserRequest is null)
-            {
-                _logger.LogInformation("[UserController] SignUp() -> patchUserRequest IS null!");
-                return BadRequest();
-            }
+            if (patchUserRequest is null) return BadRequest();
 
             var request = await Request.GetRawBodyAsync();
 
             _logger.LogInformation($"[UserController] RequestBodyRaw: {request}");
 
             _logger.LogInformation($"[UserController] SignUp() -> [PatchUserRequest]:: Email: {patchUserRequest.Email} Name: {patchUserRequest?.Name}" +
-                $" Phone:{patchUserRequest.PhoneNumber} Username: {patchUserRequest.Username} Password: {patchUserRequest.Password}");
+                $" Phone:{patchUserRequest.Phonenumber} Username: {patchUserRequest.Username} Password: {patchUserRequest.Password}");
 
             await _userRepository.CreateUserAsync(patchUserRequest);
             _logger.LogInformation("[UserController] SignUp(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
