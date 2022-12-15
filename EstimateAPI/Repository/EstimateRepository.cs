@@ -23,7 +23,7 @@ namespace EstimateAPI.Repository
         {
             IEnumerable<Task<List<Estimate>>> estimateTasksQuery =
                 from client in await _clientRepository.GetClients()
-                select GetEstimatesAsync(client.Value, startPoint, endPoint, services, seats);
+                select GetEstimatesAsync(client, startPoint, endPoint, services, seats);
             List<Task<List<Estimate>>> estimateTasks = estimateTasksQuery.ToList();
             List<Estimate> estimates = new List<Estimate>();
 
