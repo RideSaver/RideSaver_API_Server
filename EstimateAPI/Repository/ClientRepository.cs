@@ -40,10 +40,10 @@ namespace EstimateAPI.Repository
             GrpcChannel channel = GrpcChannel.ForAddress($"https://{client.Metadata.Name}.client");
             return new Estimates.EstimatesClient(channel);
         }
-        public Estimates.EstimatesClient[] GetClients()
+        public async Task<Estimates.EstimatesClient[]> GetClients()
         {
             var list = await _kubernetes.CoreV1.ListNamespacedServiceAsync(_namespace, labelSelector: _labelStr);
-            List<Estimates.EstimatesClient> Clients = new();
+            List<Estimates.EstimatesClient> Clients = new List();
             foreach (var client in list)
             {
                 Clients.Add(GetClientByName(client.Metadata.Name));
