@@ -56,11 +56,6 @@ data:
                 proxy_pass http://services-api.api/api/services;
             }
 
-            location /api/v1/user {
-                include /etc/nginx/auth.conf;
-                proxy_pass http://identity-service.api/api/users;
-            }
-
             location /user/v1/login {
                 proxy_pass http://identity-service.api/authentication/authenticate;
             }
@@ -68,6 +63,11 @@ data:
             location /api/v1/user/signup {
                 auth_request off;
                 proxy_pass http://identity-service.api/api/user/signup;
+            }
+
+            location /api/v1/user {
+                include /etc/nginx/auth.conf;
+                proxy_pass http://identity-service.api/api/users;
             }
 
 
