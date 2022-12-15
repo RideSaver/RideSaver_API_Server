@@ -18,7 +18,6 @@ namespace IdentityService
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
 
             builder.Services.AddDbContext<UserContext>(options =>
             {
@@ -48,6 +47,11 @@ namespace IdentityService
                     ClockSkew = TimeSpan.Zero
 
                 };
+            });
+
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             });
 
             builder.Services.AddTransient<IAuthService, AuthService>();

@@ -75,12 +75,8 @@ namespace UserService.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override Task<IActionResult> GetAvatar([FromRoute(Name = "username"), Required] string username) => throw new NotImplementedException();
 
-        public override Task<IActionResult> Authenticate([FromBody] UserLogin userLogin)
-        {
-            throw new NotImplementedException();
-        }
-
-        [Route("/error-development")]
+        [HttpPost]
+        [Route("/user-error-development")]
         public IActionResult HandleErrorDevelopment([FromServices] IHostEnvironment hostEnvironment)
         {
             if (!hostEnvironment.IsDevelopment()) return NotFound();
@@ -90,7 +86,8 @@ namespace UserService.Controllers
             return Problem(detail: exceptionHandlerFeature.Error.StackTrace, title: exceptionHandlerFeature.Error.Message);
         }
 
-        [Route("/error")]
+        [HttpPost]
+        [Route("/user-error")]
         public IActionResult HandleError() => Problem();
     }
 }

@@ -48,23 +48,23 @@ namespace IdentityService.Repository
         }
         public async Task CreateUserAsync(PatchUserRequest userInfo)
         {
-            if (userInfo is not null)
-            {
-                var salt = Security.Argon2.CreateSalt();
-                var user = new UserModel()
-                {
-                    Id = new Guid(),
-                    Username = userInfo.Username.ToString(),
-                    Name = userInfo.Name.ToString(),
-                    Email = userInfo.Email.ToString(),
-                    PhoneNumber = userInfo.PhoneNumber.ToString(),
-                    PasswordSalt = salt,
-                    PasswordHash = Security.Argon2.HashPassword(userInfo.Password, salt)
-                };
+            if(userInfo is null) return;
 
-                await _userContext.AddAsync(user);
-                await SaveAsync();
-            }
+            var salt = Security.Argon2.CreateSalt();
+            var user = new UserModel()
+            {
+                Id = new Guid(),
+                Username = userInfo.Username.ToString(),
+                Name = userInfo.Name.ToString(),
+                Email = userInfo.Email.ToString(),
+                PhoneNumber = userInfo.PhoneNumber.ToString(),
+                PasswordSalt = salt,
+                PasswordHash = Security.Argon2.HashPassword(userInfo.Password, salt)
+                    
+            };
+
+            await _userContext.AddAsync(user);
+            await SaveAsync();
         }
 
         public async Task DeleteUserAsync(string username)
