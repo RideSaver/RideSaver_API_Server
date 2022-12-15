@@ -48,7 +48,7 @@ namespace EstimateAPI.Repository
             {
                 Clients.Add(GetClientByName(client.Metadata.Name));
             }
-            this.Clients = Clients;
+            return Clients;
         }
     }
 }
