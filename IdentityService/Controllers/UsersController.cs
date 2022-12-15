@@ -26,6 +26,7 @@ namespace UserService.Controllers
 
         [AllowAnonymous]
         [HttpPost]
+        [Route("signup")]
         public override async Task<IActionResult> SignUp([FromBody] PatchUserRequest patchUserRequest) // returns HTTP 200 OK response
         {
             if (patchUserRequest is null)
