@@ -68,8 +68,7 @@ namespace RequestAPI.Repository
                 {
                     Latitude = (decimal)rideReplyModel.DriverLocation.Latitude,
                     Longitude = (decimal)rideReplyModel.DriverLocation.Longitude,
-                    Height = (decimal)rideReplyModel.DriverLocation.Height,
-                    Planet = rideReplyModel.DriverLocation.Planet,
+                    Height = (decimal)rideReplyModel.DriverLocation.Height
                 },
 
                 Stage = (Ride.StageEnum)rideReplyModel.RideStage
@@ -108,7 +107,6 @@ namespace RequestAPI.Repository
                     Latitude = (decimal)rideReplyModel.DriverLocation.Latitude,
                     Longitude = (decimal)rideReplyModel.DriverLocation.Longitude,
                     Height = (decimal)rideReplyModel.DriverLocation.Height,
-                    Planet = rideReplyModel.DriverLocation.Planet,
                 },
 
                 Stage = (Ride.StageEnum)rideReplyModel.RideStage,

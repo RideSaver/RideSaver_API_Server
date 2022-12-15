@@ -45,8 +45,7 @@ namespace EstimateAPI.Repository
                 {
                     Latitude = (double)startPoint.Latitude,
                     Longitude = (double)startPoint.Longitude,
-                    Height = (double)startPoint.Height,
-                    Planet = startPoint.Planet
+                    Height = (double)startPoint.Height
                 },
 
                 EndPoint = new LocationModel()
@@ -54,7 +53,6 @@ namespace EstimateAPI.Repository
                     Latitude = (double)endPoint.Latitude,
                     Longitude = (double)endPoint.Longitude,
                     Height = (double)endPoint.Height,
-                    Planet = endPoint.Planet
                 },
 
                 Services = { services.ToString() },
@@ -155,7 +153,6 @@ namespace EstimateAPI.Repository
                     Latitude = (decimal)f.Latitude,
                     Longitude = (decimal)f.Longitude,
                     Height = (decimal)f.Height,
-                    Planet = f.Planet,
                 };
 
                 locationList.Add(location);
