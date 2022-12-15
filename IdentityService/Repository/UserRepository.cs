@@ -52,12 +52,7 @@ namespace IdentityService.Repository
         {
             if(userInfo is null) return;
 
-            _logger.LogInformation("[userRepository] CreateUserAsync() -> Before creating the salt!");
-
             var salt = Security.Argon2.CreateSalt();
-
-            _logger.LogInformation("[userRepository] CreateUserAsync() -> Before creating the userModel instance!");
-
             var user = new UserModel()
             {
                 Username = userInfo.Username,
@@ -68,21 +63,10 @@ namespace IdentityService.Repository
                 PasswordHash = Security.Argon2.HashPassword(userInfo.Password, salt)  
             };
 
-            _logger.LogInformation($"[userRepository] UserModel() -> Id: {user.Id}");
-            _logger.LogInformation($"[userRepository] UserModel() -> Name:{user.Name}");
-            _logger.LogInformation($"[userRepository] UserModel() -> Email: {user.Email}");
-            _logger.LogInformation($"[userRepository] UserModel() -> PhoneNumber: {user.PhoneNumber}");
-            _logger.LogInformation($"[userRepository] UserModel() -> PasswordSalt: {user.PasswordSalt}");
-            _logger.LogInformation($"[userRepository] UserModel() -> PasswordHash: {user.PasswordHash}");
-            _logger.LogInformation($"[userRepository] UserModel() -> Username:  {user.Username}");
-
             await _userContext.AddAsync(user);
-
-            _logger.LogInformation("[userRepository] CreateUserAsync() -> Just added to the _userContext ASYNC!");
+            _logger.LogInformation($"[userRepository::CreateUserAsync] {userInfo.Username} has been added to the Identity database.");
 
             await SaveAsync();
-
-            _logger.LogInformation("[userRepository] CreateUserAsync() -> Just SAVED to the _userContext ASYNC!");
         }
 
         public async Task DeleteUserAsync(string username)

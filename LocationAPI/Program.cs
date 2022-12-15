@@ -29,7 +29,6 @@ else
 app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Response = true, ExceptionHandlingPath = "/error" });
 
 app.UseHttpLogging();
-app.UseAuthorization();
 app.MapControllers();
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions

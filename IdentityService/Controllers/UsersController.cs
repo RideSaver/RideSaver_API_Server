@@ -34,13 +34,11 @@ namespace UserService.Controllers
 
             var request = await Request.GetRawBodyAsync();
 
-            _logger.LogInformation($"[UserController] RequestBodyRaw: {request}");
-
-            _logger.LogInformation($"[UserController] SignUp() -> [PatchUserRequest]:: Email: {patchUserRequest.Email} Name: {patchUserRequest?.Name}" +
-                $" Phone:{patchUserRequest.Phonenumber} Username: {patchUserRequest.Username} Password: {patchUserRequest.Password}");
+            _logger.LogInformation($"[UserController::Signup::RequestBodyRaw] {request}");
 
             await _userRepository.CreateUserAsync(patchUserRequest);
-            _logger.LogInformation("[UserController] SignUp(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
+
+            _logger.LogInformation("[UserController::SignUp] Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
             return new NoContentResult(); // [STATUS: 204 NO CONTENT]
         }
 
@@ -48,7 +46,7 @@ namespace UserService.Controllers
         public override async Task<IActionResult> DeleteUser([FromRoute(Name = "username"), Required] string username) // returns HTTP 200 OK response
         {
             await _userRepository.DeleteUserAsync(username);
-            _logger.LogInformation("[UserController] DeleteUser(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
+            _logger.LogInformation("[UserController::DeleteUser] Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
             return new OkResult(); // [STATUS: 200 OK]
         }
 
@@ -56,7 +54,7 @@ namespace UserService.Controllers
         public override async Task<IActionResult> GetUser([FromRoute(Name = "username"), Required] string username) // returns HTTP 200 OK response with "user" instance
         {
             var user = await _userRepository.GetUserAsync(username);
-            _logger.LogInformation("[UserController] GetUser(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
+            _logger.LogInformation("[UserController::GetUser] Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
             if (user is not null) return new OkObjectResult(user); // [STATUS: 200 OK || user]
             return new NoContentResult(); // [STATUS: 204 NO CONTENT]
         }
@@ -65,14 +63,14 @@ namespace UserService.Controllers
         public override async Task<IActionResult> PatchUser([FromRoute(Name = "username"), Required] string username, [FromBody] PatchUserRequest patchUserRequest) // returns HTTP 200 OK response
         {
             await _userRepository.UpdateUserAsync(username, patchUserRequest);
-            _logger.LogInformation("[UserController] PatchUser(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
+            _logger.LogInformation("[UserController::PatchUser] Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
             return new OkResult(); // [STATUS: 200 OK]
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override async Task<IActionResult> GetHistory([FromRoute(Name = "username"), Required] string username) // returns HTTP 200 OK response with List<Ride>
         {
-            _logger.LogInformation("[UserController] GetHistory(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
+            _logger.LogInformation("[UserController::GetHistory] Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
             return new OkObjectResult(await _userRepository.GetUserHistoryASync(username));
         }
 

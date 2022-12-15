@@ -53,7 +53,6 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Response = true, ExceptionHandlingPath = "/error" });
 
 app.UseHttpLogging();
-app.UseAuthorization();
 app.MapControllers();
 
 app.Logger.LogInformation("[EstimateAPI] Finished middleware configuration.. starting the service.");
