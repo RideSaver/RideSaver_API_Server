@@ -1,5 +1,6 @@
 using Geocoding;
 using Geocoding.Microsoft;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +31,11 @@ app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Respon
 app.UseHttpLogging();
 app.UseAuthorization();
 app.MapControllers();
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 app.Logger.LogInformation("[LocationAPI] Finished middleware configuration.. starting the service.");
 

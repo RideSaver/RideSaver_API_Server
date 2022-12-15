@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using IdentityService.Data;
 using IdentityService.Repository;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace IdentityService
 {
@@ -71,6 +72,11 @@ namespace IdentityService
             {
                 app.UseExceptionHandler("/error");
             }
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
 
             app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Response = true, ExceptionHandlingPath = "/error" });
             app.UseAuthorization();

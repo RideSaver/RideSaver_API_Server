@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using ServicesAPI.Data;
 using ServicesAPI.Registry;
@@ -43,6 +44,11 @@ app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Respon
 app.UseHttpLogging();
 app.UseAuthorization();
 app.MapControllers();
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 app.Logger.LogInformation("[ServicesAPI] Finished middleware configuration.. starting the service.");
 
