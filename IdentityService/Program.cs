@@ -25,6 +25,7 @@ namespace IdentityService
                 var connectionString = builder.Configuration.GetConnectionString("IdentityDB");
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             });
+
             
 
             builder.Services.AddAuthentication(options =>
