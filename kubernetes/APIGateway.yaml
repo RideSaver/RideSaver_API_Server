@@ -56,7 +56,8 @@ data:
                 proxy_pass http://services-api.api/api/services;
             }
 
-            location /authentication/authenticate {
+            location /api/v1/authentication/authenticate {
+                auth_request off;
                 proxy_pass http://identity-service.api/authentication/authenticate;
             }
 
