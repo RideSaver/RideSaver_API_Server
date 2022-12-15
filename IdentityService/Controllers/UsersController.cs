@@ -1,3 +1,4 @@
+using IdentityService.Helpers;
 using IdentityService.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -34,6 +35,10 @@ namespace UserService.Controllers
                 _logger.LogInformation("[UserController] SignUp() -> patchUserRequest IS null!");
                 return BadRequest();
             }
+
+            var request = await Request.GetRawBodyAsync();
+
+            _logger.LogInformation($"[UserController] RequestBodyRaw: {request}");
 
             _logger.LogInformation($"[UserController] SignUp() -> [PatchUserRequest]:: Email: {patchUserRequest.Email} Name: {patchUserRequest?.Name}" +
                 $" Phone:{patchUserRequest.PhoneNumber} Username: {patchUserRequest.Username} Password: {patchUserRequest.Password}");
