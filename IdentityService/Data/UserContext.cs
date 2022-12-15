@@ -1,7 +1,5 @@
 using DataAccess.DataModels;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using NetTopologySuite.Geometries;
 
 namespace IdentityService.Data
 {

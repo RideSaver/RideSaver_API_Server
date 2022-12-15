@@ -1,5 +1,4 @@
 using DataAccess.DataModels;
-using DataAccess.Models;
 using Google.Protobuf.Collections;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
