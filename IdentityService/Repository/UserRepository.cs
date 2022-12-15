@@ -60,14 +60,12 @@ namespace IdentityService.Repository
 
             var user = new UserModel()
             {
-                Id = new Guid(),
-                Username = userInfo.Username.ToString(),
-                Name = userInfo.Name.ToString(),
-                Email = userInfo.Email.ToString(),
-                PhoneNumber = userInfo.PhoneNumber.ToString(),
+                Username = userInfo.Username,
+                Name = userInfo.Name,
+                Email = userInfo.Email,
+                PhoneNumber = userInfo.PhoneNumber,
                 PasswordSalt = salt,
-                PasswordHash = Security.Argon2.HashPassword(userInfo.Password, salt)
-                    
+                PasswordHash = Security.Argon2.HashPassword(userInfo.Password, salt)  
             };
 
             _logger.LogInformation($"[userRepository] UserModel() -> Id: {user.Id}");

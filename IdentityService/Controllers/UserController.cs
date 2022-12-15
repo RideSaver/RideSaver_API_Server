@@ -25,6 +25,7 @@ namespace UserService.Controllers
         }
 
         [AllowAnonymous]
+        [HttpPost]
         public override async Task<IActionResult> SignUp([FromBody] PatchUserRequest patchUserRequest) // returns HTTP 200 OK response
         {
             if (patchUserRequest is null)
@@ -33,18 +34,8 @@ namespace UserService.Controllers
                 return BadRequest();
             }
 
-            if (!ModelState.IsValid)
-            {
-                _logger.LogInformation("[UserController] SignUp() -> Model State is NOT valid!");
-                return BadRequest();
-            }
-
-            if(patchUserRequest.AuthorizedServices is null)
-            {
-                _logger.LogInformation("[UserController] SignUp() -> AuthorizedServics IS null!");
-            }
-
-            _logger.LogInformation($"[UserController] SignUp() -> BEFORE REPO -> Email: {patchUserRequest.Email} Name: {patchUserRequest?.Name} Phone:{patchUserRequest.PhoneNumber} Username: {patchUserRequest.Username} Password: {patchUserRequest.Password}");
+            _logger.LogInformation($"[UserController] SignUp() -> [PatchUserRequest]:: Email: {patchUserRequest.Email} Name: {patchUserRequest?.Name}" +
+                $" Phone:{patchUserRequest.PhoneNumber} Username: {patchUserRequest.Username} Password: {patchUserRequest.Password}");
 
             await _userRepository.CreateUserAsync(patchUserRequest);
             _logger.LogInformation("[UserController] SignUp(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());

@@ -25,7 +25,6 @@ namespace IdentityService
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             });
 
-            
 
             builder.Services.AddAuthentication(options =>
             {
