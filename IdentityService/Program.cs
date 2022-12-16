@@ -67,7 +67,7 @@ namespace IdentityService
                 c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             });
 
-           
+            builder.Services.AddGrpc();
             builder.Services.AddTransient<IAuthService, AuthService>();
             builder.Services.AddTransient<ITokenService, TokenService>();
             builder.Services.AddTransient<IUserRepository, UserRepository>();
@@ -101,7 +101,6 @@ namespace IdentityService
     
             app.MapControllers();
             app.UseHttpLogging();
-
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => { endpoints.MapGrpcService<AccessTokenService>(); });

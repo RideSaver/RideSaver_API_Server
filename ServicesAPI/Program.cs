@@ -24,7 +24,6 @@ builder.Services.AddDbContext<ServiceContext>(options =>
 
 builder.Services.AddGrpc();
 builder.Services.AddTransient<IServiceRegistry, ServiceRegistry>();
-builder.Services.AddTransient<IInternalServices, InternalServices>();
 builder.Services.AddTransient<IServiceRepository, ServiceRepository>();
 
 
@@ -50,7 +49,8 @@ else
 }
 
 app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Response = true, ExceptionHandlingPath = "/error" });
-
+app.UseRouting();
+app.UseEndpoints(endpoints => { endpoints.MapGrpcService<InternalServices>(); });
 app.UseHttpLogging();
 app.MapControllers();
 

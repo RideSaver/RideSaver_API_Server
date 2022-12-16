@@ -12,7 +12,7 @@ using static DataAccess.DataModels.ServiceFeaturesModel;
 namespace ServicesAPI.Services
 {
     // Summary: Handles all requests for estimates
-    public class InternalServices : InternalAPI.Services.ServicesBase, IInternalServices
+    public class InternalServices : InternalAPI.Services.ServicesBase
     {
         private readonly ServiceContext _serviceContext;
         public InternalServices(ServiceContext serviceContext) => _serviceContext = serviceContext;
