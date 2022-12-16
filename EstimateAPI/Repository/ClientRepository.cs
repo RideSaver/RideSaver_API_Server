@@ -9,7 +9,7 @@ namespace EstimateAPI.Repository
     public class ClientRepository : IClientRepository
     {
         private readonly ClientDiscoveryOptions _options;
-        private readonly ILogger<EstimateController> _logger;
+        private readonly ILogger<ClientRepository> _logger;
 
         private readonly IKubernetes _kubernetes;
         private readonly string _labelStr;
