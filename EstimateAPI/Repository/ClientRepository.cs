@@ -52,7 +52,7 @@ namespace EstimateAPI.Repository
             var list = await _kubernetes.CoreV1.ListNamespacedServiceAsync(_namespace, labelSelector: _labelStr);
             _logger.LogDebug($"Received clients: {list}");
             List<Estimates.EstimatesClient> Clients = new List<Estimates.EstimatesClient>();
-            foreach (var client in list)
+            foreach (var client in list.Items)
             {
                 _logger.LogDebug($"kubernetes client: {client.Metadata.Name}");
                 Clients.Add(GetClientByName(client.Metadata.Name));
