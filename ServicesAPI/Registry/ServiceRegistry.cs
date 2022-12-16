@@ -55,7 +55,7 @@ namespace ServicesAPI.Registry
 
             var lyft = new ServicesModel() // Lyft
             {
-                Id = new Guid("8fc8558b-acf1-431a-b354-9fb4d7b8ca77"),
+                Id = new Guid("2B2225AD-9D0E-45E0-85FB-378FE2B521E0"),
                 Name = "Lyft",
                 ClientId = "Lyft",
                 ProviderId = new Guid(),
@@ -65,8 +65,8 @@ namespace ServicesAPI.Registry
 
             var lyftShared = new ServicesModel() // LyftSHARED
             {
-                Id = new Guid("1c4121ce-6018-467c-9e5d-edf31691b125"),
-                Name = "Lyft Shared",
+                Id = new Guid("52648E86-B617-44FD-B753-295D5CE9D9DC"),
+                Name = "LyftShared",
                 ClientId = "Lyft",
                 ProviderId = new Guid(),
                 ServiceFeatures = new List<ServiceFeaturesModel>
@@ -76,7 +76,7 @@ namespace ServicesAPI.Registry
 
             var lyftXL = new ServicesModel() // LyftXL
             {
-                Id = new Guid("779da75e-2c13-49bc-8dda-e2105904c837"),
+                Id = new Guid("BB331ADE-E379-4F12-9AB0-A68AF94D5813"),
                 Name = "LyftXL",
                 ClientId = "Lyft",
                 ProviderId = new Guid(),
@@ -86,7 +86,7 @@ namespace ServicesAPI.Registry
 
             var LyftLUX = new ServicesModel() // LyftLUX
             {
-                Id = new Guid("fc1e5808-d7d0-41c3-a320-cea94cc8a27a"),
+                Id = new Guid("B47A0993-DE35-4F86-8DD8-C6462F16F5E8"),
                 Name = "LyftLUX",
                 ClientId = "Lyft",
                 ProviderId = new Guid(),

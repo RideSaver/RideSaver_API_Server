@@ -1,6 +1,8 @@
 using DataAccess.DataModels;
 using RideSaver.Server.Models;
 using IdentityService.Data;
+using System.Net;
+using System.Runtime.Intrinsics.X86;
 
 namespace IdentityService.Repository
 {
@@ -60,10 +62,13 @@ namespace IdentityService.Repository
                 Email = userInfo.Email,
                 PhoneNumber = userInfo.Phonenumber,
                 PasswordSalt = salt,
-                PasswordHash = Security.Argon2.HashPassword(userInfo.Password, salt)  
+                PasswordHash = Security.Argon2.HashPassword(userInfo.Password, salt)
             };
 
+            user.Authorizations = Registry.AuthorizationRegistry.InitializeUserAuthorizationRegistry(user.Id);
+
             await _userContext.AddAsync(user);
+
             _logger.LogInformation($"[userRepository::CreateUserAsync] {userInfo.Username} has been added to the Identity database.");
 
             await SaveAsync();

@@ -1,5 +1,6 @@
 using DataAccess.Models;
 using IdentityService.Services;
+using Newtonsoft.Json.Linq;
 using System.Runtime.InteropServices;
 
 namespace IdentityService.Repository
@@ -13,24 +14,10 @@ namespace IdentityService.Repository
             _tokenService = tokenService;
             _authService = authService;
         }
-        public async Task<AuthenticateResponse> Authenticate(AuthenticateRequest model)
-        {
-            return (await _authService.Authenticate(model));
-        }
+        public async Task<AuthenticateResponse> Authenticate(AuthenticateRequest model) => await _authService.Authenticate(model);
+        public async Task<AuthenticateResponse> RefreshToken(string token) => (await _authService.RefreshToken(token));
+        public async Task<bool> RevokeToken(string token) => (await _authService.RevokeToken(token));
+        public async Task<bool> ValidateToken(string token) => (await _tokenService.ValidateToken(token));  
 
-        public async Task<AuthenticateResponse> RefreshToken(string token)
-        {
-            return (await _authService.RefreshToken(token));
-        }
-
-        public async Task<bool> RevokeToken(string token)
-        {
-            return (await _authService.RevokeToken(token));
-        }
-
-        public async Task<bool> ValidateToken(string token)
-        {
-            return (await _tokenService.ValidateToken(token));  
-        }
     }
 }

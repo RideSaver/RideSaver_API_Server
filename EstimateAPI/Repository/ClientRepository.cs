@@ -41,8 +41,8 @@ namespace EstimateAPI.Repository
 
         public Estimates.EstimatesClient GetClientByName(string name)
         {
-            _logger.LogDebug($"Requesting client for name: {name}, at 'http://{name}.client:80'");
-            GrpcChannel channel = GrpcChannel.ForAddress($"http://{name}.client:80");
+            _logger.LogDebug($"Requesting client for name: {name}, at 'https://{name}.client:443'");
+            GrpcChannel channel = GrpcChannel.ForAddress($"https://{name}.client:443");
             return new Estimates.EstimatesClient(channel);
         }
 
