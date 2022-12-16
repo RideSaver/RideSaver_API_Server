@@ -29,6 +29,8 @@ namespace IdentityService
                 options.UseHttps(new X509Certificate2(Path.Combine("/certs/tls.crt"), Path.Combine("/certs/tls.key")));
             });
 
+
+
             builder.Services.AddEndpointsApiExplorer();
 
             builder.Services.AddDbContext<UserContext>(options =>
@@ -96,14 +98,17 @@ namespace IdentityService
             });
 
             app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Response = true, ExceptionHandlingPath = "/error" });
-            app.UseAuthorization();
+    
             app.MapControllers();
             app.UseHttpLogging();
 
+            app.UseRouting();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints => { endpoints.MapGrpcService<AccessTokenService>(); });
 
             app.Logger.LogInformation("[IdentityService] Finished middleware configuration. starting the service.");
             app.Logger.LogInformation($"[IdentityService] Running with DB configuration string: {builder.Configuration.GetConnectionString("IdentityDB")}.");
+
             app.Run();
         }
     }
