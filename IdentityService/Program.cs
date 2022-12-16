@@ -65,6 +65,7 @@ namespace IdentityService
                 c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             });
 
+           
             builder.Services.AddTransient<IAuthService, AuthService>();
             builder.Services.AddTransient<ITokenService, TokenService>();
             builder.Services.AddTransient<IUserRepository, UserRepository>();
@@ -98,6 +99,8 @@ namespace IdentityService
             app.UseAuthorization();
             app.MapControllers();
             app.UseHttpLogging();
+
+            app.UseEndpoints(endpoints => { endpoints.MapGrpcService<AccessTokenService>(); });
 
             app.Logger.LogInformation("[IdentityService] Finished middleware configuration. starting the service.");
             app.Logger.LogInformation($"[IdentityService] Running with DB configuration string: {builder.Configuration.GetConnectionString("IdentityDB")}.");
