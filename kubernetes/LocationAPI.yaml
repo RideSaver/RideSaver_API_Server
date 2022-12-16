@@ -1,65 +1,84 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: location-cert
+  namespace: api
+spec:
+  secretName: location-cert-secret
+  dnsNames:
+    - location-api
+    - location-api.api
+  issuerRef:
+    name: ridesaver-ca
+    kind: ClusterIssuer
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: location-api
-    namespace: api
-    labels:
+  name: location-api
+  namespace: api
+  labels:
+    type: service
+    service: location
+spec:
+  selector:
+    matchLabels:
+      type: service
+      service: location
+  replicas: 1
+  template:
+    metadata:
+      namespace: api
+      labels:
         type: service
         service: location
-spec:
-    selector:
-        matchLabels:
-            type: service
-            service: location
-    replicas: 1
-    template:
-        metadata:
-            namespace: api
-            labels:
-                type: service
-                service: location
-        spec:
-            containers:
-                - name: location-api
-                  image: ghcr.io/ridesaver/location_api:latest
-                  ports:
-                      - containerPort: 80
-                      - containerPort: 443
-                - name: location-memcache
-                  image: memcached:1.6-alpine
-                  ports:
-                      - containerPort: 11211
-            imagePullSecrets:
-                - name: ridesaver-registry-credentials
+    spec:
+      containers:
+        - name: location-api
+          image: ghcr.io/ridesaver/location_api:latest
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          volumeMounts:
+            - name: certificate
+              mountPath: /certs
+              readOnly: true
+      volumes:
+        - name: certificate
+          secret:
+            secretName: location-cert-secret
+            optional: true
+      imagePullSecrets:
+        - name: ridesaver-registry-credentials
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-    name: location-api
-    namespace: api
+  name: location-api
+  namespace: api
 spec:
-    scaleTargetRef:
-        apiVersion: apps/v1
-        kind: Deployment
-        name: location-api
-    minReplicas: 1 # Maintain at least one for redundancy in case on fails
-    maxReplicas: 10
-    targetCPUUtilizationPercentage: 50
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: location-api
+  minReplicas: 1 # Maintain at least one for redundancy in case on fails
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50
 ---
 apiVersion: v1
 kind: Service
 metadata:
-    name: location-api
-    namespace: api
-    labels:
-        type: service
-        service: location
+  name: location-api
+  namespace: api
+  labels:
+    type: service
+    service: location
 spec:
-    ports:
-        - port: 80
-          name: http
-        - port: 443
-          name: https
-    selector:
-        type: service
-        service: location
+  ports:
+    - port: 80
+      name: http
+    - port: 443
+      name: https
+  selector:
+    type: service
+    service: location

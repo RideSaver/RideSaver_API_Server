@@ -24,6 +24,13 @@ builder.Services.AddTransient<IServiceRegistry, ServiceRegistry>();
 builder.Services.AddTransient<IInternalServices, InternalServices>();
 builder.Services.AddTransient<IServiceRepository, ServiceRepository>();
 builder.Services.AddGrpc();
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ConfigureHttpsDefaults(listenOptions =>
+    {
+        listenOptions.UseHttps("/certs/tls.crt", "/certs/tls.key")
+    });
+});
 
 var app = builder.Build();
 

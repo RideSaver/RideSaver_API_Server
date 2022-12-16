@@ -1,10 +1,10 @@
 ﻿using InternalAPI;
 
-namespace RequestAPI.Repository
+namespace EstimateAPI.Repository
 {
     public interface IClientRepository
     {
-        Dictionary<string, Requests.RequestsClient> Clients { get; }
-        Task RefreshClients();
+        Estimates.EstimatesClient GetClientByName(string name);
+        Task<List<Estimates.EstimatesClient>> GetClients();
     }
 }

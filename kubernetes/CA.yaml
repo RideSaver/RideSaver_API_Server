@@ -14,11 +14,11 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: my-selfsigned-ca
+  name: selfsigned-ca
   namespace: ca
 spec:
   isCA: true
-  commonName: my-selfsigned-ca
+  commonName: selfsigned-ca
   secretName: root-secret
   privateKey:
     algorithm: ECDSA
@@ -29,7 +29,7 @@ spec:
     group: cert-manager.io
 ---
 apiVersion: cert-manager.io/v1
-kind: Issuer
+kind: ClusterIssuer
 metadata:
   name: ridesaver-ca
   namespace: ca

@@ -26,6 +26,13 @@ builder.Services.AddGrpcClient<Services.ServicesClient>(o =>
 {
     o.Address = new Uri("https://services.api:80");
 });
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ConfigureHttpsDefaults(listenOptions =>
+    {
+        listenOptions.UseHttps("/certs/tls.crt", "/certs/tls.key")
+    });
+});
 
 var app = builder.Build();
 

@@ -4,6 +4,20 @@ metadata:
   name: estimate-service-sa
   namespace: api
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: estimate-sa-role-binding
+  namespace: client
+subjects:
+  - kind: ServiceAccount
+    name: estimate-service-sa
+    namespace: api
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: view
+---
 apiVersion: v1
 kind: Secret
 metadata:
@@ -13,6 +27,20 @@ metadata:
     kubernetes.io/service-account.name: "estimate-service-sa"
 type: kubernetes.io/service-account-token
 data:
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: estimate-cert
+  namespace: api
+spec:
+  secretName: estimate-cert-secret
+  dnsNames:
+    - estimate-service
+    - estimate-service.api
+  issuerRef:
+    name: ridesaver-ca
+    kind: ClusterIssuer
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -45,11 +73,18 @@ spec:
             - name: service-account
               mountPath: "/var/run/secrets/kubernetes.io/serviceaccount"
               readOnly: true
+            - name: certificate
+              mountPath: /certs
+              readOnly: true
       volumes:
         - name: service-account
           secret:
             secretName: estimate-service-sa
             optional: false
+        - name: certificate
+          secret:
+            secretName: estimate-cert-secret
+            optional: true
       imagePullSecrets:
         - name: ridesaver-registry-credentials
 ---

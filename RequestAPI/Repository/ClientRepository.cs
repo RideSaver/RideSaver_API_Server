@@ -1,71 +1,63 @@
+using EstimateAPI.Configuration;
 using Grpc.Net.Client;
 using InternalAPI;
 using k8s;
 using Microsoft.Extensions.Options;
-using RequestAPI.Configuration;
 
-namespace RequestAPI.Repository
+namespace EstimateAPI.Repository
 {
     public class ClientRepository : IClientRepository
     {
         private readonly ClientDiscoveryOptions _options;
+        private readonly ILogger<ClientRepository> _logger;
+
         private readonly IKubernetes _kubernetes;
         private readonly string _labelStr;
-        private CancellationTokenSource _cts;
         private string _namespace;
-        public Dictionary<string, Requests.RequestsClient> Clients { get; private set; }
 
-        public ClientRepository(IOptions<ClientDiscoveryOptions> options) : this(options.Value.Namespace, options) { }
+        public ClientRepository(IOptions<ClientDiscoveryOptions> options, ILogger<ClientRepository> logger) : this(options.Value.Namespace, options, logger) { }
 
-        ClientRepository(string Namespace, IOptions<ClientDiscoveryOptions> options)
+        public ClientRepository(string Namespace, IOptions<ClientDiscoveryOptions> options, ILogger<ClientRepository> logger)
         {
-            this._namespace = Namespace;
+            _namespace = Namespace;
             _options = options.Value;
-            _cts = new CancellationTokenSource();
-            new Thread(async () =>
-            {
-                await this.Run(_cts.Token);
-            }).Start();
-            this.Clients = new Dictionary<string, Requests.RequestsClient>();
+            _logger = logger;
 
             // Get the Kubernetes Object
             var config = KubernetesClientConfiguration.InClusterConfig();
-            this._kubernetes = new Kubernetes(config);
+            _logger.LogDebug($"kubernetes configuration: {config}");
+            _kubernetes = new Kubernetes(config);
 
             // Construct the label filter
-            List<string> labelStrs = new List<string>();
+            List<string> labelStrs = new();
             foreach (var option in _options.Labels)
             {
                 labelStrs.Add($"{option.Key}={option.Value}");
             }
+
             _labelStr = string.Join(",", labelStrs.ToArray());
+            _logger.LogDebug($"kubernetes label string: {_labelStr}");
         }
 
-        ~ClientRepository()
+        public Estimates.EstimatesClient GetClientByName(string name)
         {
-            this._cts.Cancel();
+            _logger.LogDebug($"Requesting client for name: {name}, at 'http://{name}.client:80'");
+            GrpcChannel channel = GrpcChannel.ForAddress($"http://{name}.client:80");
+            return new Estimates.EstimatesClient(channel);
         }
 
-        // Summary: Updates the clients every 10 seconds
-        public async Task Run(CancellationToken token)
+        public async Task<List<Estimates.EstimatesClient>> GetClients()
         {
-            // Run until cancelled
-            while (token.IsCancellationRequested)
+            _logger.LogDebug($"Getting kubernetes clients");
+            var list = await _kubernetes.CoreV1.ListNamespacedServiceAsync(_namespace, labelSelector: _labelStr);
+            _logger.LogDebug($"Received clients: {list}");
+            List<Estimates.EstimatesClient> Clients = new List<Estimates.EstimatesClient>();
+            foreach (var client in list.Items)
             {
-                await this.RefreshClients();
-                Thread.Sleep(10000); //  Check every 10 seconds
+                _logger.LogDebug($"kubernetes client: {client.Metadata.Name}");
+                Clients.Add(GetClientByName(client.Metadata.Name));
             }
-        }
-        public async Task RefreshClients()
-        {
-            var list = await _kubernetes.CoreV1.ListNamespacedServiceAsync(this._namespace, labelSelector: _labelStr);
-            Dictionary<string, Requests.RequestsClient> Clients = new Dictionary<string, Requests.RequestsClient>();
-            foreach (var client in list)
-            {
-                GrpcChannel channel = GrpcChannel.ForAddress($"https://{client.Metadata.Name}.client");
-                Clients.Add(client.Metadata.Name, new Requests.RequestsClient(channel));
-            }
-            this.Clients = Clients;
+            return Clients;
         }
     }
 }

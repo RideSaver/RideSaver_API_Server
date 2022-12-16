@@ -21,6 +21,13 @@ namespace IdentityService
             {
                 options.JsonSerializerOptions.NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString;
             });
+            builder.WebHost.ConfigureKestrel(serverOptions =>
+            {
+                serverOptions.ConfigureHttpsDefaults(listenOptions =>
+                {
+                    listenOptions.UseHttps("/certs/tls.crt", "/certs/tls.key")
+                });
+            });
 
             builder.Services.AddEndpointsApiExplorer();
 
@@ -30,7 +37,7 @@ namespace IdentityService
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             });
 
-            
+
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

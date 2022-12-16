@@ -24,18 +24,9 @@ namespace RequestAPI.Repository
                 throw new NotImplementedException();
             }
 
-            if (!_clientRepository.Clients.ContainsKey(service.Name))
-            {
-                // Refresh cache, in case the service came up during the 10s cache window
-                await _clientRepository.RefreshClients();
-                if (!_clientRepository.Clients.ContainsKey(service.Name))
-                {
-                    throw new NotImplementedException(); // Should never happen, SQL has a service that does not exist in K8s
-                }
-            }
-
-            return _clientRepository.Clients[service.Name];
+            return _clientRepository.GetClientByName(service.Name);
         }
+
         public async Task<Ride> GetRideRequestAsync(Guid rideId)
         {
             var rideReplyModel = await (await getClient(rideId)).GetRideRequestAsync(new GetRideRequestModel()

@@ -1,51 +1,70 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: services-cert
+  namespace: api
+spec:
+  secretName: services-cert-secret
+  dnsNames:
+    - services-api
+    - services-api.api
+  issuerRef:
+    name: ridesaver-ca
+    kind: ClusterIssuer
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: services-api
-    namespace: api
-    labels:
+  name: services-api
+  namespace: api
+  labels:
+    type: service
+    service: services
+spec:
+  selector:
+    matchLabels:
+      type: service
+      service: services
+  replicas: 1
+  template:
+    metadata:
+      namespace: api
+      labels:
         type: service
         service: services
-spec:
-    selector:
-        matchLabels:
-            type: service
-            service: services
-    replicas: 1
-    template:
-        metadata:
-            namespace: api
-            labels:
-                type: service
-                service: services
-        spec:
-            containers:
-                - name: services-api
-                  image: ghcr.io/ridesaver/services_api:latest
-                  ports:
-                      - containerPort: 80
-                      - containerPort: 443
-                - name: services-memcache
-                  image: memcached:1.6-alpine
-                  ports:
-                      - containerPort: 11211
-            imagePullSecrets:
-                - name: ridesaver-registry-credentials
+    spec:
+      containers:
+        - name: services-api
+          image: ghcr.io/ridesaver/services_api:latest
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          volumeMounts:
+            - name: certificate
+              mountPath: /certs
+              readOnly: true
+      volumes:
+        - name: certificate
+          secret:
+            secretName: location-cert-secret
+            optional: true
+      imagePullSecrets:
+        - name: ridesaver-registry-credentials
 ---
 apiVersion: v1
 kind: Service
 metadata:
-    name: services-api
-    namespace: api
-    labels:
-        type: service
-        service: services
+  name: services-api
+  namespace: api
+  labels:
+    type: service
+    service: services
 spec:
-    ports:
-        - port: 80
-          name: http
-        - port: 443
-          name: https
-    selector:
-        type: service
-        service: services
+  ports:
+    - port: 80
+      name: http
+    - port: 443
+      name: https
+  selector:
+    type: service
+    service: services
