@@ -25,7 +25,7 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 {
     serverOptions.ConfigureHttpsDefaults(listenOptions =>
     {
-        listenOptions.UseHttps("/certs/tls.crt", "/certs/tls.key")
+        listenOptions.UseHttps("/certs/tls.crt", "/certs/tls.key");
     });
 });
 

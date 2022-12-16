@@ -25,7 +25,7 @@ namespace IdentityService
             {
                 serverOptions.ConfigureHttpsDefaults(listenOptions =>
                 {
-                    listenOptions.UseHttps("/certs/tls.crt", "/certs/tls.key")
+                    listenOptions.UseHttps("/certs/tls.crt", "/certs/tls.key");
                 });
             });
 
