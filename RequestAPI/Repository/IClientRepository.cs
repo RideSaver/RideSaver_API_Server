@@ -1,10 +1,10 @@
-﻿using InternalAPI;
+using InternalAPI;
 
-namespace EstimateAPI.Repository
+namespace RequestAPI.Repository
 {
     public interface IClientRepository
     {
-        Estimates.EstimatesClient GetClientByName(string name);
-        Task<List<Estimates.EstimatesClient>> GetClients();
+        Requests.RequestsClient GetClientByName(string name);
+        Task<List<Requests.RequestsClient>> GetClients();
     }
 }

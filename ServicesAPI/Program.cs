@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using ServicesAPI.Data;
 using ServicesAPI.Registry;
 using ServicesAPI.Repository;
 using ServicesAPI.Services;
+using System.Security.Cryptography.X509Certificates;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,17 +22,18 @@ builder.Services.AddDbContext<ServiceContext>(options =>
 });
 
 
+builder.Services.AddGrpc();
 builder.Services.AddTransient<IServiceRegistry, ServiceRegistry>();
 builder.Services.AddTransient<IInternalServices, InternalServices>();
 builder.Services.AddTransient<IServiceRepository, ServiceRepository>();
-builder.Services.AddGrpc();
-builder.WebHost.ConfigureKestrel(serverOptions =>
+
+
+builder.Services.Configure<ListenOptions>(options =>
 {
-    serverOptions.ConfigureHttpsDefaults(listenOptions =>
-    {
-        listenOptions.UseHttps("/certs/tls.crt", "/certs/tls.key");
-    });
+    options.UseHttps(new X509Certificate2(Path.Combine("/certs/tls.crt"), Path.Combine("/certs/tls.key")));
 });
+
+IServiceCollection serviceCollection = builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
 

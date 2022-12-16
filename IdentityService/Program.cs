@@ -6,6 +6,8 @@ using System.Text;
 using IdentityService.Data;
 using IdentityService.Repository;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using System.Security.Cryptography.X509Certificates;
 
 namespace IdentityService
 {
@@ -21,12 +23,10 @@ namespace IdentityService
             {
                 options.JsonSerializerOptions.NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString;
             });
-            builder.WebHost.ConfigureKestrel(serverOptions =>
+
+            builder.Services.Configure<ListenOptions>(options =>
             {
-                serverOptions.ConfigureHttpsDefaults(listenOptions =>
-                {
-                    listenOptions.UseHttps("/certs/tls.crt", "/certs/tls.key");
-                });
+                options.UseHttps(new X509Certificate2(Path.Combine("/certs/tls.crt"), Path.Combine("/certs/tls.key")));
             });
 
             builder.Services.AddEndpointsApiExplorer();

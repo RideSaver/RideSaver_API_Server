@@ -1,10 +1,10 @@
-using EstimateAPI.Configuration;
+using RequestAPI.Configuration;
 using Grpc.Net.Client;
 using InternalAPI;
 using k8s;
 using Microsoft.Extensions.Options;
 
-namespace EstimateAPI.Repository
+namespace RequestAPI.Repository
 {
     public class ClientRepository : IClientRepository
     {
@@ -39,19 +39,19 @@ namespace EstimateAPI.Repository
             _logger.LogDebug($"kubernetes label string: {_labelStr}");
         }
 
-        public Estimates.EstimatesClient GetClientByName(string name)
+        public Requests.RequestsClient GetClientByName(string name)
         {
-            _logger.LogDebug($"Requesting client for name: {name}, at 'http://{name}.client:80'");
-            GrpcChannel channel = GrpcChannel.ForAddress($"http://{name}.client:80");
-            return new Estimates.EstimatesClient(channel);
+            _logger.LogDebug($"Requesting client for name: {name}, at 'https://{name}.client:443'");
+            GrpcChannel channel = GrpcChannel.ForAddress($"https://{name}.client:443");
+            return new Requests.RequestsClient(channel);
         }
 
-        public async Task<List<Estimates.EstimatesClient>> GetClients()
+        public async Task<List<Requests.RequestsClient>> GetClients()
         {
             _logger.LogDebug($"Getting kubernetes clients");
             var list = await _kubernetes.CoreV1.ListNamespacedServiceAsync(_namespace, labelSelector: _labelStr);
             _logger.LogDebug($"Received clients: {list}");
-            List<Estimates.EstimatesClient> Clients = new List<Estimates.EstimatesClient>();
+            List<Requests.RequestsClient> Clients = new List<Requests.RequestsClient>();
             foreach (var client in list.Items)
             {
                 _logger.LogDebug($"kubernetes client: {client.Metadata.Name}");

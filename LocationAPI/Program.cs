@@ -1,6 +1,8 @@
 using Geocoding;
 using Geocoding.Microsoft;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using System.Security.Cryptography.X509Certificates;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,13 +13,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpClient();
-builder.WebHost.ConfigureKestrel(serverOptions =>
+
+builder.Services.Configure<ListenOptions>(options =>
 {
-    serverOptions.ConfigureHttpsDefaults(listenOptions =>
-    {
-        listenOptions.UseHttps("/certs/tls.crt", "/certs/tls.key")
-    });
+    options.UseHttps(new X509Certificate2(Path.Combine("/certs/tls.crt"), Path.Combine("/certs/tls.key")));
 });
+
+builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
 

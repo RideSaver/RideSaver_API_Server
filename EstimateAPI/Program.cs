@@ -2,6 +2,8 @@ using EstimateAPI.Configuration;
 using EstimateAPI.Repository;
 using InternalAPI;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using System.Security.Cryptography.X509Certificates;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,17 +19,18 @@ builder.Services.AddSingleton<IClientRepository, ClientRepository>();
 builder.Services.AddTransient<IEstimateRepository, EstimateRepository>();
 
 builder.Services.AddGrpc();
-builder.Services.AddGrpcClient<Services.ServicesClient>(o =>
+
+IHttpClientBuilder httpClientBuilder = builder.Services.AddGrpcClient<Services.ServicesClient>(o =>
 {
-    o.Address = new Uri("http://services-api.api:80");
+    o.Address = new Uri("https://services-api.api:443");
 });
-builder.WebHost.ConfigureKestrel(serverOptions =>
+
+builder.Services.Configure<ListenOptions>(options =>
 {
-    serverOptions.ConfigureHttpsDefaults(listenOptions =>
-    {
-        listenOptions.UseHttps("/certs/tls.crt", "/certs/tls.key");
-    });
+    options.UseHttps(new X509Certificate2(Path.Combine("/certs/tls.crt"), Path.Combine("/certs/tls.key")));
 });
+
+builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
 

@@ -11,8 +11,6 @@ namespace EstimateAPI.Repository
         public readonly IClientRepository _clientRepository;
         private readonly Services.ServicesClient _servicesClient;
 
-
-
         public EstimateRepository(IClientRepository clientRepository, Services.ServicesClient servicesClient)
         {
             _clientRepository = clientRepository;

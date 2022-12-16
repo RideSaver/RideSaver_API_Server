@@ -1,63 +1,64 @@
 using InternalAPI;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using RequestAPI.Configuration;
 using RequestAPI.Repository;
+using System.Security.Cryptography.X509Certificates;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
-builder.Services.AddControllers(options =>
+internal class Program
 {
-    options.Filters.Add(new AuthorizeFilter());
-});
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.Configure<ClientDiscoveryOptions>(builder.Configuration.GetSection(ClientDiscoveryOptions.Position));
-
-
-builder.Services.AddSingleton<IClientRepository, ClientRepository>();
-builder.Services.AddTransient<IRequestRepository, RequestRepository>();
-
-builder.Services.AddGrpc();
-builder.Services.AddGrpcClient<Services.ServicesClient>(o =>
-{
-    o.Address = new Uri("https://services.api:80");
-});
-builder.WebHost.ConfigureKestrel(serverOptions =>
-{
-    serverOptions.ConfigureHttpsDefaults(listenOptions =>
+    private static void Main(string[] args)
     {
-        listenOptions.UseHttps("/certs/tls.crt", "/certs/tls.key");
-    });
-});
+        var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
+        // Add services to the container.
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-    app.UseExceptionHandler("/error-development");
+        builder.Services.AddControllers();
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+        builder.Services.AddEndpointsApiExplorer();
+
+        builder.Services.AddGrpc();
+        builder.Services.Configure<ClientDiscoveryOptions>(builder.Configuration.GetSection(ClientDiscoveryOptions.Position));
+        builder.Services.AddSingleton<IClientRepository, ClientRepository>();
+        builder.Services.AddTransient<IRequestRepository, RequestRepository>();
+
+        builder.Services.AddGrpcClient<Services.ServicesClient>(o =>
+        {
+            o.Address = new Uri("https://services.api:443");
+        });
+
+        builder.Services.Configure<ListenOptions>(options =>
+        {
+            options.UseHttps(new X509Certificate2(Path.Combine("/certs/tls.crt"), Path.Combine("/certs/tls.key")));
+        });
+
+        var app = builder.Build();
+
+        // Configure the HTTP request pipeline.
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+            app.UseExceptionHandler("/error-development");
+        }
+        else
+        {
+            app.UseExceptionHandler("/error");
+        }
+
+        app.UseForwardedHeaders(new ForwardedHeadersOptions
+        {
+            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+        });
+
+        app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Response = true, ExceptionHandlingPath = "/error" });
+
+        app.UseHttpLogging();
+        app.MapControllers();
+
+        app.Logger.LogInformation("[RequestAPI] Finished middleware configuration.. starting the service.");
+
+        app.Run();
+    }
 }
-else
-{
-    app.UseExceptionHandler("/error");
-}
-
-app.UseForwardedHeaders(new ForwardedHeadersOptions
-{
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-});
-
-app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Response = true, ExceptionHandlingPath = "/error" });
-
-app.UseHttpLogging();
-app.MapControllers();
-
-app.Logger.LogInformation("[RequestAPI] Finished middleware configuration.. starting the service.");
-
-app.Run();
