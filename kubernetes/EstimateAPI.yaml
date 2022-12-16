@@ -1,64 +1,85 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: estimate-service-sa
+  namespace: api
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: estimate-service-sa
+  namespace: api
+  annotations:
+    kubernetes.io/service-account.name: "estimate-service-sa"
+type: kubernetes.io/service-account-token
+data:
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: estimate-api
-    namespace: api
-    labels:
+  name: estimate-api
+  namespace: api
+  labels:
+    type: service
+    service: estimate
+spec:
+  selector:
+    matchLabels:
+      type: service
+      service: estimate
+  replicas: 1
+  template:
+    metadata:
+      namespace: api
+      labels:
         type: service
         service: estimate
-spec:
-    selector:
-        matchLabels:
-            type: service
-            service: estimate
-    replicas: 1
-    template:
-        metadata:
-            namespace: api
-            labels:
-                type: service
-                service: estimate
-        spec:
-            containers:
-                - name: estimate-api
-                  image: ghcr.io/ridesaver/estimate_api:latest
-                  ports:
-                      - containerPort: 80
-                      - containerPort: 443
-                - name: estimate-memcache
-                  image: memcached:1.6-alpine
-                  ports:
-                      - containerPort: 11211
-            imagePullSecrets:
-                - name: ridesaver-registry-credentials
+    spec:
+      containers:
+        - name: estimate-api
+          image: ghcr.io/ridesaver/estimate_api:latest
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          volumeMounts:
+            - name: service-account
+              mountPath: "/var/run/secrets/kubernetes.io/serviceaccount"
+              readOnly: true
+      volumes:
+        - name: service-account
+          secret:
+            secretName: estimate-service-sa
+            optional: false
+      imagePullSecrets:
+        - name: ridesaver-registry-credentials
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-    name: estimate-api
+  name: estimate-api
 spec:
-    scaleTargetRef:
-        apiVersion: apps/v1
-        kind: Deployment
-        name: estimate-api
-    minReplicas: 1 # Maintain at least one for redundancy in case on fails
-    maxReplicas: 10
-    targetCPUUtilizationPercentage: 50
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: estimate-api
+  minReplicas: 1 # Maintain at least one for redundancy in case on fails
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50
 ---
 apiVersion: v1
 kind: Service
 metadata:
-    name: estimate-api
-    namespace: api
-    labels:
-        type: service
-        service: estimate
+  name: estimate-api
+  namespace: api
+  labels:
+    type: service
+    service: estimate
 spec:
-    ports:
-        - port: 80
-          name: http
-        - port: 443
-          name: https
-    selector:
-        type: service
-        service: estimate
+  ports:
+    - port: 80
+      name: http
+    - port: 443
+      name: https
+  selector:
+    type: service
+    service: estimate
