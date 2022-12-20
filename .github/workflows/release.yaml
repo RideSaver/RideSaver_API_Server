@@ -101,9 +101,24 @@ jobs:
               run: kubectl create secret docker-registry ridesaver-registry-credentials --docker-server=ghcr.io --docker-username=${{ github.actor }} --docker-password=${{ secrets.GITHUB_TOKEN }}
             - name: Install necessary dependencies
               run: |
-                  kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.10.1/cert-manager.yaml
+                  helm repo add jetstack https://charts.jetstack.io
+                  helm repo add hashicorp https://helm.releases.hashicorp.com
+
+                  helm repo update
+
                   kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml
+                  helm upgrade --install cert-manager jetstack/cert-manager \
+                    --namespace cert-manager \
+                    --create-namespace \
+                    --version v1.10.1 \
+                    --set installCRDs=true
+                  helm upgrade --install vault hashicorp/vault \
+                    --set='server.ha.enabled=true' \
+                    --set='server.ha.raft.enabled=true'
             - name: Wait for previous deploy to finish
               run: sleep 1
+            - name: Configure external software
+              run: |
+                cat kubernetes/scripts/vaultSetup.sh | kubectl
             - name: Trigger deploy
               run: kubectl apply -f kubernetes

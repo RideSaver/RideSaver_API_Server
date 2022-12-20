@@ -1,0 +1,7 @@
+{
+    "recommendations": [
+        "redhat.vscode-yaml",
+        "chaliy.handlebars-preview",
+        "ms-kubernetes-tools.vscode-kubernetes-tools"
+    ]
+}

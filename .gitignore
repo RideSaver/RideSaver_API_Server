@@ -354,3 +354,5 @@ MigrationBackup/
 /ServicesAPI/ServicesAPI.csproj
 /ServicesAPI/Dockerfile
 /ServicesAPI/nuget.config
+
+.DS_Store

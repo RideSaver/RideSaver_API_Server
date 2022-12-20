@@ -1,47 +1,59 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/dotnet-mssql
+// README at: https://github.com/devcontainers/templates/tree/main/src/kubernetes-helm
 {
-	"name": "C# (.NET) and MS SQL",
-	"dockerComposeFile": "docker-compose.yml",
-	"service": "app",
-	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+	"name": "Kubernetes - Local Configuration",
+	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+	"image": "mcr.microsoft.com/devcontainers/base:bullseye",
 
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
-
-	// Configure tool-specific properties.
-	"customizations": {
-		// Configure properties specific to VS Code.
-		"vscode": {
-			// Set *default* container specific settings.json values on container create.
-			"settings": { 
-				"mssql.connections": [
-					{
-						"server": "localhost,1433",
-						"database": "",
-						"authenticationType": "SqlLogin",
-						"user": "sa",
-						"password": "P@ssw0rd",
-						"emptyPasswordInput": false,
-						"savePassword": false,
-						"profileName": "mssql-container"
-					}
-				]
-			},
-			
-			// Add the IDs of extensions you want installed when the container is created.
-			"extensions": [
-				"ms-dotnettools.csharp",
-				"ms-mssql.mssql"
-			]
-		}
+	"features": {
+		"ghcr.io/devcontainers/features/docker-from-docker:1": {
+			"enableNonRootDocker": "true",
+			"moby": "true"
+		},
+		"ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
+			"version": "latest",
+			"helm": "latest",
+			"minikube": "none"
+		},
+		"./local-features/copy-kube-config": {}
 	},
 
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [5000, 5001],
+	"remoteEnv": {
+		"SYNC_LOCALHOST_KUBECONFIG": "true"
+	},
 
-	// postCreateCommand.sh parameters: $1=SA password, $2=dacpac path, $3=sql script(s) path
-	"postCreateCommand": "bash .devcontainer/mssql/postCreateCommand.sh 'P@ssw0rd' './bin/Debug/' './.devcontainer/mssql/'"
+	"initializeCommand": "cd .devcontainer && bash ensure-mount-sources",
+	"mounts": [
+		{
+			"source": "${env:HOME}${env:USERPROFILE}/.kube",
+			"target": "/usr/local/share/kube-localhost",
+			"type": "bind"
+		},
+		// Optional mount to also sync certs in your .minikube folder
+		{
+			"source": "${env:HOME}${env:USERPROFILE}/.minikube",
+			"target": "/usr/local/share/minikube-localhost",
+			"type": "bind"
+		}
+	],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"redhat.vscode-yaml",
+				"chaliy.handlebars-preview",
+				"ms-kubernetes-tools.vscode-kubernetes-tools"
+			]
+		}
+	}
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "kubectl version",
+
+	// Configure tool-specific properties.
+	// "customizations": {},
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "root"
