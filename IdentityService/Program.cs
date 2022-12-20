@@ -29,8 +29,6 @@ namespace IdentityService
                 options.UseHttps(new X509Certificate2(Path.Combine("/certs/tls.crt"), Path.Combine("/certs/tls.key")));
             });
 
-
-
             builder.Services.AddEndpointsApiExplorer();
 
             builder.Services.AddDbContext<UserContext>(options =>

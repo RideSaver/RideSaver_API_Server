@@ -45,7 +45,7 @@ namespace EstimateAPI.Repository
         {
             var credentials = CallCredentials.FromInterceptor((context, metadata) =>
             {
-                metadata.Add("Authorization", $"token");
+                metadata.Add("token", $"{token}");
                 return Task.CompletedTask;
             });
 
