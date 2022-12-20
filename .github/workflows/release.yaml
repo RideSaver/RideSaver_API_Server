@@ -111,3 +111,5 @@ jobs:
         uses: helm/chart-releaser-action@v1.4.1
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        with:
+          charts_repo_url: https://github.com/RideSaver/kubernetes
