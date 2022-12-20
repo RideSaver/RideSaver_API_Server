@@ -20,9 +20,12 @@ builder.Services.AddTransient<IEstimateRepository, EstimateRepository>();
 
 builder.Services.AddGrpc();
 
-IHttpClientBuilder httpClientBuilder = builder.Services.AddGrpcClient<Services.ServicesClient>(o =>
+var httpClientBuilder = builder.Services.AddGrpcClient<Services.ServicesClient>(o =>
 {
+    var httpHandler = new HttpClientHandler();
+    httpHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
     o.Address = new Uri("https://services-api.api:443");
+    o.ChannelOptionsActions.Add(o => o.HttpHandler = httpHandler);
 });
 
 builder.Services.Configure<ListenOptions>(options =>
