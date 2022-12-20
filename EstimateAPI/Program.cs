@@ -19,6 +19,8 @@ builder.Services.AddSingleton<IClientRepository, ClientRepository>();
 builder.Services.AddTransient<IEstimateRepository, EstimateRepository>();
 
 builder.Services.AddGrpc();
+builder.Services.AddGrpcClient<Estimates.EstimatesClient>();
+builder.Services.AddHttpContextAccessor();
 
 var httpClientBuilder = builder.Services.AddGrpcClient<Services.ServicesClient>(o =>
 {

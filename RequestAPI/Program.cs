@@ -20,6 +20,8 @@ internal class Program
         builder.Services.AddEndpointsApiExplorer();
 
         builder.Services.AddGrpc();
+        builder.Services.AddGrpcClient<Requests.RequestsClient>();
+
         builder.Services.AddHttpContextAccessor();
         builder.Services.Configure<ClientDiscoveryOptions>(builder.Configuration.GetSection(ClientDiscoveryOptions.Position));
         builder.Services.AddSingleton<IClientRepository, ClientRepository>();

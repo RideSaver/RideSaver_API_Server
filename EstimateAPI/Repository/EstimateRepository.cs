@@ -17,10 +17,10 @@ namespace EstimateAPI.Repository
             _servicesClient = servicesClient;
         }
 
-        public async Task<List<Estimate>> GetRideEstimatesAsync(Location startPoint, Location endPoint, List<Guid> services, int? seats)
+        public async Task<List<Estimate>> GetRideEstimatesAsync(Location startPoint, Location endPoint, List<Guid> services, int? seats, string token)
         {
             IEnumerable<Task<List<Estimate>>> estimateTasksQuery =
-                from client in await _clientRepository.GetClients()
+                from client in await _clientRepository.GetClients(token)
                 select GetEstimatesAsync(client, startPoint, endPoint, services, seats);
             List<Task<List<Estimate>>> estimateTasks = estimateTasksQuery.ToList();
             List<Estimate> estimates = new List<Estimate>();
@@ -84,7 +84,7 @@ namespace EstimateAPI.Repository
             return estimatesList;
         }
 
-        public async Task<List<Estimate>> GetRideEstimatesRefreshAsync(List<Guid> ids) // TBA
+        public async Task<List<Estimate>> GetRideEstimatesRefreshAsync(List<Guid> ids, string token) // TBA
         {
             List<Estimate> estimates = new();
             List<Task<Estimate>> rideEstimatesRefreshTasks = new();
@@ -96,7 +96,7 @@ namespace EstimateAPI.Repository
                     Hash = Google.Protobuf.ByteString.CopyFrom(id.ToByteArray(), 0, 4)
                 });
 
-                rideEstimatesRefreshTasks.Add(GetRideEstimateRefreshAsync(_clientRepository.GetClientByName(service.ClientId), id));
+                rideEstimatesRefreshTasks.Add(GetRideEstimateRefreshAsync(_clientRepository.GetClientByName(service.ClientId, token), id));
             }
 
             while (rideEstimatesRefreshTasks.Any())

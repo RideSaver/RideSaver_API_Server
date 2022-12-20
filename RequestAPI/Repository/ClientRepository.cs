@@ -3,6 +3,7 @@ using Grpc.Net.Client;
 using InternalAPI;
 using k8s;
 using Microsoft.Extensions.Options;
+using Grpc.Core;
 
 namespace RequestAPI.Repository
 {
@@ -39,14 +40,26 @@ namespace RequestAPI.Repository
             _logger.LogDebug($"kubernetes label string: {_labelStr}");
         }
 
-        public Requests.RequestsClient GetClientByName(string name)
+        public Requests.RequestsClient GetClientByName(string name, string token)
         {
+            var credentials = CallCredentials.FromInterceptor((context, metadata) =>
+            {
+                metadata.Add("Authorization", $"token");
+                return Task.CompletedTask;
+            });
+
             _logger.LogDebug($"Requesting client for name: {name}, at 'https://{name}.client:443'");
-            GrpcChannel channel = GrpcChannel.ForAddress($"https://{name}.client:443");
+
+            GrpcChannel channel = GrpcChannel.ForAddress($"https://{name}.client:443", new GrpcChannelOptions
+            {
+                Credentials = ChannelCredentials.Create(new SslCredentials(), credentials)
+            });
+
+
             return new Requests.RequestsClient(channel);
         }
 
-        public async Task<List<Requests.RequestsClient>> GetClients()
+        public async Task<List<Requests.RequestsClient>> GetClients(string token)
         {
             _logger.LogDebug($"Getting kubernetes clients");
             var list = await _kubernetes.CoreV1.ListNamespacedServiceAsync(_namespace, labelSelector: _labelStr);
@@ -55,7 +68,7 @@ namespace RequestAPI.Repository
             foreach (var client in list.Items)
             {
                 _logger.LogDebug($"kubernetes client: {client.Metadata.Name}");
-                Clients.Add(GetClientByName(client.Metadata.Name));
+                Clients.Add(GetClientByName(client.Metadata.Name, token));
             }
             return Clients;
         }

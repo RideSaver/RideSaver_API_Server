@@ -12,7 +12,7 @@ namespace RequestAPI.Repository
             _clientRepository = clientRepository;
             _servicesClient = servicesClient;
         }
-        private async Task<Requests.RequestsClient> getClient(Guid rideId)
+        private async Task<Requests.RequestsClient> getClient(Guid rideId, string token)
         {
             var service = await _servicesClient.GetServiceByHashAsync(new GetServiceByHashRequest
             {
@@ -24,12 +24,12 @@ namespace RequestAPI.Repository
                 throw new NotImplementedException();
             }
 
-            return _clientRepository.GetClientByName(service.Name);
+            return _clientRepository.GetClientByName(service.Name, token);
         }
 
-        public async Task<Ride> GetRideRequestAsync(Guid rideId)
+        public async Task<Ride> GetRideRequestAsync(Guid rideId, string token)
         {
-            var rideReplyModel = await (await getClient(rideId)).GetRideRequestAsync(new GetRideRequestModel()
+            var rideReplyModel = await (await getClient(rideId, token)).GetRideRequestAsync(new GetRideRequestModel()
             {
                 RideId = rideId.ToString(),
             });
@@ -65,9 +65,9 @@ namespace RequestAPI.Repository
                 Stage = (Ride.StageEnum)rideReplyModel.RideStage
             };
         }
-        public async Task<Ride> CreateRideRequestAsync(Guid rideId)
+        public async Task<Ride> CreateRideRequestAsync(Guid rideId, string token)
         {
-            var rideReplyModel = await (await getClient(rideId)).PostRideRequestAsync(new PostRideRequestModel()
+            var rideReplyModel = await (await getClient(rideId, token)).PostRideRequestAsync(new PostRideRequestModel()
             {
                 EstimateId = rideId.ToString(),
             });
@@ -103,9 +103,9 @@ namespace RequestAPI.Repository
                 Stage = (Ride.StageEnum)rideReplyModel.RideStage,
             };
         }
-        public async Task<PriceWithCurrency> CancelRideRequestAsync(Guid rideId)
+        public async Task<PriceWithCurrency> CancelRideRequestAsync(Guid rideId, string token)
         {
-            var rideReplyModel = await (await getClient(rideId)).DeleteRideRequestAsync(new DeleteRideRequestModel()
+            var rideReplyModel = await (await getClient(rideId, token)).DeleteRideRequestAsync(new DeleteRideRequestModel()
             {
                 RideId = rideId.ToString(),
             });

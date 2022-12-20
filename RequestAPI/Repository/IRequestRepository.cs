@@ -1,11 +1,11 @@
-﻿using RideSaver.Server.Models;
+using RideSaver.Server.Models;
 
 namespace RequestAPI.Repository
 {
     public interface IRequestRepository
     {
-        Task<Ride> CreateRideRequestAsync(Guid estimate_id);
-        Task<Ride> GetRideRequestAsync(Guid ride_id);
-        Task<PriceWithCurrency> CancelRideRequestAsync(Guid ride_id);
+        Task<Ride> CreateRideRequestAsync(Guid estimate_id, string token);
+        Task<Ride> GetRideRequestAsync(Guid ride_id, string token);
+        Task<PriceWithCurrency> CancelRideRequestAsync(Guid ride_id, string token);
     }
 }

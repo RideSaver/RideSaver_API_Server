@@ -1,4 +1,6 @@
 using EstimateAPI.Configuration;
+using Grpc.Core;
+using Grpc.Core.Interceptors;
 using Grpc.Net.Client;
 using InternalAPI;
 using k8s;
@@ -39,23 +41,36 @@ namespace EstimateAPI.Repository
             _logger.LogDebug($"kubernetes label string: {_labelStr}");
         }
 
-        public Estimates.EstimatesClient GetClientByName(string name)
+        public Estimates.EstimatesClient GetClientByName(string name, string token)
         {
+            var credentials = CallCredentials.FromInterceptor((context, metadata) =>
+            {
+                metadata.Add("Authorization", $"token");
+                return Task.CompletedTask;
+            });
+
             _logger.LogDebug($"Requesting client for name: {name}, at 'https://{name}.client:443'");
-            GrpcChannel channel = GrpcChannel.ForAddress($"https://{name}.client:443");
+
+            GrpcChannel channel = GrpcChannel.ForAddress($"https://{name}.client:443", new GrpcChannelOptions
+            {
+                Credentials = ChannelCredentials.Create(new SslCredentials(), credentials)
+            });
+                    
             return new Estimates.EstimatesClient(channel);
         }
 
-        public async Task<List<Estimates.EstimatesClient>> GetClients()
+        public async Task<List<Estimates.EstimatesClient>> GetClients(string token)
         {
+
             _logger.LogDebug($"Getting kubernetes clients");
+
             var list = await _kubernetes.CoreV1.ListNamespacedServiceAsync(_namespace, labelSelector: _labelStr);
             _logger.LogDebug($"Received clients: {list}");
             List<Estimates.EstimatesClient> Clients = new List<Estimates.EstimatesClient>();
             foreach (var client in list.Items)
             {
                 _logger.LogDebug($"kubernetes client: {client.Metadata.Name}");
-                Clients.Add(GetClientByName(client.Metadata.Name));
+                Clients.Add(GetClientByName(client.Metadata.Name, token));
             }
             return Clients;
         }

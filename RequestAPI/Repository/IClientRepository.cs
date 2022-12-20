@@ -4,7 +4,7 @@ namespace RequestAPI.Repository
 {
     public interface IClientRepository
     {
-        Requests.RequestsClient GetClientByName(string name);
-        Task<List<Requests.RequestsClient>> GetClients();
+        Requests.RequestsClient GetClientByName(string name, string token);
+        Task<List<Requests.RequestsClient>> GetClients(string token);
     }
 }
