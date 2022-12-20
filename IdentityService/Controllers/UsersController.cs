@@ -6,9 +6,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using RideSaver.Server.Controllers;
 using RideSaver.Server.Models;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Transactions;
 
 namespace UserService.Controllers
 {

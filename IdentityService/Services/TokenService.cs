@@ -62,7 +62,6 @@ namespace IdentityService.Services
                 ClockSkew = TimeSpan.Zero,
             });
 
-
             if (!tokenValidator.IsValid) return false;
 
             return true;
@@ -101,6 +100,7 @@ namespace IdentityService.Services
                 };
 
                 var principal = tokenHandler.ValidateToken(token, validationParameters, out SecurityToken securityToken);
+
 
                 return principal;
             }

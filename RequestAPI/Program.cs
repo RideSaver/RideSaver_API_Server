@@ -1,3 +1,4 @@
+using Grpc.Core;
 using InternalAPI;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -19,9 +20,14 @@ internal class Program
         builder.Services.AddEndpointsApiExplorer();
 
         builder.Services.AddGrpc();
+        builder.Services.AddHttpContextAccessor();
         builder.Services.Configure<ClientDiscoveryOptions>(builder.Configuration.GetSection(ClientDiscoveryOptions.Position));
         builder.Services.AddSingleton<IClientRepository, ClientRepository>();
         builder.Services.AddTransient<IRequestRepository, RequestRepository>();
+
+
+
+
 
         builder.Services.AddGrpcClient<Services.ServicesClient>(o =>
         {

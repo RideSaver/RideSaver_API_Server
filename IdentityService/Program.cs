@@ -101,10 +101,13 @@ namespace IdentityService
     
             app.MapControllers();
             app.UseHttpLogging();
+
+            app.UseAuthentication(); 
             app.UseRouting();
             app.UseAuthorization();
-            app.UseEndpoints(endpoints => { endpoints.MapGrpcService<AccessTokenService>(); });
 
+            app.UseEndpoints(endpoints => { endpoints.MapGrpcService<AccessTokenService>(); });
+           
             app.Logger.LogInformation("[IdentityService] Finished middleware configuration. starting the service.");
             app.Logger.LogInformation($"[IdentityService] Running with DB configuration string: {builder.Configuration.GetConnectionString("IdentityDB")}.");
 
