@@ -7,118 +7,107 @@
 # To get a newer version, you will need to update the SHA.
 # You can also reference a tag or branch, but the action may change without warning.
 
-name: Publish Docker image
+name: Publish Kubernetes resources
 
 on:
-    push:
-        branches:
-            - "main"
-    release:
-        types:
-            - published
-    workflow_dispatch:
+  push:
+    branches:
+      - "main"
+  release:
+    types:
+      - published
+  workflow_dispatch:
 jobs:
-    build:
-        name: Push Docker image to GitHub Container Registry
-        runs-on: ubuntu-latest
-        permissions:
-            packages: write
-        strategy:
-            matrix:
-                image:
-                    - estimate_api
-                    - location_api
-                    - request_api
-                    - services_api
-                    - identity_service
-        steps:
-            - name: Check out the repo
-              uses: actions/checkout@v3
-            - name: Set up QEMU
-              uses: docker/setup-qemu-action@v2
-              with:
-                  platforms: arm,arm64,amd64
-            - name: Set up Docker Buildx
-              uses: docker/setup-buildx-action@v2
-              with:
-                  platforms: linux/arm,linux/arm64,linux/x64
-            - name: Log in to Github Container Repository
-              uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
-              with:
-                  registry: ghcr.io
-                  username: ${{ github.actor }}
-                  password: ${{ secrets.GITHUB_TOKEN }}
-            - name: Docker meta
-              id: meta
-              uses: docker/metadata-action@v4
-              with:
-                  images: |
-                      ghcr.io/ridesaver/${{ matrix.image }}
-                  tags: |
-                      type=schedule,pattern=nightly
-                      type=ref,event=branch
-                      type=ref,event=pr
-                      type=semver,pattern={{version}}
-                      type=semver,pattern={{major}}.{{minor}}
-                      type=semver,pattern={{major}}
-                      type=sha
-            - name: Build
-              uses: docker/bake-action@v2
-              with:
-                  files: |
-                      ./docker-bake.hcl
-                      ${{ steps.meta.outputs.bake-file }}
-                  targets: ${{ matrix.image }}
-                  set: |
-                      *.args.github_username=${{ github.actor }}
-                      *.args.github_token=${{ secrets.GITHUB_TOKEN }}
-                  push: true
+  docker:
+    name: Push Docker image to GitHub Container Registry
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    strategy:
+      matrix:
+        image:
+          - estimate_api
+          - location_api
+          - request_api
+          - services_api
+          - identity_service
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm,arm64,amd64
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          platforms: linux/arm,linux/arm64,linux/x64
+      - name: Log in to Github Container Repository
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ghcr.io/ridesaver/${{ matrix.image }}
+          tags: |
+            type=schedule,pattern=nightly
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
+      - name: Build
+        uses: docker/bake-action@v2
+        with:
+          files: |
+            ./docker-bake.hcl
+            ${{ steps.meta.outputs.bake-file }}
+          targets: ${{ matrix.image }}
+          set: |
+            *.args.github_username=${{ github.actor }}
+            *.args.github_token=${{ secrets.GITHUB_TOKEN }}
+          push: true
 
-    deployment:
-        name: Deploy
-        runs-on: ubuntu-latest
-        needs:
-            - build
-        permissions:
-            contents: "read"
-            id-token: "write"
-        if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'release' }}
-        steps:
-            - uses: actions/checkout@master
-            - name: "auth"
-              uses: "google-github-actions/auth@v1"
-              with:
-                  credentials_json: ${{ secrets.GKE_AUTH_JSON }}
-            - id: "get-credentials"
-              uses: "google-github-actions/get-gke-credentials@v1"
-              with:
-                  cluster_name: ${{ secrets.GKE_CLUSTER }}
-                  location: "us-central1-c"
+  helm:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    # depending on default permission settings for your org (contents being read-only or read-write for workloads), you will have to add permissions
+    # see: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-            - name: Delete old registry secret
-              run: kubectl delete secret ridesaver-registry-credentials --ignore-not-found
-            - name: Add registry secret
-              run: kubectl create secret docker-registry ridesaver-registry-credentials --docker-server=ghcr.io --docker-username=${{ github.actor }} --docker-password=${{ secrets.GITHUB_TOKEN }}
-            - name: Install necessary dependencies
-              run: |
-                  helm repo add jetstack https://charts.jetstack.io
-                  helm repo add hashicorp https://helm.releases.hashicorp.com
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
-                  helm repo update
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.10.0
 
-                  kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml
-                  helm upgrade --install cert-manager jetstack/cert-manager \
-                    --namespace cert-manager \
-                    --create-namespace \
-                    --version v1.10.1 \
-                    --set installCRDs=true
-                  helm upgrade --install vault hashicorp/vault \
-                    --set='server.ha.enabled=true' \
-                    --set='server.ha.raft.enabled=true'
-            - name: Wait for previous deploy to finish
-              run: sleep 1
-            - name: Configure external software
-              run: |
-                cat kubernetes/scripts/vaultSetup.sh | kubectl
-            - name: Trigger deploy
-              run: kubectl apply -f kubernetes
+      - name: Update dependencies
+        run: |
+          helm repo add RideSaver https://RideSaver.github.io/kubernetes
+          helm repo add hashicorp https://helm.releases.hashicorp.com
+          helm repo add jetstack https://charts.jetstack.io
+          helm repo add nginx https://helm.nginx.com/stable
+          helm repo update
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.4.1
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
