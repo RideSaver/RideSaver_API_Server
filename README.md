@@ -45,7 +45,10 @@ The Internal Services is a gRPC server that listens for service-requests to retr
 
 The Location service retrieves the consumer location to provide accurate infomration for the ride estimates & requests.
 #### Controllers: 
-LocationController
+
+> **Location Controller**\
+In Progress - TBA.
+
 ## Required Packages
 
 RideSaver utilizes the sidecar pattern for the web clients helpers & the openAPI specifications packages which are NuGet packages that referenced when needed.
