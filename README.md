@@ -1,5 +1,5 @@
 # RideSaver
-RideSaver API Server contains all the microservices & the API gateway to handle the incoming traffic as well as reroute to the apropriate services based on the incoming requests.
+RideSaver API Server contains all the microservices that handle the user request from the UI-Server, as well as the gRPC calls for the inter-service configurations, it also hosts all the data-repositories that handle the MySQL data access for data retrieval & updates.
 
 ## Server Structure
 
