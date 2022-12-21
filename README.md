@@ -3,7 +3,7 @@ RideSaver API Server contains all the microservices & the API gateway to handle 
 
 ## Server Structure
 
-### IdentityService
+### Identity Service
 
 The Identity Service handles all form of user-actions such as registeration, authentication, and authorization throughout RideSaver. This service also acts as the Authentication Service by providing user-tokens, refresh tokens, and validation for accessing other services. 
 
@@ -12,7 +12,7 @@ The Identity Service handles all form of user-actions such as registeration, aut
 > **Authentication Controller**\
 The Authentication Controller hosts the REST endpoints that handle the user-authentication via JWT tokens, token validation, refresh-token-generation, and revoking tokens. These endpoints communicate with sub-services to retrieve the proper data to handle all user-validation actions.
 
-> **Users Controller**\ 
+> **Users Controller**\
 The Users Controller hosts the REST endpoints that handle the user account creation, deletion, updates, and service-authorization. These endpoints communicate with sub-services & the database repository to retrieve/update/create the needed information for all user-account actions.
 
 #### Sub-Services: 
@@ -71,8 +71,8 @@ The Location service retrieves the consumer location to provide accurate infomra
 > **Location Controller**\
 In Progress - TBA.
 
-## Required Packages
+## Required Packages & Dependencies
 
-RideSaver utilizes the sidecar pattern for the web clients helpers & the openAPI specifications packages which are NuGet packages that referenced when needed.
-- RideSaver.Server.dll (https://github.com/RideSaver/RideSaver_API_Specifications/packages/1674227)
-- RideSaver.WebClients.dll (https://github.com/RideSaver/RideSaver_API_Clients) - IN PROGRESS
+- RideSaver.Server.dll -> OpenAPI specifications (https://github.com/RideSaver/RideSaver_API_Specifications)
+- DataAccess.dll -> MySQL database models & configuration (https://github.com/RideSaver/DataAccess)
+- InternalAPI.dll -> gRPC proto files, and configurations (https://github.com/RideSaver/InternalAPI)
