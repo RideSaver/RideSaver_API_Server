@@ -1,6 +1,6 @@
 apiVersion: v2
-name: RideSaver/API/Request
-description: A Helm chart for RideSaver's Request microservice
+name: RideSaver/API/Identity
+description: A Helm chart for RideSaver's Identity microservice
 
 # A chart can be either an 'application' or a 'library' chart.
 #
