@@ -1,0 +1,12 @@
+repositories:
+  - name: API_Server
+    url: https://RideSaver.github.io/RideSaver_API_Server
+releases:
+  - name: EstimateAPI
+    chart: RideSaver_API_Estimate
+  - name: IdentityAPI
+    chart: RideSaver_API_Identity
+  - name: LocationAPI
+    chart: RideSaver_API_Location
+  - name: RequestAPI
+    chart: RideSaver_API_Request
