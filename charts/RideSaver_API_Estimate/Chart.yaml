@@ -1,5 +1,5 @@
 apiVersion: v2
-name: RideSaver/API/Estimate
+name: RideSaver_API_Estimate
 description: A Helm chart for RideSaver's Estimate microservice
 
 # A chart can be either an 'application' or a 'library' chart.

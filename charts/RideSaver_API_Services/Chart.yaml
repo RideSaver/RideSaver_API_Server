@@ -1,5 +1,5 @@
 apiVersion: v2
-name: RideSaver/API/Services
+name: RideSaver_API_Services
 description: A Helm chart for RideSaver's Services microservice
 
 # A chart can be either an 'application' or a 'library' chart.
