@@ -2,11 +2,19 @@ repositories:
   - name: API_Server
     url: https://RideSaver.github.io/RideSaver_API_Server
 releases:
-  - name: EstimateAPI
+  - name: ridesaver-estimate-api
     chart: RideSaver_API_Estimate
-  - name: IdentityAPI
+    values:
+      - fullnameOverride: location
+  - name: ridesaver-identity-api
     chart: RideSaver_API_Identity
-  - name: LocationAPI
+    values:
+      - fullnameOverride: location
+  - name: ridesaver-location-api
     chart: RideSaver_API_Location
-  - name: RequestAPI
+    values:
+      - fullnameOverride: location
+  - name: ridesaver-request-api
     chart: RideSaver_API_Request
+    values:
+      - fullnameOverride: request
