@@ -15,7 +15,7 @@ apiVersion: extensions/v1beta1
 {{ end }}
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ $fullName }}-auth
   labels:
     {{ include "IdentityService.labels" . | nindent 4 }}
   {{ with .Values.ingress.annotations }}
@@ -43,7 +43,7 @@ spec:
       http:
         paths:
           {{ range .paths }}
-          - path: {{ .path }}/authentication/authenticate(/|$)(.*)
+          - path: {{ .path }}{{ $.Values.api.root }}/authentication/authenticate(/|$)(.*)
             {{ if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
             pathType: {{ .pathType }}
             {{ end }}

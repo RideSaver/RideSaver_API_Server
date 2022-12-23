@@ -46,7 +46,7 @@ spec:
       http:
         paths:
           {{ range .paths }}
-          - path: {{ .path }}/rides(/|$)(.*)
+          - path: {{ .path }}{{ $.Values.api.root }}/rides(/|$)(.*)
             {{ if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
             pathType: {{ .pathType }}
             {{ end }}

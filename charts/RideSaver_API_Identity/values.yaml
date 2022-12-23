@@ -46,8 +46,8 @@ ingress:
   hosts:
     - host: ride-saver.local
       paths:
-        - path: /api/v1
-          pathType: ImplementationSpecific
+        - path: /
+          pathType: Prefix
   tls:
    - secretName: ingress-certificate
      hosts:
@@ -60,6 +60,7 @@ ca:
 api:
   auth:
     url: http://identity/authentication/validate-token
+  root: /api/v1
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
