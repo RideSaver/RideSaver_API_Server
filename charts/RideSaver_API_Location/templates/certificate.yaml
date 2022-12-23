@@ -3,17 +3,20 @@ kind: Certificate
 metadata:
   name: {{ include "LocationAPI.fullname" . }}
   labels:
-    {{- include "LocationAPI.labels" . | nindent 4 -}}
-  {{- with .Values.serviceAccount.annotations -}}
+    {{ include "LocationAPI.labels" . | nindent 4 }}
+  {{ with .Values.certificate.annotations }}
   annotations:
-    {{- toYaml . | nindent 4 -}}
-  {{- end -}}
+    {{ toYaml . | nindent 4 }}
+  {{ end }}
 spec:
   secretName: {{ include "LocationAPI.fullname" . }}-certificate
   dnsNames:
-    - {{ include "LocationAPI.fullname" . }}
     - {{ include "LocationAPI.fullname" . }}.{{ .Release.Namespace }}
-    - {{ include "LocationAPI.fullname" . }}.{{ .Release.Namespace }}.svc
+  subject:
+    organizations:
+      - RideSaver
+  usages:
+    - server auth
   issuerRef:
-    name: {{- default "ridesaver-ca" .Values.ca.name -}}
-    kind: {{- default "ClusterIssuer" .Values.ca.type -}}
+    name: {{ default "ridesaver-ca" .Values.ca.name }}
+    kind: {{ default "ClusterIssuer" .Values.ca.type }}

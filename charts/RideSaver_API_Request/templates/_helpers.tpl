@@ -60,14 +60,21 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
-
 {{/*
-Create the name of the role based access control for the service account to use
+Create the name of the service account to use
 */}}
-{{- define "RequestAPI.serviceAccountName" -}}
+{{- define "RequestAPI.rbacName" -}}
 {{- if .Values.rbac.create }}
 {{- default (include "RequestAPI.fullname" .) .Values.rbac.name }}
 {{- else }}
 {{- default "default" .Values.rbac.name }}
 {{- end }}
 {{- end }}
+
+{{- define "RideSaver.url" -}}
+{{- default "ride-saver.online" (first .Values.ingress.hosts).host -}}
+{{- end }}
+
+{{- define "RideSaver.API.auth_url" -}}
+{{- default "identity/authentication/validate-token" .Values.api.auth.url  -}}
+{{- end -}}

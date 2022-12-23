@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   name: "{{ include "EstimateAPI.fullname" . }}-test-connection"
   labels:
-    {{- include "EstimateAPI.labels" . | nindent 4 }}
+    {{ include "EstimateAPI.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": test
 spec:

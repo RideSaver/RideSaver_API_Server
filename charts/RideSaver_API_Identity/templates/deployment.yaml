@@ -3,37 +3,36 @@ kind: Deployment
 metadata:
   name: {{ include "IdentityService.fullname" . }}
   labels:
-    {{- include "IdentityService.labels" . | nindent 4 -}}
+    {{ include "IdentityService.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled -}}
+  {{ if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-  {{- end -}}
+  {{ end }}
   selector:
     matchLabels:
-      {{- include "IdentityService.selectorLabels" . | nindent 6 -}}
+      {{ include "IdentityService.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations -}}
+      {{ with .Values.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 8 -}}
-      {{- end -}}
+        {{ toYaml . | nindent 8 }}
+      {{ end }}
       labels:
-        {{- include "IdentityService.selectorLabels" . | nindent 8 -}}
+        {{ include "IdentityService.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.imagePullSecrets -}}
+      {{ with .Values.imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 -}}
-      {{- end -}}
-      serviceAccountName: {{ include "IdentityService.serviceAccountName" . }}
+        {{ toYaml . | nindent 8 }}
+      {{ end }}
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 -}}
+        {{ toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
         - name: {{ .Chart.Name }}-certificate
           image: alpine/openssl:latest
           command:
             - sh
             - -c
-            - "openssl pkcs12 -export -out /pfx/certificate.pfx -inkey /certs/tls.key -in /certs/tls.crt -in /certs/ca.crt -passout pass:"
+            - "openssl pkcs12 -export -out /pfx/certificate.pfx -inkey /certs/tls.key -in /certs/ca.crt -in /certs/tls.crt -passout pass:"
           volumeMounts:
             - name: certificate
               mountPath: /certs
@@ -42,12 +41,15 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 -}}
+            {{ toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: 80
+              protocol: TCP
+            - name: https
+              containerPort: 443
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -58,7 +60,7 @@ spec:
               path: /
               port: http
           resources:
-            {{- toYaml .Values.resources | nindent 12 -}}
+            {{ toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - name: pfx-certificate
               mountPath: /certs
@@ -73,15 +75,15 @@ spec:
             optional: false
         - name: pfx-certificate
           emptyDir: {}
-      {{- with .Values.nodeSelector -}}
+      {{ with .Values.nodeSelector }}
       nodeSelector:
-        {{- toYaml . | nindent 8 -}}
-      {{- end -}}
-      {{- with .Values.affinity -}}
+        {{ toYaml . | nindent 8 }}
+      {{ end }}
+      {{ with .Values.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 -}}
-      {{- end -}}
-      {{- with .Values.tolerations -}}
+        {{ toYaml . | nindent 8 }}
+      {{ end }}
+      {{ with .Values.tolerations }}
       tolerations:
-        {{- toYaml . | nindent 8 -}}
-      {{- end -}}
+        {{ toYaml . | nindent 8 }}
+      {{ end }}

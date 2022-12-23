@@ -3,15 +3,15 @@ kind: Service
 metadata:
   name: {{ include "IdentityService.fullname" . }}
   labels:
-    {{- include "IdentityService.labels" . | nindent 4 -}}
+    {{ include "IdentityService.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
-    {{- range $index, $port := .Values.pizzaToppings -}}
+    {{ range $index, $port := .Values.service.ports }}
     - port: {{ $port.port }}
       targetPort: {{ $index }}
       protocol: TCP
       name: {{ default $index $port.name }}
-    {{- end -}}
+    {{ end }}
   selector:
-    {{- include "IdentityService.selectorLabels" . | nindent 4 -}}
+    {{ include "IdentityService.selectorLabels" . | nindent 4 }}

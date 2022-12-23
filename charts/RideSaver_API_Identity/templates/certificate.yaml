@@ -3,17 +3,20 @@ kind: Certificate
 metadata:
   name: {{ include "IdentityService.fullname" . }}
   labels:
-    {{- include "IdentityService.labels" . | nindent 4 -}}
-  {{- with .Values.serviceAccount.annotations -}}
+    {{ include "IdentityService.labels" . | nindent 4 }}
+  {{ with .Values.certificate.annotations }}
   annotations:
-    {{- toYaml . | nindent 4 -}}
-  {{- end -}}
+    {{ toYaml . | nindent 4 }}
+  {{ end }}
 spec:
   secretName: {{ include "IdentityService.fullname" . }}-certificate
   dnsNames:
-    - {{ include "IdentityService.fullname" . }}
     - {{ include "IdentityService.fullname" . }}.{{ .Release.Namespace }}
-    - {{ include "IdentityService.fullname" . }}.{{ .Release.Namespace }}.svc
+  subject:
+    organizations:
+      - RideSaver
+  usages:
+    - server auth
   issuerRef:
-    name: {{- default "ridesaver-ca" .Values.ca.name -}}
-    kind: {{- default "ClusterIssuer" .Values.ca.type -}}
+    name: {{ default "ridesaver-ca" .Values.ca.name }}
+    kind: {{ default "ClusterIssuer" .Values.ca.type }}
