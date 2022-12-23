@@ -6,19 +6,24 @@ releases:
     chart: API_Server/RideSaver_API_Estimate
     values:
       - fullnameOverride: location
+    namespace: api
   - name: ridesaver-identity-api
     chart: API_Server/RideSaver_API_Identity
     values:
       - fullnameOverride: location
+    namespace: api
   - name: ridesaver-location-api
     chart: API_Server/RideSaver_API_Location
     values:
       - fullnameOverride: location
+    namespace: api
   - name: ridesaver-request-api
     chart: API_Server/RideSaver_API_Request
     values:
       - fullnameOverride: request
+    namespace: api
   - name: ridesaver-services-api
     chart: API_Server/RideSaver_API_Services
     values:
       - fullnameOverride: services
+    namespace: api
