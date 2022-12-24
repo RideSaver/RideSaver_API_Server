@@ -13,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHealthChecks();
 
 builder.Services.Configure<ClientDiscoveryOptions>(builder.Configuration.GetSection(ClientDiscoveryOptions.Position));
 
@@ -68,6 +69,7 @@ app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Respon
 
 app.UseHttpLogging();
 app.MapControllers();
+app.MapHealthChecks("/healthz");
 
 app.Logger.LogInformation("[EstimateAPI] Finished middleware configuration.. starting the service.");
 

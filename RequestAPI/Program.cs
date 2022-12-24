@@ -18,6 +18,7 @@ internal class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddHealthChecks();
 
         builder.Services.AddGrpc();
         builder.Services.AddGrpcClient<Requests.RequestsClient>();
@@ -71,6 +72,7 @@ internal class Program
 
         app.UseHttpLogging();
         app.MapControllers();
+        app.MapHealthChecks("/healthz");
 
         app.Logger.LogInformation("[RequestAPI] Finished middleware configuration.. starting the service.");
 

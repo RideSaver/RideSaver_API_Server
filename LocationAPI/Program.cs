@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHealthChecks();
 
 builder.Services.AddHttpClient();
 
@@ -39,6 +40,7 @@ app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Respon
 
 app.UseHttpLogging();
 app.MapControllers();
+app.MapHealthChecks("/healthz");
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {

@@ -64,6 +64,7 @@ namespace IdentityService
             {
                 c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             });
+            builder.Services.AddHealthChecks();
 
             builder.Services.AddGrpc();
             builder.Services.AddTransient<IAuthService, AuthService>();
@@ -96,16 +97,17 @@ namespace IdentityService
             });
 
             app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Response = true, ExceptionHandlingPath = "/error" });
-    
+
             app.MapControllers();
             app.UseHttpLogging();
+            app.MapHealthChecks("/healthz");
 
-            app.UseAuthentication(); 
+            app.UseAuthentication();
             app.UseRouting();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapGrpcService<AccessTokenService>(); });
-           
+
             app.Logger.LogInformation("[IdentityService] Finished middleware configuration. starting the service.");
             app.Logger.LogInformation($"[IdentityService] Running with DB configuration string: {builder.Configuration.GetConnectionString("IdentityDB")}.");
 
