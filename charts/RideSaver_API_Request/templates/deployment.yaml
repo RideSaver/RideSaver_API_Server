@@ -33,12 +33,18 @@ spec:
           command:
             - sh
             - -c
-            - "openssl pkcs12 -export -out /pfx/certificate.pfx -inkey /certs/tls.key -in /certs/ca.crt -in /certs/tls.crt -passout pass:"
+            - |
+            openssl pkcs12 -export -out /pfx/certificate.pfx -inkey /certs/tls.key -in /certs/ca.crt -in /certs/tls.crt -passout pass:
+            apt-get install -y ca-certificates
+            cp /certs/ca.crt /usr/local/share/ca-certificates
+            update-ca-certificates
           volumeMounts:
             - name: certificate
               mountPath: /certs
             - name: pfx-certificate
               mountPath: /pfx
+            - name: root-certificates
+              mountPath: /etc/ssl/certs
       containers:
         - name: server
           securityContext:
@@ -69,6 +75,9 @@ spec:
             - name: pfx-certificate
               mountPath: /certs
               readOnly: true
+            - name: root-certificates
+              mountPath: /etc/ssl/certs
+              readOnly: true
           env:
             - name: ASPNETCORE_Kestrel__Certificates__Default__Path
               value: /certs/certificate.pfx
@@ -82,6 +91,8 @@ spec:
             secretName: {{ include "RequestAPI.fullname" . }}-certificate
             optional: false
         - name: pfx-certificate
+          emptyDir: {}
+        - name: root-certificates
           emptyDir: {}
       {{ with .Values.nodeSelector }}
       nodeSelector:
