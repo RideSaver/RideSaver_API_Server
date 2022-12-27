@@ -32,4 +32,4 @@ ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=0
 WORKDIR /app
 COPY --from=builder /server/publish ./
 
-CMD ["./IdentityService", "--urls", "http://0.0.0.0:80"]
+CMD ["./IdentityService", "--urls", "http://0.0.0.0:80;https://0.0.0.0:443"]
