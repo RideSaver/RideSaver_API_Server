@@ -3,6 +3,16 @@ entries:
   RideSaver_API_Estimate:
   - apiVersion: v2
     appVersion: 0.2.93
+    created: "2022-12-27T10:38:25.366768908Z"
+    description: A Helm chart for RideSaver's Estimate microservice
+    digest: bc7f16ef9cfe1f45e92adc8ef969af787b80217fe7d521623bd2b56e1bc41075
+    name: RideSaver_API_Estimate
+    type: application
+    urls:
+    - https://github.com/RideSaver/RideSaver_API_Server/releases/download/RideSaver_API_Estimate-0.1.8/RideSaver_API_Estimate-0.1.8.tgz
+    version: 0.1.8
+  - apiVersion: v2
+    appVersion: 0.2.93
     created: "2022-12-27T10:30:14.104267262Z"
     description: A Helm chart for RideSaver's Estimate microservice
     digest: e0422cb0cecc4ea1b15a50aee5d93f3fa58ceca04ad5ac55b90de3e1b2bd490a
@@ -84,6 +94,16 @@ entries:
   RideSaver_API_Identity:
   - apiVersion: v2
     appVersion: 0.2.93
+    created: "2022-12-27T10:38:25.546968593Z"
+    description: A Helm chart for RideSaver's Identity microservice
+    digest: e1a0ef550b26935fcef2cdfde45fe9e9efe8246a93623ab0f76e83fad8ec5b7c
+    name: RideSaver_API_Identity
+    type: application
+    urls:
+    - https://github.com/RideSaver/RideSaver_API_Server/releases/download/RideSaver_API_Identity-0.1.8/RideSaver_API_Identity-0.1.8.tgz
+    version: 0.1.8
+  - apiVersion: v2
+    appVersion: 0.2.93
     created: "2022-12-27T10:30:14.328824851Z"
     description: A Helm chart for RideSaver's Identity microservice
     digest: 74315dac9623be7c522b5d19cee1a33ff86660d398396a63b7feed730b924c15
@@ -155,6 +175,16 @@ entries:
   RideSaver_API_Location:
   - apiVersion: v2
     appVersion: 0.2.93
+    created: "2022-12-27T10:38:25.697623338Z"
+    description: A Helm chart for RideSaver's Location microservice
+    digest: e5ba84f49b7e09d1b5b21d279b16bfb5faa666080eeb48c377e4fbbc0f10654a
+    name: RideSaver_API_Location
+    type: application
+    urls:
+    - https://github.com/RideSaver/RideSaver_API_Server/releases/download/RideSaver_API_Location-0.1.8/RideSaver_API_Location-0.1.8.tgz
+    version: 0.1.8
+  - apiVersion: v2
+    appVersion: 0.2.93
     created: "2022-12-27T10:30:14.572409388Z"
     description: A Helm chart for RideSaver's Location microservice
     digest: 05af5b6dc12b7d0a85bdbad9bad2e05d11b8fba7b629b5ab540b70f11c91497f
@@ -224,6 +254,16 @@ entries:
     - https://github.com/RideSaver/RideSaver_API_Server/releases/download/RideSaver_API_Location-0.1.0/RideSaver_API_Location-0.1.0.tgz
     version: 0.1.0
   RideSaver_API_Request:
+  - apiVersion: v2
+    appVersion: 0.2.93
+    created: "2022-12-27T10:38:25.861700183Z"
+    description: A Helm chart for RideSaver's Request microservice
+    digest: aa83bfc11896afbcfc5c2f7a7f5b4b2977cec1c6decd1e457c3ef89e7490fe7e
+    name: RideSaver_API_Request
+    type: application
+    urls:
+    - https://github.com/RideSaver/RideSaver_API_Server/releases/download/RideSaver_API_Request-0.1.8/RideSaver_API_Request-0.1.8.tgz
+    version: 0.1.8
   - apiVersion: v2
     appVersion: 0.2.93
     created: "2022-12-27T10:30:14.776170887Z"
@@ -307,6 +347,16 @@ entries:
   RideSaver_API_Services:
   - apiVersion: v2
     appVersion: 0.2.93
+    created: "2022-12-27T10:38:26.019086328Z"
+    description: A Helm chart for RideSaver's Services microservice
+    digest: 8d98663157dca40b88f349fe1d3843b761958ffc312a05fe355b3755b15b3dce
+    name: RideSaver_API_Services
+    type: application
+    urls:
+    - https://github.com/RideSaver/RideSaver_API_Server/releases/download/RideSaver_API_Services-0.1.8/RideSaver_API_Services-0.1.8.tgz
+    version: 0.1.8
+  - apiVersion: v2
+    appVersion: 0.2.93
     created: "2022-12-27T10:30:15.002639516Z"
     description: A Helm chart for RideSaver's Services microservice
     digest: 5f28341656e948cf8191b0960a35ddc8014304fb908efa1aed9958a3fc9c586c
@@ -375,4 +425,4 @@ entries:
     urls:
     - https://github.com/RideSaver/RideSaver_API_Server/releases/download/RideSaver_API_Services-0.1.0/RideSaver_API_Services-0.1.0.tgz
     version: 0.1.0
-generated: "2022-12-27T10:30:15.00282722Z"
+generated: "2022-12-27T10:38:26.01920173Z"
