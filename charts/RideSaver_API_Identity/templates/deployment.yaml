@@ -28,7 +28,7 @@ spec:
         {{ toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
         - name: certificate
-          image: alpine/openssl:latest
+          image: ubuntu:latest
           command:
             - sh
             - -c
