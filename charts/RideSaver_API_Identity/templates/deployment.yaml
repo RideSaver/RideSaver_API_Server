@@ -33,10 +33,10 @@ spec:
             - sh
             - -c
             - |
-            openssl pkcs12 -export -out /pfx/certificate.pfx -inkey /certs/tls.key -in /certs/ca.crt -in /certs/tls.crt -passout pass:
-            apt-get install -y ca-certificates
-            cp /certs/ca.crt /usr/local/share/ca-certificates
-            update-ca-certificates
+              openssl pkcs12 -export -out /pfx/certificate.pfx -inkey /certs/tls.key -in /certs/ca.crt -in /certs/tls.crt -passout pass:
+              apt-get install -y ca-certificates
+              cp /certs/ca.crt /usr/local/share/ca-certificates
+              update-ca-certificates
           volumeMounts:
             - name: certificate
               mountPath: /certs
