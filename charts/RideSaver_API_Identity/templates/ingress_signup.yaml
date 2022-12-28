@@ -20,7 +20,8 @@ metadata:
     {{ include "IdentityService.labels" . | nindent 4 }}
   {{ with .Values.ingress.annotations }}
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /api/user/login/$2
+    nginx.ingress.kubernetes.io/rewrite-target: /api/user/signup/$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
     {{ toYaml . | nindent 4 }}
   {{ end }}
 spec:
@@ -43,7 +44,7 @@ spec:
       http:
         paths:
           {{ range .paths }}
-          - path: {{ .path }}{{ $.Values.api.root }}/user/login(/|$)(.*)
+          - path: {{ .path }}{{ $.Values.api.root }}/user/signup(/|$)(.*)
             {{ if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
             pathType: {{ .pathType }}
             {{ end }}
