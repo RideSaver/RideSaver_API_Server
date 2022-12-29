@@ -2,9 +2,11 @@ using EstimateAPI.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 using RideSaver.Server.Controllers;
 using RideSaver.Server.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Net.Http.Headers;
 
 namespace EstimateAPI.Controllers
 {
@@ -23,7 +25,14 @@ namespace EstimateAPI.Controllers
         [AllowAnonymous]
         public async override Task<IActionResult> GetEstimates([FromQuery(Name = "startPoint"), Required] Location startPoint, [FromQuery(Name = "endPoint"), Required] Location endPoint, [FromQuery(Name = "services")] List<Guid> services, [FromQuery(Name = "seats")] int? seats)
         {
-            Request.Headers.TryGetValue("token", out var token);
+            var authorization = Request.Headers[HeaderNames.Authorization];
+            string? token = null;
+
+            if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
+            {
+                token = headerValue.Parameter;
+            }
+
             if (!string.IsNullOrEmpty(token)) { return BadRequest(); }
 
             _logger.LogInformation("[EstimateController] GetEstimates(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
@@ -33,7 +42,14 @@ namespace EstimateAPI.Controllers
         [AllowAnonymous]
         public async override Task<IActionResult> RefreshEstimates([FromQuery(Name = "ids"), Required] List<Guid> ids)
         {
-            Request.Headers.TryGetValue("token", out var token);
+            var authorization = Request.Headers[HeaderNames.Authorization];
+            string? token = null;
+
+            if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
+            {
+                token = headerValue.Parameter;
+            }
+
             if (!string.IsNullOrEmpty(token)) { return BadRequest(); }
 
             _logger.LogInformation("[EstimateController] RefreshEstimates(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
