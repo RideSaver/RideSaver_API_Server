@@ -24,6 +24,11 @@ builder.Services.AddGrpc();
 builder.Services.AddGrpcClient<Estimates.EstimatesClient>();
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddAuthorization(authConfig =>
+{
+    authConfig.AddPolicy("apiKey", policyBuilder => policyBuilder);
+});
+
 builder.Services.AddGrpcClient<Services.ServicesClient>(o =>
 {
     var credentials = CallCredentials.FromInterceptor((context, metadata) =>
@@ -68,6 +73,8 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Response = true, ExceptionHandlingPath = "/error" });
 
 app.UseAuthorization();
+
+
 app.UseHttpLogging();
 app.MapControllers();
 app.MapHealthChecks("/healthz");
