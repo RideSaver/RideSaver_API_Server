@@ -23,6 +23,9 @@ namespace EstimateAPI.Controllers
         [AllowAnonymous]
         public async override Task<IActionResult> GetEstimates([FromQuery(Name = "startPoint"), Required] Location startPoint, [FromQuery(Name = "endPoint"), Required] Location endPoint, [FromQuery(Name = "services")] List<Guid> services, [FromQuery(Name = "seats")] int? seats)
         {
+            Request.Headers.TryGetValue("token", out var token);
+            if (!string.IsNullOrEmpty(token)) { return BadRequest(); }
+
             _logger.LogInformation("[EstimateController] GetEstimates(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
             return new OkObjectResult(await _estimateRepository.GetRideEstimatesAsync(startPoint, endPoint, services, seats, token));
         }
@@ -30,6 +33,9 @@ namespace EstimateAPI.Controllers
         [AllowAnonymous]
         public async override Task<IActionResult> RefreshEstimates([FromQuery(Name = "ids"), Required] List<Guid> ids)
         {
+            Request.Headers.TryGetValue("token", out var token);
+            if (!string.IsNullOrEmpty(token)) { return BadRequest(); }
+
             _logger.LogInformation("[EstimateController] RefreshEstimates(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
             return new OkObjectResult(await _estimateRepository.GetRideEstimatesRefreshAsync(ids, token));
         }
