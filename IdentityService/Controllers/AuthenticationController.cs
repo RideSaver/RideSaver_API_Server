@@ -70,7 +70,7 @@ namespace IdentityService.Controllers
 
         [HttpPost]
         [Route("/auth-error-development")]
-        public IActionResult HandleErrorDevelopment([FromServices] IHostEnvironment hostEnvironment)
+        protected IActionResult HandleErrorDevelopment([FromServices] IHostEnvironment hostEnvironment)
         {
             if (!hostEnvironment.IsDevelopment()) return NotFound();
 
@@ -81,6 +81,6 @@ namespace IdentityService.Controllers
 
         [HttpPost]
         [Route("/auth-error")]
-        public IActionResult HandleError() => Problem();
+        protected IActionResult HandleError() => Problem();
     }
 }

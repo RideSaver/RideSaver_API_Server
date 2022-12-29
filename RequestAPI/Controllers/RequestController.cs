@@ -46,7 +46,7 @@ namespace RequestAPI.Controllers
         }
 
         [Route("/error-development")]
-        public IActionResult HandleErrorDevelopment([FromServices] IHostEnvironment hostEnvironment)
+        protected IActionResult HandleErrorDevelopment([FromServices] IHostEnvironment hostEnvironment)
         {
             if (!hostEnvironment.IsDevelopment()) return NotFound();
 
@@ -56,6 +56,6 @@ namespace RequestAPI.Controllers
         }
 
         [Route("/error")]
-        public IActionResult HandleError() => Problem();
+        protected IActionResult HandleError() => Problem();
     }
 }

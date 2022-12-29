@@ -86,7 +86,7 @@ namespace UserService.Controllers
 
         [HttpPost]
         [Route("/user-error-development")]
-        public IActionResult HandleErrorDevelopment([FromServices] IHostEnvironment hostEnvironment)
+        protected IActionResult HandleErrorDevelopment([FromServices] IHostEnvironment hostEnvironment)
         {
             if (!hostEnvironment.IsDevelopment()) return NotFound();
 
@@ -97,6 +97,6 @@ namespace UserService.Controllers
 
         [HttpPost]
         [Route("/user-error")]
-        public IActionResult HandleError() => Problem();
+        protected IActionResult HandleError() => Problem();
     }
 }
