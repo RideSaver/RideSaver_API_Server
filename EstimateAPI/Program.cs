@@ -1,3 +1,4 @@
+using EstimateAPI.Authorization;
 using EstimateAPI.Configuration;
 using EstimateAPI.Repository;
 using Grpc.Core;
@@ -26,7 +27,7 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthorization(authConfig =>
 {
-    authConfig.AddPolicy("apiKey", policyBuilder => policyBuilder);
+    authConfig.AddPolicy("apiKey", policyConfig => policyConfig.Requirements.Add(new ApiKeyRequirement()));
 });
 
 builder.Services.AddGrpcClient<Services.ServicesClient>(o =>
