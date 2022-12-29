@@ -21,7 +21,7 @@ namespace IdentityService.Services
         {
             var userID = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier); // Retrieves the UUID from the Claims
 
-            var serviceID = request.ServiceId; 
+            var serviceID = request.ServiceId;
 
             if(userID is null) return new GetUserAccessTokenResponse { AccessToken = null };
 

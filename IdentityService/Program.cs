@@ -43,7 +43,7 @@ namespace IdentityService
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddJwtBearer("Authentication", cfg =>
+            .AddJwtBearer(cfg =>
             {
                 cfg.RequireHttpsMetadata = true;
                 cfg.SaveToken = true;
