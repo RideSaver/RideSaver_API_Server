@@ -32,7 +32,7 @@ namespace IdentityService.Services
 
             if(accessToken is null) return new GetUserAccessTokenResponse { AccessToken = String.Empty };
 
-            return new GetUserAccessTokenResponse { AccessToken = serviceID};
+            return new GetUserAccessTokenResponse { AccessToken = accessToken.RefreshhToken };
         }
     }
 }
