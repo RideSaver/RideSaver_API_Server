@@ -30,7 +30,7 @@ namespace IdentityService.Services
                 .Where(auth => auth.ServiceId.Equals(serviceID))
                 .FirstOrDefault(); // Retrieves the refresh-token matching the UID & service ID
 
-            if(accessToken is null) return new GetUserAccessTokenResponse { AccessToken = null };
+            if(accessToken is null) return new GetUserAccessTokenResponse { AccessToken = String.Empty };
 
             return new GetUserAccessTokenResponse { AccessToken = serviceID};
         }
