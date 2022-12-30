@@ -10,10 +10,12 @@ namespace IdentityService.Services
     public class AccessTokenService : Users.UsersBase
     {
         private readonly UserContext _userContext;
+        private readonly ILogger<AccessTokenService> _logger;
 
-        public AccessTokenService(UserContext userContext)
+        public AccessTokenService(UserContext userContext, ILogger<AccessTokenService> logger)
         {
             _userContext = userContext;
+            _logger = logger;
         }
 
         [Authorize]
