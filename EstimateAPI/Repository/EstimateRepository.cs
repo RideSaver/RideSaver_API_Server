@@ -10,11 +10,13 @@ namespace EstimateAPI.Repository
     {
         public readonly IClientRepository _clientRepository;
         private readonly Services.ServicesClient _servicesClient;
+        private readonly Logger<EstimateRepository> _logger;
 
-        public EstimateRepository(IClientRepository clientRepository, Services.ServicesClient servicesClient)
+        public EstimateRepository(IClientRepository clientRepository, Services.ServicesClient servicesClient, Logger<EstimateRepository> logger)
         {
             _clientRepository = clientRepository;
             _servicesClient = servicesClient;
+            _logger = logger;
         }
 
         public async Task<List<Estimate>> GetRideEstimatesAsync(Location startPoint, Location endPoint, List<Guid> services, int? seats, string token)
@@ -56,7 +58,9 @@ namespace EstimateAPI.Repository
                 Seats = (int)(seats > 0 ? seats : 0),
             };
 
-            foreach(var service in services)
+            if (services is null) { _logger.LogDebug("[EstimateAPI:EstimateRepository::GetEstimatesAsync] GUID List SERVICES is null"); }
+
+            foreach (var service in services)
             {
                 clientRequested.Services.Add(service.ToString());
             }
