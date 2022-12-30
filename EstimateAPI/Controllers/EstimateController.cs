@@ -38,7 +38,7 @@ namespace EstimateAPI.Controllers
                 _logger.LogDebug($"Access token could not be read: {authorization}");
             }
 
-            if (!string.IsNullOrEmpty(token)) { return BadRequest(); }
+            if (string.IsNullOrEmpty(token)) { return BadRequest(); }
 
             _logger.LogInformation("[EstimateController] GetEstimates(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
             return new OkObjectResult(await _estimateRepository.GetRideEstimatesAsync(startPoint, endPoint, services, seats, token));
