@@ -10,9 +10,9 @@ namespace EstimateAPI.Repository
     {
         public readonly IClientRepository _clientRepository;
         private readonly Services.ServicesClient _servicesClient;
-        private readonly Logger<EstimateRepository> _logger;
+        private readonly ILogger<EstimateRepository> _logger;
 
-        public EstimateRepository(IClientRepository clientRepository, Services.ServicesClient servicesClient, Logger<EstimateRepository> logger)
+        public EstimateRepository(IClientRepository clientRepository, Services.ServicesClient servicesClient, ILogger<EstimateRepository> logger)
         {
             _clientRepository = clientRepository;
             _servicesClient = servicesClient;
