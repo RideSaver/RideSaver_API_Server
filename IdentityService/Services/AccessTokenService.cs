@@ -23,7 +23,7 @@ namespace IdentityService.Services
 
             var serviceID = request.ServiceId;
 
-            if(userID is null) return new GetUserAccessTokenResponse { AccessToken = null };
+            if(userID is null) return new GetUserAccessTokenResponse { AccessToken = String.Empty };
 
             var accessToken =  _userContext.Authorizations
                 .Where(auth => auth.UserId.Equals(userID))
