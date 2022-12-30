@@ -25,6 +25,9 @@ namespace IdentityService.Services
 
             if(userID is null) return new GetUserAccessTokenResponse { AccessToken = String.Empty };
 
+            _logger.LogDebug($"User ID: {userID}");
+            _logger.LogDebug($"Service ID: {serviceID}");
+
             var accessToken =  _userContext.Authorizations
                 .Where(auth => auth.UserId.Equals(Guid.Parse(userID)))
                 .Where(auth => auth.ServiceId.Equals(Guid.Parse(serviceID)))
