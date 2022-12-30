@@ -10,10 +10,12 @@ namespace IdentityService.Services
     public class AccessTokenService : Users.UsersBase
     {
         private readonly UserContext _userContext;
+        private readonly ILogger<AccessTokenService> _logger;
 
-        public AccessTokenService(UserContext userContext)
+        public AccessTokenService(UserContext userContext, ILogger<AccessTokenService> logger)
         {
             _userContext = userContext;
+            _logger = logger;
         }
 
         [Authorize]
@@ -24,6 +26,9 @@ namespace IdentityService.Services
             var serviceID = request.ServiceId;
 
             if(userID is null) return new GetUserAccessTokenResponse { AccessToken = String.Empty };
+
+            _logger.LogDebug($"User ID: {userID}");
+            _logger.LogDebug($"Service ID: {serviceID}");
 
             var accessToken =  _userContext.Authorizations
                 .Where(auth => auth.UserId.Equals(new Guid(userID)))
