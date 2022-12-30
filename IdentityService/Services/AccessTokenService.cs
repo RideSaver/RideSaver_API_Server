@@ -26,8 +26,8 @@ namespace IdentityService.Services
             if(userID is null) return new GetUserAccessTokenResponse { AccessToken = String.Empty };
 
             var accessToken =  _userContext.Authorizations
-                .Where(auth => auth.UserId.Equals(Guid.Parse(userID)))
-                .Where(auth => auth.ServiceId.Equals(Guid.Parse(serviceID)))
+                .Where(auth => auth.UserId.Equals(new Guid(userID)))
+                .Where(auth => auth.ServiceId.Equals(new Guid(serviceID)))
                 .FirstOrDefault(); // Retrieves the refresh-token matching the UID & service ID
 
             if(accessToken is null) return new GetUserAccessTokenResponse { AccessToken = String.Empty };
