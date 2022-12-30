@@ -30,7 +30,12 @@ namespace EstimateAPI.Controllers
 
             if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
             {
+                _logger.LogDebug($"Access Token: {headerValue.Parameter}")
                 token = headerValue.Parameter;
+            }
+            else
+            {
+                _logger.LogDebug($"Access token could not be read: {authorization}")
             }
 
             if (!string.IsNullOrEmpty(token)) { return BadRequest(); }
