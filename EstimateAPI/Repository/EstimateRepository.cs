@@ -53,9 +53,13 @@ namespace EstimateAPI.Repository
                     Height = (double)endPoint.Height,
                 },
 
-                Services = { services.ToString() },
                 Seats = (int)(seats > 0 ? seats : 0),
             };
+
+            foreach(var service in services)
+            {
+                clientRequested.Services.Add(service.ToString());
+            }
 
             var estimatesReplyModel = client.GetEstimates(clientRequested);
             await foreach (var estimatesReply in estimatesReplyModel.ResponseStream.ReadAllAsync())
