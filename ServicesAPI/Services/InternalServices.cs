@@ -42,7 +42,7 @@ namespace ServicesAPI.Services
                 scope.Complete();
             }
         }
-        public override Task<Empty> RegisterService(RegisterServiceRequest request, ServerCallContext context)
+        public override async Task<Empty> RegisterService(RegisterServiceRequest request, ServerCallContext context)
         {
             using (var scope = new TransactionScope())
             {
@@ -58,7 +58,7 @@ namespace ServicesAPI.Services
                 _serviceContext.Services.Add(service);
             }
 
-            return (Task<Empty>)Task.CompletedTask;
+            return new Empty();
         }
 
         public static List<ServiceFeaturesModel> ConvertServiceFeaturesToServiceFeaturesModel(RepeatedField<ServiceFeatures> serviceFeatures)
