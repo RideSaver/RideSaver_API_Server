@@ -78,8 +78,10 @@ app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Respon
 
 app.UseAuthorization();
 
+app.UseWhen(
+    context => context.Request.Path.StartsWithSegments("/api"),
+    builder => builder.UseHttpLogging());
 
-app.UseHttpLogging();
 app.MapControllers();
 app.MapHealthChecks("/healthz");
 

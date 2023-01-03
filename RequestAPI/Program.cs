@@ -70,7 +70,10 @@ internal class Program
 
         app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Response = true, ExceptionHandlingPath = "/error" });
 
-        app.UseHttpLogging();
+        app.UseWhen(
+            context => context.Request.Path.StartsWithSegments("/api"),
+            builder => builder.UseHttpLogging());
+
         app.MapControllers();
         app.MapHealthChecks("/healthz");
 

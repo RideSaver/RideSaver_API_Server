@@ -61,7 +61,9 @@ app.UseRouting();
 
 app.UseEndpoints(endpoints => { endpoints.MapGrpcService<InternalServices>(); });
 
-app.UseHttpLogging();
+app.UseWhen(
+    context => context.Request.Path.StartsWithSegments("/api"),
+    builder => builder.UseHttpLogging());
 
 app.MapHealthChecks("/healthz");
 
