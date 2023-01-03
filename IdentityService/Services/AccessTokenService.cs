@@ -5,6 +5,10 @@ using InternalAPI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 
 namespace IdentityService.Services
@@ -20,12 +24,18 @@ namespace IdentityService.Services
             _logger = logger;
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async override Task<GetUserAccessTokenResponse> GetUserAccessToken(GetUserAccessTokenRequest request, ServerCallContext context)
         {
             _logger.LogInformation("[IdentityService::AccessTokenService::GetUserAccessToken] Access Token request recieved...");
 
-            var userID = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier); // Retrieves the UUID from the Claims
+            var authorization = context.RequestHeaders;
+            string? token = null;
+
+            var headerToken = authorization.First(X => X.Key == "Authorization");
+            _logger.LogInformation($"[IdentityService::AccessTokenService::GetUserAccessToken] Headers token: {headerToken}");
+
+            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
+            var userID = jwt.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
 
             _logger.LogInformation($"[IdentityService::AccessTokenService::GetUserAccessToken] Retrieving Access token for UserID: {userID}...");
 
