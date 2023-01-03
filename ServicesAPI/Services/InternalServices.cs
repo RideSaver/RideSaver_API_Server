@@ -64,7 +64,7 @@ namespace ServicesAPI.Services
 
             _logger.LogInformation("[ServicesAPI::InternalServices::RegisterService] Service sucessfully registered...");
 
-            return new Empty();
+            return Task.FromResult(new Empty());
         }
 
         public static List<ServiceFeaturesModel> ConvertServiceFeaturesToServiceFeaturesModel(RepeatedField<ServiceFeatures> serviceFeatures)
