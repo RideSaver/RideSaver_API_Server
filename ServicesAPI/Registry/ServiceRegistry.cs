@@ -21,7 +21,7 @@ namespace ServicesAPI.Registry
                 Id = new Guid("d4abaae7-f4d6-4152-91cc-77523e8165a4"),
                 Name = "UberBLACK",
                 ClientId = "Uber",
-                ProviderId = new Guid(),
+                //ProviderId = new Guid(),
                 ServiceFeatures = new List<ServiceFeaturesModel>
                 {  new ServiceFeaturesModel() { Feature = Features.professional_driver },},
             };
@@ -31,7 +31,7 @@ namespace ServicesAPI.Registry
                 Id = new Guid("26546650-e557-4a7b-86e7-6a3942445247"),
                 Name = "uberPOOL",
                 ClientId = "Uber",
-                ProviderId = new Guid(),
+                //ProviderId = new Guid(),
                 ServiceFeatures = new List<ServiceFeaturesModel>
                 {  new ServiceFeaturesModel() { Feature = Features.professional_driver },
                    new ServiceFeaturesModel() { Feature = Features.shared },},
@@ -42,7 +42,7 @@ namespace ServicesAPI.Registry
                 Id = new Guid("2d1d002b-d4d0-4411-98e1-673b244878b2"),
                 Name = "uberX",
                 ClientId = "Uber",
-                ProviderId = new Guid(),
+                //ProviderId = new Guid(),
                 ServiceFeatures = new List<ServiceFeaturesModel>
                 {  new ServiceFeaturesModel() { Feature = Features.professional_driver },},
             };
@@ -58,7 +58,7 @@ namespace ServicesAPI.Registry
                 Id = new Guid("2B2225AD-9D0E-45E0-85FB-378FE2B521E0"),
                 Name = "Lyft",
                 ClientId = "Lyft",
-                ProviderId = new Guid(),
+                //ProviderId = new Guid(),
                 ServiceFeatures = new List<ServiceFeaturesModel>
                 {  new ServiceFeaturesModel() { Feature = Features.professional_driver },},
             };
@@ -68,7 +68,7 @@ namespace ServicesAPI.Registry
                 Id = new Guid("52648E86-B617-44FD-B753-295D5CE9D9DC"),
                 Name = "LyftShared",
                 ClientId = "Lyft",
-                ProviderId = new Guid(),
+                //ProviderId = new Guid(),
                 ServiceFeatures = new List<ServiceFeaturesModel>
                 {  new ServiceFeaturesModel() { Feature = Features.professional_driver },
                    new ServiceFeaturesModel() { Feature = Features.shared },},
@@ -79,7 +79,7 @@ namespace ServicesAPI.Registry
                 Id = new Guid("BB331ADE-E379-4F12-9AB0-A68AF94D5813"),
                 Name = "LyftXL",
                 ClientId = "Lyft",
-                ProviderId = new Guid(),
+                //ProviderId = new Guid(),
                 ServiceFeatures = new List<ServiceFeaturesModel>
                 {  new ServiceFeaturesModel() { Feature = Features.professional_driver },},
             };
@@ -89,7 +89,7 @@ namespace ServicesAPI.Registry
                 Id = new Guid("B47A0993-DE35-4F86-8DD8-C6462F16F5E8"),
                 Name = "LyftLUX",
                 ClientId = "Lyft",
-                ProviderId = new Guid(),
+                //ProviderId = new Guid(),
                 ServiceFeatures = new List<ServiceFeaturesModel>
                 {  new ServiceFeaturesModel() { Feature = Features.professional_driver },},
             };

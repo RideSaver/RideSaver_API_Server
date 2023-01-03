@@ -17,7 +17,7 @@
       </PackageReference>
 
       <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-	  <PackageReference Include="RideSaver.DataAccess" Version="0.2.8" />
+	  <PackageReference Include="RideSaver.DataAccess" Version="0.2.9" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 	  <PackageReference Include="RideSaver.Server" Version="0.1.11" />
       <PackageReference Include="RideSaver.InternalAPI" Version="0.0.8" />

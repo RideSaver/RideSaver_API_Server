@@ -23,7 +23,7 @@ namespace ServicesAPI.Repository
                 {
                     Id = serviceModel.Id,
                     DisplayName = serviceModel.Name,
-                    Provider = serviceModel.ProviderId,
+                    //Provider = serviceModel.ProviderId,
                     Features = ConvertServiceFeaturesModelToFeatures(serviceModel.ServiceFeatures!)
                 };
 
