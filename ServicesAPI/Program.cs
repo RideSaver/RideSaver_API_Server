@@ -49,17 +49,21 @@ else
     app.UseExceptionHandler("/error");
 }
 
-app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Response = true, ExceptionHandlingPath = "/error" });
-app.UseRouting();
-app.UseEndpoints(endpoints => { endpoints.MapGrpcService<InternalServices>(); });
-app.UseHttpLogging();
-app.MapControllers();
-app.MapHealthChecks("/healthz");
-
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 });
+
+app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Response = true, ExceptionHandlingPath = "/error" });
+
+app.MapControllers();
+app.UseRouting();
+
+app.UseEndpoints(endpoints => { endpoints.MapGrpcService<InternalServices>(); });
+
+app.UseHttpLogging();
+
+app.MapHealthChecks("/healthz");
 
 app.Logger.LogInformation("[ServicesAPI] Finished middleware configuration.. starting the service.");
 

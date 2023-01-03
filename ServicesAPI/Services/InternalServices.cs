@@ -44,19 +44,16 @@ namespace ServicesAPI.Services
         }
         public override async Task<Empty> RegisterService(RegisterServiceRequest request, ServerCallContext context)
         {
-            using (var scope = new TransactionScope())
+            var service = new ServicesModel()
             {
-                var service = new ServicesModel()
-                {
-                    Id = new Guid(request.Id.ToByteArray()),
-                    Name = request.Name,
-                    ClientId = request.ClientName,
-                    ProviderId = new Guid(),
-                    ServiceFeatures = ConvertServiceFeaturesToServiceFeaturesModel(request.Features)
-                };
+                Id = new Guid(request.Id.ToByteArray()),
+                Name = request.Name,
+                ClientId = request.ClientName,
+                ProviderId = new Guid(),
+                ServiceFeatures = ConvertServiceFeaturesToServiceFeaturesModel(request.Features)
+            };
 
-                _serviceContext.Services.Add(service);
-            }
+            await _serviceContext.Services.AddAsync(service);
 
             return new Empty();
         }
