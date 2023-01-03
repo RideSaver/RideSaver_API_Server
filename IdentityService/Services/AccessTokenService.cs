@@ -17,21 +17,22 @@ namespace IdentityService.Services
     {
         private readonly UserContext _userContext;
         private readonly ILogger<AccessTokenService> _logger;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AccessTokenService(UserContext userContext, ILogger<AccessTokenService> logger)
+        public AccessTokenService(UserContext userContext, ILogger<AccessTokenService> logger, IHttpContextAccessor httpContextAccessor)
         {
             _userContext = userContext;
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async override Task<GetUserAccessTokenResponse> GetUserAccessToken(GetUserAccessTokenRequest request, ServerCallContext context)
         {
             _logger.LogInformation("[IdentityService::AccessTokenService::GetUserAccessToken] Access Token request recieved...");
 
-            var authorization = context.RequestHeaders.FirstOrDefault(e => e.Key == "Authorization");
-            if(authorization is null) { _logger.LogInformation("[IdentityService::AccessTokenService::GetUserAccessToken] Request Headers are null."); }
+            string headerToken = "" + _httpContextAccessor.HttpContext!.Request.Headers["Authorization"];
 
-            var headerToken = authorization!.Value.ToString();
+            if(headerToken is null) { _logger.LogInformation("[IdentityService::AccessTokenService::GetUserAccessToken] Request Headers are null."); }
 
             _logger.LogInformation($"[IdentityService::AccessTokenService::GetUserAccessToken] Headers token: {headerToken}");
 

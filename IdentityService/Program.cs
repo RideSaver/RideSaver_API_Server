@@ -71,6 +71,7 @@ namespace IdentityService
             builder.Services.AddTransient<ITokenService, TokenService>();
             builder.Services.AddTransient<IUserRepository, UserRepository>();
             builder.Services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
+            builder.Services.AddHttpContextAccessor();
 
             var app = builder.Build();
 
