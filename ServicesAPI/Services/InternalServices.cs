@@ -61,6 +61,9 @@ namespace ServicesAPI.Services
             };
 
             await _serviceContext.Services.AddAsync(service);
+            await _serviceContext.SaveChangesAsync();
+
+            _logger.LogInformation("[ServicesAPI::InternalServices::RegisterService] Service sucessfully registered...");
 
             return new Empty();
         }

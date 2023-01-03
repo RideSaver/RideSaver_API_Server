@@ -29,12 +29,11 @@ namespace IdentityService.Services
             _logger.LogInformation("[IdentityService::AccessTokenService::GetUserAccessToken] Access Token request recieved...");
 
             var authorization = context.RequestHeaders;
-            string? token = null;
 
-            var headerToken = authorization.First(X => X.Key == "Authorization");
+            var headerToken = authorization.First(x => x.Key == "Authorization").ToString();
             _logger.LogInformation($"[IdentityService::AccessTokenService::GetUserAccessToken] Headers token: {headerToken}");
 
-            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
+            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(headerToken);
             var userID = jwt.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
 
             _logger.LogInformation($"[IdentityService::AccessTokenService::GetUserAccessToken] Retrieving Access token for UserID: {userID}...");
