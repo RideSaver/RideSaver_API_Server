@@ -4,6 +4,7 @@ using IdentityService.Data;
 using InternalAPI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace IdentityService.Services
@@ -37,10 +38,10 @@ namespace IdentityService.Services
             _logger.LogDebug($"User ID: {userID}");
             _logger.LogDebug($"Service ID: {serviceID}");
 
-            var accessToken =  _userContext.Authorizations
+            var accessToken = await _userContext.Authorizations
                 .Where(auth => auth.UserId.Equals(new Guid(userID)))
                 .Where(auth => auth.ServiceId.Equals(new Guid(serviceID)))
-                .FirstOrDefault(); // Retrieves the refresh-token matching the UID & service ID
+                .FirstOrDefaultAsync(); // Retrieves the refresh-token matching the UID & service ID
 
             if(accessToken is null) return new GetUserAccessTokenResponse { AccessToken = String.Empty };
 
