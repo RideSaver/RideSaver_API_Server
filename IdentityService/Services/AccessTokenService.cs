@@ -28,9 +28,11 @@ namespace IdentityService.Services
         {
             _logger.LogInformation("[IdentityService::AccessTokenService::GetUserAccessToken] Access Token request recieved...");
 
-            var authorization = context.RequestHeaders;
+            var authorization = context.RequestHeaders.FirstOrDefault(e => e.Key == "Authorization");
+            if(authorization is null) { _logger.LogInformation("[IdentityService::AccessTokenService::GetUserAccessToken] Request Headers are null."); }
 
-            var headerToken = authorization.First(x => x.Key == "Authorization").ToString();
+            var headerToken = authorization!.Value.ToString();
+
             _logger.LogInformation($"[IdentityService::AccessTokenService::GetUserAccessToken] Headers token: {headerToken}");
 
             var jwt = new JwtSecurityTokenHandler().ReadJwtToken(headerToken);
