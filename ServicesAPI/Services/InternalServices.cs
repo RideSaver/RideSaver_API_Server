@@ -28,18 +28,14 @@ namespace ServicesAPI.Services
         }
         public override async Task GetServices(Empty request, IServerStreamWriter<ServiceModel> responseStream, ServerCallContext context)
         {
-            using (var scope = new TransactionScope())
+            IList<ServicesModel> services = (IList<ServicesModel>)_serviceContext.Services.ToListAsync();
+            foreach (var service in services)
             {
-                IList<ServicesModel> services = (IList<ServicesModel>)_serviceContext.Services.ToListAsync();
-                foreach (var service in services)
+                await responseStream.WriteAsync(new ServiceModel
                 {
-                    await responseStream.WriteAsync(new ServiceModel
-                    {
-                        Name = service.Name,
-                        ClientId = service.ClientId,
-                    });
-                }
-                scope.Complete();
+                    Name = service.Name,
+                    ClientId = service.ClientId,
+                });
             }
         }
         public override async Task<Empty> RegisterService(RegisterServiceRequest request, ServerCallContext context)

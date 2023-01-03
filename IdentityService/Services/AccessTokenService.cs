@@ -18,14 +18,20 @@ namespace IdentityService.Services
             _logger = logger;
         }
 
-        [Authorize]
+        //[Authorize]
         public async override Task<GetUserAccessTokenResponse> GetUserAccessToken(GetUserAccessTokenRequest request, ServerCallContext context)
         {
+            _logger.LogInformation("[IdentityService::AccessTokenService::GetUserAccessToken] Access Token request recieved...");
+
             var userID = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier); // Retrieves the UUID from the Claims
+
+            _logger.LogInformation($"[IdentityService::AccessTokenService::GetUserAccessToken] Retrieving Access token for UserID: {userID}...");
 
             var serviceID = request.ServiceId.ToString();
 
-            if(userID is null) return new GetUserAccessTokenResponse { AccessToken = String.Empty };
+            _logger.LogInformation($"[IdentityService::AccessTokenService::GetUserAccessToken] Retrieving Access token for ServiceID: {serviceID}...");
+
+            if (userID is null) return new GetUserAccessTokenResponse { AccessToken = String.Empty };
 
             _logger.LogDebug($"User ID: {userID}");
             _logger.LogDebug($"Service ID: {serviceID}");
@@ -36,6 +42,8 @@ namespace IdentityService.Services
                 .FirstOrDefault(); // Retrieves the refresh-token matching the UID & service ID
 
             if(accessToken is null) return new GetUserAccessTokenResponse { AccessToken = String.Empty };
+
+            _logger.LogInformation($"[IdentityService::AccessTokenService::GetUserAccessToken] Returning Access Token: {accessToken.RefreshhToken}");
 
             return new GetUserAccessTokenResponse { AccessToken = accessToken.RefreshhToken };
         }
