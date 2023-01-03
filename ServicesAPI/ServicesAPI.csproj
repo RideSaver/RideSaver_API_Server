@@ -20,7 +20,7 @@
 	  <PackageReference Include="RideSaver.DataAccess" Version="0.2.9" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 	  <PackageReference Include="RideSaver.Server" Version="0.1.11" />
-      <PackageReference Include="RideSaver.InternalAPI" Version="0.0.8" />
+      <PackageReference Include="RideSaver.InternalAPI" Version="0.1.1" />
       <PackageReference Include="Google.Protobuf" Version="3.21.11" />
       <PackageReference Include="Grpc.Core.Api" Version="2.50.0" />
       <PackageReference Include="Grpc.Net.Client" Version="2.50.0" />

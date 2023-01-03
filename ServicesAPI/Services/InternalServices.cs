@@ -47,7 +47,7 @@ namespace ServicesAPI.Services
                 });
             }
         }
-        public override async Task<Empty> RegisterService(RegisterServiceRequest request, ServerCallContext context)
+        public override async Task<InternalAPI.Void> RegisterService(RegisterServiceRequest request, ServerCallContext context)
         {
             _logger.LogInformation("[ServicesAPI::InternalServices::RegisterService] Method invoked...");
 
@@ -71,7 +71,7 @@ namespace ServicesAPI.Services
                 _logger.LogInformation("[ServicesAPI::InternalServices::RegisterService] Service already exists...");
             }
               
-            return await Task.FromResult(new Empty());
+            return new InternalAPI.Void();
         }
 
         public static List<ServiceFeaturesModel> ConvertServiceFeaturesToServiceFeaturesModel(RepeatedField<ServiceFeatures> serviceFeatures)

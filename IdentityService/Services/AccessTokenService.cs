@@ -1,14 +1,8 @@
-using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using IdentityService.Data;
 using InternalAPI;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Net.Http.Headers;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Net.Http.Headers;
 using System.Security.Claims;
 
 namespace IdentityService.Services
@@ -31,6 +25,8 @@ namespace IdentityService.Services
             _logger.LogInformation("[IdentityService::AccessTokenService::GetUserAccessToken] Access Token request recieved...");
 
             string headerToken = "" + _httpContextAccessor.HttpContext!.Request.Headers["Authorization"];
+
+            headerToken = headerToken.Replace("Bearer ", string.Empty);
 
             if(headerToken is null) { _logger.LogInformation("[IdentityService::AccessTokenService::GetUserAccessToken] Request Headers are null."); }
 
