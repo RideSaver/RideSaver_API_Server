@@ -99,7 +99,9 @@ namespace IdentityService
             app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Response = true, ExceptionHandlingPath = "/error" });
 
             app.MapControllers();
-            app.UseHttpLogging();
+            app.UseWhen(
+                context => context.Request.Path.StartsWithSegments("/api"),
+                builder => builder.UseHttpLogging());
             app.MapHealthChecks("/healthz");
 
             app.UseAuthentication();
