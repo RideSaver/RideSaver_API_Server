@@ -50,7 +50,7 @@ namespace IdentityService
                 cfg.TokenValidationParameters = new TokenValidationParameters()
                 {
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-                    ValidateIssuerSigningKey = true,
+                    ValidateIssuerSigningKey = false,
                     ValidIssuer = builder.Configuration["Jwt:Issuer"],
                     ValidateAudience = false,
                     ValidateIssuer = false,
