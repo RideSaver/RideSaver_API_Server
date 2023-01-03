@@ -36,8 +36,10 @@ namespace IdentityService.Services
 
             _logger.LogInformation($"[IdentityService::AccessTokenService::GetUserAccessToken] Headers token: {headerToken}");
 
-            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(headerToken);
-            var userID = jwt.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadToken(headerToken) as JwtSecurityToken;
+
+            var userID = jwtToken!.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
 
             _logger.LogInformation($"[IdentityService::AccessTokenService::GetUserAccessToken] Retrieving Access token for UserID: {userID}...");
 

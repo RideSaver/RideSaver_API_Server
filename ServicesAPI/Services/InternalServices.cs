@@ -59,12 +59,19 @@ namespace ServicesAPI.Services
                 ServiceFeatures = ConvertServiceFeaturesToServiceFeaturesModel(request.Features)
             };
 
-            await _serviceContext.Services.AddAsync(service);
-            await _serviceContext.SaveChangesAsync();
+            if (!_serviceContext.Services.Contains(service))
+            {
+                await _serviceContext.Services.AddAsync(service);
+                await _serviceContext.SaveChangesAsync();
 
-            _logger.LogInformation("[ServicesAPI::InternalServices::RegisterService] Service sucessfully registered...");
-
-            return new Empty();
+                _logger.LogInformation("[ServicesAPI::InternalServices::RegisterService] Service sucessfully registered...");
+            }
+            else
+            {
+                _logger.LogInformation("[ServicesAPI::InternalServices::RegisterService] Service already exists...");
+            }
+              
+            return await Task.FromResult(new Empty());
         }
 
         public static List<ServiceFeaturesModel> ConvertServiceFeaturesToServiceFeaturesModel(RepeatedField<ServiceFeatures> serviceFeatures)
