@@ -56,7 +56,6 @@ namespace ServicesAPI.Services
                 Id = new Guid(request.Id.ToByteArray()),
                 Name = request.Name,
                 ClientId = request.ClientName,
-                ProviderId = new Guid(),
                 ServiceFeatures = ConvertServiceFeaturesToServiceFeaturesModel(request.Features)
             };
 
