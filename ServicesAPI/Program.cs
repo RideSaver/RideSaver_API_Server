@@ -22,6 +22,8 @@ builder.Services.AddDbContext<ServiceContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 
+builder.Services.AddEndpointsApiExplorer();
+
 
 builder.Services.AddGrpc();
 builder.Services.AddTransient<IServiceRegistry, ServiceRegistry>();

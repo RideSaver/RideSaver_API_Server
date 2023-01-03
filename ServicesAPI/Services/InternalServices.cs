@@ -15,9 +15,16 @@ namespace ServicesAPI.Services
     public class InternalServices : InternalAPI.Services.ServicesBase
     {
         private readonly ServiceContext _serviceContext;
-        public InternalServices(ServiceContext serviceContext) => _serviceContext = serviceContext;
+        private readonly ILogger<InternalServices> _logger;
+        public InternalServices(ServiceContext serviceContext, ILogger<InternalServices> logger)
+        {
+            _serviceContext = serviceContext;
+            _logger = logger;
+        }
         public override async Task<ServiceModel> GetServiceByHash(GetServiceByHashRequest request, ServerCallContext context)
         {
+            _logger.LogInformation("[ServicesAPI::InternalServices::GetServiceByHash] Method invoked...");
+
             var EstimateId = new SqlParameter("@EstimateId", request.Hash);
             var service = await _serviceContext.Services.FromSqlRaw($"SELECT * FROM services {EstimateId} = SUBSTRING(HASHBYTES('SHA1', Id), 0, 4))").FirstOrDefaultAsync();
             return new ServiceModel
@@ -28,6 +35,8 @@ namespace ServicesAPI.Services
         }
         public override async Task GetServices(Empty request, IServerStreamWriter<ServiceModel> responseStream, ServerCallContext context)
         {
+            _logger.LogInformation("[ServicesAPI::InternalServices::GetServices] Method invoked...");
+
             IList<ServicesModel> services = (IList<ServicesModel>)_serviceContext.Services.ToListAsync();
             foreach (var service in services)
             {
@@ -40,6 +49,8 @@ namespace ServicesAPI.Services
         }
         public override async Task<Empty> RegisterService(RegisterServiceRequest request, ServerCallContext context)
         {
+            _logger.LogInformation("[ServicesAPI::InternalServices::RegisterService] Method invoked...");
+
             var service = new ServicesModel()
             {
                 Id = new Guid(request.Id.ToByteArray()),
