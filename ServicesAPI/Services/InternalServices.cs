@@ -1,13 +1,12 @@
 using DataAccess.DataModels;
 using Google.Protobuf.Collections;
 using Google.Protobuf.WellKnownTypes;
-using Grpc.Core;
 using InternalAPI;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using ServicesAPI.Data;
-using System.Transactions;
 using static DataAccess.DataModels.ServiceFeaturesModel;
+using Grpc.Core;
 
 namespace ServicesAPI.Services
 {
@@ -21,6 +20,7 @@ namespace ServicesAPI.Services
             _serviceContext = serviceContext;
             _logger = logger;
         }
+
         public override async Task<ServiceModel> GetServiceByHash(GetServiceByHashRequest request, ServerCallContext context)
         {
             _logger.LogInformation("[ServicesAPI::InternalServices::GetServiceByHash] Method invoked...");

@@ -24,16 +24,13 @@ namespace IdentityService.Services
         {
             _logger.LogInformation("[IdentityService::AccessTokenService::GetUserAccessToken] Access Token request recieved...");
 
-            string headerToken = "" + _httpContextAccessor.HttpContext!.Request.Headers["Authorization"];
-
-            headerToken = headerToken.Replace("Bearer ", string.Empty);
+            string headerToken = "" + _httpContextAccessor.HttpContext!.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
 
             if(headerToken is null) { _logger.LogInformation("[IdentityService::AccessTokenService::GetUserAccessToken] Request Headers are null."); }
 
             _logger.LogInformation($"[IdentityService::AccessTokenService::GetUserAccessToken] Headers token: {headerToken}");
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var jwtToken = tokenHandler.ReadToken(headerToken) as JwtSecurityToken;
+            var jwtToken = new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(headerToken);
 
             var userID = jwtToken!.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
 

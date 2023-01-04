@@ -60,8 +60,10 @@ app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Respon
 
 app.MapControllers();
 app.UseRouting();
-
-app.UseEndpoints(endpoints => { endpoints.MapGrpcService<InternalServices>(); });
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapGrpcService<InternalServices>();
+});
 
 app.UseWhen(
     context => context.Request.Path.StartsWithSegments("/api"),
