@@ -12,12 +12,14 @@ namespace IdentityService.Services
         private readonly UserContext _userContext;
         private readonly ILogger<AccessTokenService> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ITokenService _tokenService;
 
-        public AccessTokenService(UserContext userContext, ILogger<AccessTokenService> logger, IHttpContextAccessor httpContextAccessor)
+        public AccessTokenService(UserContext userContext, ILogger<AccessTokenService> logger, IHttpContextAccessor httpContextAccessor, ITokenService tokenService)
         {
             _userContext = userContext;
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;
+            _tokenService = tokenService;
         }
 
         public async override Task<GetUserAccessTokenResponse> GetUserAccessToken(GetUserAccessTokenRequest request, ServerCallContext context)
@@ -30,9 +32,9 @@ namespace IdentityService.Services
 
             _logger.LogInformation($"[IdentityService::AccessTokenService::GetUserAccessToken] Headers token: {headerToken}");
 
-            var jwtToken = new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(headerToken);
+            var cPrincipal = _tokenService.GetPrincipal(headerToken!);
 
-            var userID = jwtToken!.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            var userID = cPrincipal.FindFirst(ClaimTypes.NameIdentifier)!.ToString();
 
             _logger.LogInformation($"[IdentityService::AccessTokenService::GetUserAccessToken] Retrieving Access token for UserID: {userID}...");
 
