@@ -34,7 +34,7 @@ namespace IdentityService.Services
 
             var cPrincipal = _tokenService.GetPrincipal(headerToken!);
 
-            var userID = cPrincipal.FindFirst(ClaimTypes.NameIdentifier)!.ToString();
+            var userID = cPrincipal.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
             _logger.LogInformation($"[IdentityService::AccessTokenService::GetUserAccessToken] Retrieving Access token for UserID: {userID}...");
 
