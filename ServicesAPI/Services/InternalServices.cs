@@ -71,7 +71,7 @@ namespace ServicesAPI.Services
                 _logger.LogInformation("[ServicesAPI::InternalServices::RegisterService] Service already exists...");
             }
               
-            return new InternalAPI.Void();
+            return await Task.FromResult(new InternalAPI.Void());
         }
 
         public static List<ServiceFeaturesModel> ConvertServiceFeaturesToServiceFeaturesModel(RepeatedField<ServiceFeatures> serviceFeatures)
