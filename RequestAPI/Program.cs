@@ -1,8 +1,10 @@
 using Grpc.Core;
 using InternalAPI;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using RequestAPI.Configuration;
+using RequestAPI.Filters;
 using RequestAPI.Repository;
 using System.Security.Cryptography.X509Certificates;
 
@@ -28,6 +30,7 @@ internal class Program
 
         builder.Services.AddSingleton<IClientRepository, ClientRepository>();
         builder.Services.AddTransient<IRequestRepository, RequestRepository>();
+        builder.Services.AddSingleton<ITelemetryInitializer, FilterHealthchecksTelemetryInitializer>();
 
         builder.Services.AddGrpcClient<Services.ServicesClient>(o =>
         {

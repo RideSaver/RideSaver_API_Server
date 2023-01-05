@@ -1,8 +1,10 @@
 using EstimateAPI.Authorization;
 using EstimateAPI.Configuration;
+using EstimateAPI.Filters;
 using EstimateAPI.Repository;
 using Grpc.Core;
 using InternalAPI;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -20,6 +22,7 @@ builder.Services.AddHealthChecks();
 builder.Services.Configure<ClientDiscoveryOptions>(builder.Configuration.GetSection(ClientDiscoveryOptions.Position));
 
 builder.Services.AddSingleton<IAuthorizationHandler, ApiKeyRequirementHandler>();
+builder.Services.AddSingleton<ITelemetryInitializer, FilterHealthchecksTelemetryInitializer>();
 
 builder.Services.AddSingleton<IClientRepository, ClientRepository>();
 builder.Services.AddTransient<IEstimateRepository, EstimateRepository>();

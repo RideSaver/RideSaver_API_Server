@@ -1,7 +1,9 @@
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using ServicesAPI.Data;
+using ServicesAPI.Filters;
 using ServicesAPI.Registry;
 using ServicesAPI.Repository;
 using ServicesAPI.Services;
@@ -23,7 +25,7 @@ builder.Services.AddDbContext<ServiceContext>(options =>
 });
 
 builder.Services.AddEndpointsApiExplorer();
-
+builder.Services.AddSingleton<ITelemetryInitializer, FilterHealthchecksTelemetryInitializer>();
 
 builder.Services.AddGrpc();
 builder.Services.AddTransient<IServiceRegistry, ServiceRegistry>();

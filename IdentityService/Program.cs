@@ -8,6 +8,8 @@ using IdentityService.Repository;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using System.Security.Cryptography.X509Certificates;
+using IdentityService.Filters;
+using Microsoft.ApplicationInsights.Extensibility;
 
 namespace IdentityService
 {
@@ -71,6 +73,7 @@ namespace IdentityService
             builder.Services.AddTransient<ITokenService, TokenService>();
             builder.Services.AddTransient<IUserRepository, UserRepository>();
             builder.Services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
+            builder.Services.AddSingleton<ITelemetryInitializer, FilterHealthchecksTelemetryInitializer>();
             builder.Services.AddHttpContextAccessor();
 
             var app = builder.Build();

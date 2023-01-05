@@ -1,5 +1,5 @@
-using Geocoding;
-using Geocoding.Microsoft;
+using LocationAPI.Filters;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using System.Security.Cryptography.X509Certificates;
@@ -14,6 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks();
 
 builder.Services.AddHttpClient();
+builder.Services.AddSingleton<ITelemetryInitializer, FilterHealthchecksTelemetryInitializer>();
 
 builder.Services.Configure<ListenOptions>(options =>
 {
