@@ -26,7 +26,7 @@ namespace ServicesAPI.Services
             _logger.LogInformation("[ServicesAPI::InternalServices::GetServiceByHash] Method invoked...");
 
             var EstimateId = new SqlParameter("@EstimateId", request.Hash);
-            var service = await _serviceContext.Services.FromSqlRaw($"SELECT * FROM services {EstimateId} = SUBSTRING(HASHBYTES('SHA1', Id), 0, 4))").FirstOrDefaultAsync();
+            var service = await _serviceContext.Services!.FromSqlRaw($"SELECT * FROM services {EstimateId} = SUBSTRING(HASHBYTES('SHA1', Id), 0, 4))").FirstOrDefaultAsync();
             return new ServiceModel
             {
                 Name = service?.Name,
@@ -37,7 +37,7 @@ namespace ServicesAPI.Services
         {
             _logger.LogInformation("[ServicesAPI::InternalServices::GetServices] Method invoked...");
 
-            IList<ServicesModel> services = (IList<ServicesModel>)_serviceContext.Services.ToListAsync();
+            IList<ServicesModel> services = (IList<ServicesModel>)_serviceContext.Services!.ToListAsync();
             foreach (var service in services)
             {
                 await responseStream.WriteAsync(new ServiceModel
@@ -59,9 +59,9 @@ namespace ServicesAPI.Services
                 ServiceFeatures = ConvertServiceFeaturesToServiceFeaturesModel(request.Features)
             };
 
-            if (!_serviceContext.Services.Contains(service))
+            if (!_serviceContext.Services!.Contains(service))
             {
-                await _serviceContext.Services.AddAsync(service);
+                await _serviceContext.Services!.AddAsync(service);
                 await _serviceContext.SaveChangesAsync();
 
                 _logger.LogInformation("[ServicesAPI::InternalServices::RegisterService] Service sucessfully registered...");

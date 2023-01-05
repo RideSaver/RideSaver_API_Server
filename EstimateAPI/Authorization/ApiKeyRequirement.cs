@@ -4,6 +4,6 @@ namespace EstimateAPI.Authorization
 {
     public class ApiKeyRequirement : IAuthorizationRequirement
     {
-        public string PolicyName { get; }
+        public string? PolicyName { get; }
     }
 }

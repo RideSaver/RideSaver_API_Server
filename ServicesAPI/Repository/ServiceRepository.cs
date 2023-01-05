@@ -15,7 +15,7 @@ namespace ServicesAPI.Repository
 
         public async Task<List<RideService>> GetAvailableServices()
         {
-            var _servicesList = await _serviceContext.Services.ToListAsync(); // Returns a list of serviceModel
+            var _servicesList = await _serviceContext.Services!.ToListAsync(); // Returns a list of serviceModel
             var services = new List<RideService>();
             foreach (var serviceModel in _servicesList)
             {
@@ -35,7 +35,7 @@ namespace ServicesAPI.Repository
         public async Task<List<ServiceProvider>> GetAvailableProviders()
         {
             var serviceProviders = new List<ServiceProvider>();
-            var _providersList = await _serviceContext.Providers.ToListAsync();
+            var _providersList = await _serviceContext.Providers!.ToListAsync();
             foreach (var provider in _providersList)
             {
                 var serviceProvider = new ServiceProvider()

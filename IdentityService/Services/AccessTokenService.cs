@@ -24,7 +24,7 @@ namespace IdentityService.Services
 
         public async override Task<GetUserAccessTokenResponse> GetUserAccessToken(GetUserAccessTokenRequest request, ServerCallContext context)
         {
-            _logger.LogInformation("[IdentityService::AccessTokenService::GetUserAccessToken] Access Token request recieved...");
+            _logger.LogInformation("[IdentityService::AccessTokenService::GetUserAccessToken] Access Token request received...");
 
             string headerToken = "" + _httpContextAccessor.HttpContext!.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
 
@@ -34,7 +34,7 @@ namespace IdentityService.Services
 
             var cPrincipal = _tokenService.GetPrincipal(headerToken!);
 
-            var userID = cPrincipal.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            var userID = cPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
 
             _logger.LogInformation($"[IdentityService::AccessTokenService::GetUserAccessToken] Retrieving Access token for UserID: {userID}...");
 
@@ -47,7 +47,7 @@ namespace IdentityService.Services
             _logger.LogDebug($"User ID: {userID}");
             _logger.LogDebug($"Service ID: {serviceID}");
 
-            var accessToken = await _userContext.Authorizations
+            var accessToken = await _userContext.Authorizations!
                 .Where(auth => auth.UserId.Equals(new Guid(userID)))
                 .Where(auth => auth.ServiceId.Equals(new Guid(serviceID)))
                 .FirstOrDefaultAsync(); // Retrieves the refresh-token matching the UID & service ID

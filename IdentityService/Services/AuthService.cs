@@ -22,7 +22,7 @@ namespace IdentityService.Services
         }
         public async Task<AuthenticateResponse> Authenticate(AuthenticateRequest model)
         {
-            var userInfo = await _userContext.Users.FirstAsync(u => u.Username == model.Username);
+            var userInfo = await _userContext.Users!.FirstAsync(u => u.Username == model.Username);
 
             if (userInfo is null) return null;
             if (userInfo.Username != model.Username) return null;
@@ -39,7 +39,7 @@ namespace IdentityService.Services
         }
         public async Task<AuthenticateResponse> RefreshToken(string token)
         {
-            var userInfo = await _userContext.Users.FirstAsync(u => u.RefreshTokens!.Any(t => t.Token== token));
+            var userInfo = await _userContext.Users!.FirstAsync(u => u.RefreshTokens!.Any(t => t.Token== token));
 
             if (userInfo is null) return null;
 
@@ -61,7 +61,7 @@ namespace IdentityService.Services
         }
         public async Task<bool> RevokeToken(string token)
         {
-            var userInfo = await _userContext.Users.FirstAsync(u => u.RefreshTokens!.Any(t => t.Token == token));
+            var userInfo = await _userContext.Users!.FirstAsync(u => u.RefreshTokens!.Any(t => t.Token == token));
 
             if(userInfo is null) return false;
 

@@ -16,8 +16,8 @@ namespace IdentityService.Repository
             _logger = logger;
         }
         public async Task SaveAsync() => await _userContext.SaveChangesAsync();
-        public List<UserModel> GetUserModels() => _userContext.Users.ToList();
-        public async Task<UserModel> GetUserModelAsync(string username) => await _userContext.Users.FindAsync(username);
+        public List<UserModel> GetUserModels() => _userContext.Users!.ToList();
+        public async Task<UserModel> GetUserModelAsync(string username) => await _userContext.Users!.FindAsync(username);
         public List<User> GetUsers()
         {
             var userList = new List<User>();
@@ -76,7 +76,7 @@ namespace IdentityService.Repository
 
         public async Task DeleteUserAsync(string username)
         {
-            var userModel = await _userContext.Users.FindAsync(username);
+            var userModel = await _userContext.Users!.FindAsync(username);
             if (userModel is not null)
             {
                 _userContext.Users.Remove(userModel);
@@ -99,7 +99,7 @@ namespace IdentityService.Repository
 
         public async Task UpdateUserAsync(string username, PatchUserRequest userInfo)
         {
-            var userModel = await _userContext.Users.FindAsync(username);
+            var userModel = await _userContext.Users!.FindAsync(username);
             byte[] newSalt = Security.Argon2.CreateSalt();
             if (userModel is not null)
             {

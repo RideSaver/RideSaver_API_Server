@@ -1,6 +1,5 @@
 using Google.Protobuf.Collections;
 using Grpc.Core;
-using Grpc.Net.ClientFactory;
 using InternalAPI;
 using RideSaver.Server.Models;
 
@@ -60,7 +59,7 @@ namespace EstimateAPI.Repository
 
             if (services is null) { _logger.LogDebug("[EstimateAPI:EstimateRepository::GetEstimatesAsync] GUID List SERVICES is null"); }
 
-            foreach (var service in services)
+            foreach (var service in services!)
             {
                 clientRequested.Services.Add(service.ToString());
             }
@@ -162,7 +161,7 @@ namespace EstimateAPI.Repository
                 };
 
                 locationList.Add(location);
-                ;
+                
             }
             return locationList;
         }

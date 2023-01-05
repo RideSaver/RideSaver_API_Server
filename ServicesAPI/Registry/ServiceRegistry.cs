@@ -2,16 +2,12 @@ using DataAccess.DataModels;
 using ServicesAPI.Data;
 using static DataAccess.DataModels.ServiceFeaturesModel;
 
-namespace ServicesAPI.Registry
+namespace ServicesAPI.Registry // UNUSED -> Service Registeration occurs through the clients.
 {
     public class ServiceRegistry : IServiceRegistry
     {
         private readonly ServiceContext _serviceContext;
-        public ServiceRegistry(ServiceContext serviceContext)
-        {
-            _serviceContext = serviceContext;
-            RegisterServices();
-        }
+        public ServiceRegistry(ServiceContext serviceContext) { _serviceContext = serviceContext; }
         public void RegisterServices()
         {
             //------------------------------------[UBER SERVICES]-----------------------------------//
@@ -47,9 +43,9 @@ namespace ServicesAPI.Registry
                 {  new ServiceFeaturesModel() { Feature = Features.professional_driver },},
             };
 
-            _serviceContext.Services.Add(uberX);
-            _serviceContext.Services.Add(uberPOOL);
-            _serviceContext.Services.Add(uberBLACK);
+            _serviceContext.Services!.Add(uberX);
+            _serviceContext.Services!.Add(uberPOOL);
+            _serviceContext.Services!.Add(uberBLACK);
 
             //------------------------------------[LYFT SERVICES]-----------------------------------//
 
