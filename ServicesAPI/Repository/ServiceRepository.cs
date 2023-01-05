@@ -1,5 +1,4 @@
 using DataAccess.DataModels;
-using DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 using RideSaver.Server.Models;
 using ServicesAPI.Data;

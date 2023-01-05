@@ -7,10 +7,12 @@ namespace RequestAPI.Repository
     {
         public readonly IClientRepository _clientRepository;
         private readonly Services.ServicesClient _servicesClient;
-        public RequestRepository(IClientRepository clientRepository, Services.ServicesClient servicesClient)
+        private readonly ILogger<RequestRepository> _logger;
+        public RequestRepository(IClientRepository clientRepository, Services.ServicesClient servicesClient, ILogger<RequestRepository> logger)
         {
             _clientRepository = clientRepository;
             _servicesClient = servicesClient;
+            _logger = logger;
         }
         private async Task<Requests.RequestsClient> getClient(Guid rideId, string token)
         {
