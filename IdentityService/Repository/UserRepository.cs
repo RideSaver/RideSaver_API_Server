@@ -1,8 +1,6 @@
 using DataAccess.DataModels;
 using RideSaver.Server.Models;
 using IdentityService.Data;
-using System.Net;
-using System.Runtime.Intrinsics.X86;
 
 namespace IdentityService.Repository
 {
