@@ -96,6 +96,7 @@ namespace EstimateAPI.Repository
                 estimatesList.Add(estimate);
             }
 
+            _logger.LogInformation($"[EstimateAPI:EstimateRepository::GetEstimatesAsync] Reading client data complete.. returning to caller..");
             return estimatesList;
         }
 
