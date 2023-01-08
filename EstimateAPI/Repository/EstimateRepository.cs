@@ -57,14 +57,16 @@ namespace EstimateAPI.Repository
                 Seats = (int)(seats > 0 ? seats : 0),
             };
 
-            if (services is null) { _logger.LogDebug("[EstimateAPI:EstimateRepository::GetEstimatesAsync] GUID List SERVICES is null"); }
+            if (services is null) { _logger.LogError("[EstimateAPI:EstimateRepository::GetEstimatesAsync] Service List is NULL"); }
 
             foreach (var service in services!)
             {
                 clientRequested.Services.Add(service.ToString());
             }
 
-            var estimatesReplyModel = client.GetEstimates(clientRequested);
+            _logger.LogInformation($"[EstimateAPI:EstimateRepository::GetEstimatesAsync] Sending (GetEstimateRequest) to the clients... \n{clientRequested}");
+
+            using var estimatesReplyModel = client.GetEstimates(clientRequested);
             await foreach (var estimatesReply in estimatesReplyModel.ResponseStream.ReadAllAsync())
             {
                 var estimate = new Estimate()
@@ -84,6 +86,8 @@ namespace EstimateAPI.Repository
                     RequestURL = estimatesReply.RequestUrl,
                     InvalidTime = estimatesReply.CreatedTime.ToDateTime()
                 };
+
+                _logger.LogInformation($"[EstimateAPI:EstimateRepository::GetEstimatesAsync] Received (EstimateModel) from the client... \n{estimate}");
 
                 estimatesList.Add(estimate);
             }
