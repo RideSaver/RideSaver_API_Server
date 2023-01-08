@@ -55,7 +55,7 @@ namespace EstimateAPI.Repository
             {
                 Credentials = ChannelCredentials.Create(new SslCredentials(), credentials)
             });
-                    
+            
             return new Estimates.EstimatesClient(channel);
         }
 

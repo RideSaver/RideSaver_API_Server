@@ -2,6 +2,7 @@ using Google.Protobuf.Collections;
 using Grpc.Core;
 using InternalAPI;
 using RideSaver.Server.Models;
+using System.Reflection.Metadata;
 
 namespace EstimateAPI.Repository
 {
@@ -66,7 +67,10 @@ namespace EstimateAPI.Repository
 
             _logger.LogInformation($"[EstimateAPI:EstimateRepository::GetEstimatesAsync] Sending (GetEstimateRequest) to the clients... \n{clientRequested}");
 
-            using var estimatesReplyModel = client.GetEstimates(clientRequested);
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(TimeSpan.FromSeconds(5));
+
+            using var estimatesReplyModel = client.GetEstimates(clientRequested, cancellationToken: cts.Token);
             await foreach (var estimatesReply in estimatesReplyModel.ResponseStream.ReadAllAsync())
             {
                 var estimate = new Estimate()

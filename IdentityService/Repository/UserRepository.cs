@@ -83,7 +83,7 @@ namespace IdentityService.Repository
         }
         public async Task<List<RideHistoryModel>> GetUserHistoryASync(string username)
         {
-            var userModel = await _userContext.Users.FindAsync(username);
+            var userModel = await _userContext.Users!.FindAsync(username);
             if (userModel is not null)
             {
                 return userModel.RideHistory?.ToList();
