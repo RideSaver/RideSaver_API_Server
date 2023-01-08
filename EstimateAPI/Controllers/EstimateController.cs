@@ -55,7 +55,7 @@ namespace EstimateAPI.Controllers
                 token = headerValue.Parameter;
             }
 
-            if (!string.IsNullOrEmpty(token)) { return BadRequest(); }
+            if (string.IsNullOrEmpty(token)) { return BadRequest(); }
 
             _logger.LogInformation("[EstimateController] RefreshEstimates(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
             return new OkObjectResult(await _estimateRepository.GetRideEstimatesRefreshAsync(ids, token!));
