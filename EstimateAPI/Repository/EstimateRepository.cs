@@ -67,10 +67,7 @@ namespace EstimateAPI.Repository
 
             _logger.LogInformation($"[EstimateAPI:EstimateRepository::GetEstimatesAsync] Sending (GetEstimateRequest) to the clients... \n{clientRequested}");
 
-            var cts = new CancellationTokenSource();
-            cts.CancelAfter(TimeSpan.FromSeconds(5));
-
-            using var estimatesReplyModel = client.GetEstimates(clientRequested, cancellationToken: cts.Token);
+            using var estimatesReplyModel = client.GetEstimates(clientRequested);
             await foreach (var estimatesReply in estimatesReplyModel.ResponseStream.ReadAllAsync())
             {
                 var estimate = new Estimate()
