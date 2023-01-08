@@ -1,6 +1,6 @@
 using DataAccess.Models;
 
-namespace IdentityService.Services
+namespace IdentityService.Interface
 {
     public interface IAuthService
     {

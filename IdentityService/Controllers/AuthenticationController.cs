@@ -1,11 +1,11 @@
 using DataAccess.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using IdentityService.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using RideSaver.Server.Controllers;
 using RideSaver.Server.Models;
+using IdentityService.Interface;
 
 namespace IdentityService.Controllers
 {

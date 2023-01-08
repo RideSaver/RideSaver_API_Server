@@ -1,7 +1,7 @@
 using DataAccess.Models;
 
 
-namespace IdentityService.Repository
+namespace IdentityService.Interface
 {
     public interface IAuthenticationRepository
     {

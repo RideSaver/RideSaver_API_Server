@@ -1,4 +1,5 @@
 using LocationAPI.Filters;
+using LocationAPI.Services;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -15,6 +16,8 @@ builder.Services.AddHealthChecks();
 
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<ITelemetryInitializer, FilterHealthchecksTelemetryInitializer>();
+
+builder.Services.AddHostedService<CertificateStatusService>();
 
 builder.Services.Configure<ListenOptions>(options =>
 {

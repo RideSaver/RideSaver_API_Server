@@ -24,6 +24,8 @@ builder.Services.AddDbContext<ServiceContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 
+builder.Services.AddHostedService<CertificateStatusService>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSingleton<ITelemetryInitializer, FilterHealthchecksTelemetryInitializer>();
 

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using System.Security.Cryptography.X509Certificates;
 using IdentityService.Filters;
 using Microsoft.ApplicationInsights.Extensibility;
+using IdentityService.Interface;
 
 namespace IdentityService
 {
@@ -39,6 +40,7 @@ namespace IdentityService
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             });
 
+            builder.Services.AddHostedService<CertificateStatusService>();
 
             builder.Services.AddAuthentication(options =>
             {

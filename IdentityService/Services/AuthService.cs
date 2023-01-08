@@ -1,12 +1,7 @@
 using DataAccess.Models;
-using Grpc.Core;
-using IdentityService.Controllers;
 using Microsoft.EntityFrameworkCore;
-using RideSaver.Server.Models;
 using IdentityService.Data;
-using System.Security.Claims;
-using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Mvc;
+using IdentityService.Interface;
 
 namespace IdentityService.Services
 {

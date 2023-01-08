@@ -1,5 +1,4 @@
-using IdentityService.Helpers;
-using IdentityService.Repository;
+using IdentityService.Interface;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
@@ -28,40 +27,46 @@ namespace UserService.Controllers
         [Route("signup")]
         public override async Task<IActionResult> SignUp([FromBody] PatchUserRequest patchUserRequest) // returns HTTP 200 OK response
         {
-            if (patchUserRequest is null) return BadRequest();
-
-            var request = await Request.GetRawBodyAsync();
-
-            _logger.LogInformation($"[UserController::Signup::RequestBodyRaw] {request}");
-
-            await _userRepository.CreateUserAsync(patchUserRequest);
-
             _logger.LogInformation("[UserController::SignUp] Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
+
+            if (patchUserRequest is null) return BadRequest("Invalid user information!");
+
+            var isValid = await _userRepository.CreateUserAsync(patchUserRequest);
+
+            if (!isValid) return BadRequest("Account already exists!");
+
             return new NoContentResult(); // [STATUS: 204 NO CONTENT]
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override async Task<IActionResult> DeleteUser([FromRoute(Name = "username"), Required] string username) // returns HTTP 200 OK response
         {
-            await _userRepository.DeleteUserAsync(username);
             _logger.LogInformation("[UserController::DeleteUser] Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
+
+            var isValid = await _userRepository.DeleteUserAsync(username);
+            if (!isValid) return BadRequest("Username does not exist!");
+
             return new OkResult(); // [STATUS: 200 OK]
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override async Task<IActionResult> GetUser([FromRoute(Name = "username"), Required] string username) // returns HTTP 200 OK response with "user" instance
         {
-            var user = await _userRepository.GetUserAsync(username);
             _logger.LogInformation("[UserController::GetUser] Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
+
+            var user = await _userRepository.GetUserAsync(username);
             if (user is not null) return new OkObjectResult(user); // [STATUS: 200 OK || user]
-            return new NoContentResult(); // [STATUS: 204 NO CONTENT]
+            return BadRequest("User does not exist!");
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override async Task<IActionResult> PatchUser([FromRoute(Name = "username"), Required] string username, [FromBody] PatchUserRequest patchUserRequest) // returns HTTP 200 OK response
         {
-            await _userRepository.UpdateUserAsync(username, patchUserRequest);
             _logger.LogInformation("[UserController::PatchUser] Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
+
+            var isValid = await _userRepository.UpdateUserAsync(username, patchUserRequest);
+            if (!isValid) return BadRequest("Username does not exist!");
+
             return new OkResult(); // [STATUS: 200 OK]
         }
 
@@ -69,19 +74,16 @@ namespace UserService.Controllers
         public override async Task<IActionResult> GetHistory([FromRoute(Name = "username"), Required] string username) // returns HTTP 200 OK response with List<Ride>
         {
             _logger.LogInformation("[UserController::GetHistory] Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
-            return new OkObjectResult(await _userRepository.GetUserHistoryASync(username));
+
+            var userHistory = await _userRepository.GetUserHistoryASync(username);
+
+            if (userHistory is null) return new BadRequestObjectResult(userHistory);
+
+            return new OkObjectResult(userHistory);
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public override Task<IActionResult> AutorizeServiceEndpoint([FromRoute(Name = "serviceId"), Required] Guid serviceId, [FromRoute(Name = "userId"), Required] Guid userId, [FromQuery(Name = "code"), Required] string code)
-        {
-            throw new NotImplementedException(); // returns HTTP 200 OK response
-        }
-
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public override Task<IActionResult> AutorizeServiceEndpoint([FromRoute(Name = "serviceId"), Required] Guid serviceId, [FromRoute(Name = "userId"), Required] Guid userId, [FromQuery(Name = "code"), Required] string code) => throw new NotImplementedException();
         public override Task<IActionResult> UpdateAvatar([FromRoute(Name = "username"), Required] string username, [FromBody] Stream body) => throw new NotImplementedException();
-
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public override Task<IActionResult> GetAvatar([FromRoute(Name = "username"), Required] string username) => throw new NotImplementedException();
 
         [HttpPost]

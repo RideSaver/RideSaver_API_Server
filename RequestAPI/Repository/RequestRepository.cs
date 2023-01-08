@@ -6,9 +6,9 @@ namespace RequestAPI.Repository
     public class RequestRepository : IRequestRepository
     {
         public readonly IClientRepository _clientRepository;
-        private readonly Services.ServicesClient _servicesClient;
+        private readonly InternalAPI.Services.ServicesClient _servicesClient;
         private readonly ILogger<RequestRepository> _logger;
-        public RequestRepository(IClientRepository clientRepository, Services.ServicesClient servicesClient, ILogger<RequestRepository> logger)
+        public RequestRepository(IClientRepository clientRepository, InternalAPI.Services.ServicesClient servicesClient, ILogger<RequestRepository> logger)
         {
             _clientRepository = clientRepository;
             _servicesClient = servicesClient;

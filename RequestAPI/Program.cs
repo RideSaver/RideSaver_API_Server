@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using RequestAPI.Configuration;
 using RequestAPI.Filters;
 using RequestAPI.Repository;
+using RequestAPI.Services;
 using System.Security.Cryptography.X509Certificates;
 
 internal class Program
@@ -27,6 +28,8 @@ internal class Program
         builder.Services.AddHttpContextAccessor();
 
         builder.Services.Configure<ClientDiscoveryOptions>(builder.Configuration.GetSection(ClientDiscoveryOptions.Position));
+
+        builder.Services.AddHostedService<CertificateStatusService>();
 
         builder.Services.AddSingleton<IClientRepository, ClientRepository>();
         builder.Services.AddTransient<IRequestRepository, RequestRepository>();

@@ -2,6 +2,7 @@ using EstimateAPI.Authorization;
 using EstimateAPI.Configuration;
 using EstimateAPI.Filters;
 using EstimateAPI.Repository;
+using EstimateAPI.Services;
 using Grpc.Core;
 using InternalAPI;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -19,6 +20,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks();
 
+builder.Services.AddHostedService<CertificateStatusService>();
 
 builder.Services.Configure<ClientDiscoveryOptions>(builder.Configuration.GetSection(ClientDiscoveryOptions.Position));
 

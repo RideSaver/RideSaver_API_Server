@@ -1,18 +1,18 @@
 using DataAccess.DataModels;
 using RideSaver.Server.Models;
 
-namespace IdentityService.Repository
+namespace IdentityService.Interface
 {
     public interface IUserRepository
     {
-        Task CreateUserAsync(PatchUserRequest userInfo);
-        Task DeleteUserAsync(string username);
+        Task<bool> CreateUserAsync(PatchUserRequest userInfo);
+        Task<bool> DeleteUserAsync(string username);
         List<User> GetUsers();
         List<UserModel> GetUserModels();
         Task<User> GetUserAsync(string username);
         Task<UserModel> GetUserModelAsync(string username);
         Task<List<RideHistoryModel>> GetUserHistoryASync(string username);
-        Task UpdateUserAsync(string username, PatchUserRequest userInfo);
+        Task<bool> UpdateUserAsync(string username, PatchUserRequest userInfo);
         Task SaveAsync();
     }
 }

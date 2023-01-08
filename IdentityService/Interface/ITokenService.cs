@@ -1,7 +1,7 @@
 using DataAccess.DataModels;
 using System.Security.Claims;
 
-namespace IdentityService.Services
+namespace IdentityService.Interface
 {
     public interface ITokenService
     {

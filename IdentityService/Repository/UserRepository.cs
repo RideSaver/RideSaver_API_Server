@@ -1,6 +1,8 @@
 using DataAccess.DataModels;
 using RideSaver.Server.Models;
 using IdentityService.Data;
+using Microsoft.EntityFrameworkCore;
+using IdentityService.Interface;
 
 namespace IdentityService.Repository
 {
@@ -48,9 +50,10 @@ namespace IdentityService.Repository
 
             return userInfo;
         }
-        public async Task CreateUserAsync(PatchUserRequest userInfo)
+        public async Task<bool> CreateUserAsync(PatchUserRequest userInfo)
         {
-            if(userInfo is null) return;
+            if(userInfo is null) return false;
+            if (await _userContext.Users!.AnyAsync(o => o.Username == userInfo.Username || o.Email == userInfo.Email)) return false;
 
             var salt = Security.Argon2.CreateSalt();
             var user = new UserModel()
@@ -65,39 +68,36 @@ namespace IdentityService.Repository
 
             user.Authorizations = Registry.AuthorizationRegistry.InitializeUserAuthorizationRegistry(user.Id);
 
-            await _userContext.AddAsync(user);
+            await _userContext.Users!.AddAsync(user);
 
             _logger.LogInformation($"[userRepository::CreateUserAsync] {userInfo.Username} has been added to the Identity database.");
 
             await SaveAsync();
+            return true; 
         }
 
-        public async Task DeleteUserAsync(string username)
+        public async Task<bool> DeleteUserAsync(string username)
         {
-            var userModel = await _userContext.Users!.FindAsync(username);
-            if (userModel is not null)
-            {
-                _userContext.Users.Remove(userModel);
-                await SaveAsync();
-            }
+            var userModel = await _userContext.Users!.FirstOrDefaultAsync(o => o.Username == username);
+            if(userModel is null) return false;
+            
+            _userContext.Users!.Remove(userModel);
+            await SaveAsync();
+            return true;
         }
         public async Task<List<RideHistoryModel>> GetUserHistoryASync(string username)
         {
-            var userModel = await _userContext.Users!.FindAsync(username);
-            if (userModel is not null)
-            {
-                return userModel.RideHistory?.ToList();
-            }
-            else
-            {
-                List<RideHistoryModel>? emptyRideHistory = null;
-                return emptyRideHistory;
-            }
+            var userModel = await _userContext.Users!.FirstOrDefaultAsync(o => o.Username == username);
+            if (userModel is null) return null;
+          
+            return userModel.RideHistory?.ToList();
         }
 
-        public async Task UpdateUserAsync(string username, PatchUserRequest userInfo)
+        public async Task<bool> UpdateUserAsync(string username, PatchUserRequest userInfo)
         {
-            var userModel = await _userContext.Users!.FindAsync(username);
+            var userModel = await _userContext.Users!.FirstOrDefaultAsync(o => o.Username == username);
+            if (userModel is null) return false;
+
             byte[] newSalt = Security.Argon2.CreateSalt();
             if (userModel is not null)
             {
@@ -114,6 +114,7 @@ namespace IdentityService.Repository
             }
 
             await SaveAsync();
+            return true;
         }
     }
 }

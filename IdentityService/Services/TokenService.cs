@@ -1,5 +1,6 @@
 using DataAccess.DataModels;
 using DataAccess.Models;
+using IdentityService.Interface;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

@@ -1,5 +1,6 @@
 using Grpc.Core;
 using IdentityService.Data;
+using IdentityService.Interface;
 using InternalAPI;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
