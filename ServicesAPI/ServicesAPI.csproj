@@ -33,4 +33,8 @@
       <PackageReference Include="System.Net.Http.Json" Version="7.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Filters\" />
+  </ItemGroup>
+
 </Project>
