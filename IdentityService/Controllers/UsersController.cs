@@ -86,8 +86,8 @@ namespace UserService.Controllers
         public override Task<IActionResult> UpdateAvatar([FromRoute(Name = "username"), Required] string username, [FromBody] Stream body) => throw new NotImplementedException();
         public override Task<IActionResult> GetAvatar([FromRoute(Name = "username"), Required] string username) => throw new NotImplementedException();
 
-        [HttpPost]
-        [Route("/user-error-development")]
+        
+        [HttpPost][Route("/user-error-development")]
         protected IActionResult HandleErrorDevelopment([FromServices] IHostEnvironment hostEnvironment)
         {
             if (!hostEnvironment.IsDevelopment()) return NotFound();
@@ -97,8 +97,8 @@ namespace UserService.Controllers
             return Problem(detail: exceptionHandlerFeature.Error.StackTrace, title: exceptionHandlerFeature.Error.Message);
         }
 
-        [HttpPost]
-        [Route("/user-error")]
+        
+        [HttpPost][Route("/user-error")]
         protected IActionResult HandleError() => Problem();
     }
 }

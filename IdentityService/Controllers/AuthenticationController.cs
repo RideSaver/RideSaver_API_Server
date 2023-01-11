@@ -21,6 +21,7 @@ namespace IdentityService.Controllers
             _authenticationRepository = authenticationRepository;
             _logger = logger;
         }
+
         [AllowAnonymous]
         [HttpPost]
         [Route("/api/authentication/authenticate")]

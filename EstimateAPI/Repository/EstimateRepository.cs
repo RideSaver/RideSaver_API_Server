@@ -2,7 +2,7 @@ using Google.Protobuf.Collections;
 using Grpc.Core;
 using InternalAPI;
 using RideSaver.Server.Models;
-using System.Reflection.Metadata;
+using System.Net.Http.Headers;
 
 namespace EstimateAPI.Repository
 {
@@ -170,6 +170,17 @@ namespace EstimateAPI.Repository
                 
             }
             return locationList;
+        }
+
+        public string GetAuthorizationToken(Microsoft.Extensions.Primitives.StringValues headers)
+        {
+            string? token = null;
+            if (AuthenticationHeaderValue.TryParse(headers, out var headerValue))
+            {
+                token = headerValue.Parameter;
+            }
+
+            return token;
         }
     }
 }

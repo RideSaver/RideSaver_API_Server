@@ -1,8 +1,10 @@
 using Grpc.Core;
 using InternalAPI;
 using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using RequestAPI.Authorization;
 using RequestAPI.Configuration;
 using RequestAPI.Filters;
 using RequestAPI.Repository;
@@ -27,6 +29,7 @@ internal class Program
         builder.Services.AddGrpcClient<Requests.RequestsClient>();
         builder.Services.AddHttpContextAccessor();
 
+        builder.Services.AddSingleton<IAuthorizationHandler, ApiKeyRequirementHandler>();
         builder.Services.Configure<ClientDiscoveryOptions>(builder.Configuration.GetSection(ClientDiscoveryOptions.Position));
 
         builder.Services.AddHostedService<CertificateStatusService>();
@@ -43,8 +46,7 @@ internal class Program
                 return Task.CompletedTask;
             });
 
-            var httpHandler = new HttpClientHandler();
-            httpHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+            var httpHandler = new HttpClientHandler { ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator };
             o.Address = new Uri("https://services.api:443");
             o.ChannelOptionsActions.Add(o => o.HttpHandler = httpHandler);
             o.CallOptionsActions.Add(o => o.CallOptions.WithCredentials(credentials));
@@ -53,6 +55,11 @@ internal class Program
         builder.Services.Configure<ListenOptions>(options =>
         {
             options.UseHttps(new X509Certificate2(Path.Combine("/certs/tls.crt"), Path.Combine("/certs/tls.key")));
+        });
+
+        builder.Services.AddAuthorization(authConfig =>
+        {
+            authConfig.AddPolicy("apiKey", policyConfig => policyConfig.Requirements.Add(new ApiKeyRequirement()));
         });
 
         var app = builder.Build();
@@ -75,6 +82,8 @@ internal class Program
         });
 
         app.UseExceptionHandler(new ExceptionHandlerOptions() { AllowStatusCode404Response = true, ExceptionHandlingPath = "/error" });
+
+        app.UseAuthorization();
 
         app.UseWhen(
             context => context.Request.Path.StartsWithSegments("/api"),

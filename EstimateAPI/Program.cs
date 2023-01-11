@@ -1,44 +1,41 @@
-using EstimateAPI.Authorization;
-using EstimateAPI.Configuration;
-using EstimateAPI.Filters;
-using EstimateAPI.Repository;
-using EstimateAPI.Services;
-using Grpc.Core;
-using InternalAPI;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using System.Security.Cryptography.X509Certificates;
+using Grpc.Core;
+
+using EstimateAPI.Authorization;
+using EstimateAPI.Configuration;
+using EstimateAPI.Filters;
+using EstimateAPI.Repository;
+using EstimateAPI.Services;
+using InternalAPI;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddHostedService<CertificateStatusService>();
-
 builder.Services.Configure<ClientDiscoveryOptions>(builder.Configuration.GetSection(ClientDiscoveryOptions.Position));
 
 builder.Services.AddSingleton<IAuthorizationHandler, ApiKeyRequirementHandler>();
 builder.Services.AddSingleton<ITelemetryInitializer, FilterHealthchecksTelemetryInitializer>();
-
 builder.Services.AddSingleton<IClientRepository, ClientRepository>();
 builder.Services.AddTransient<IEstimateRepository, EstimateRepository>();
-
-builder.Services.AddGrpc();
-builder.Services.AddGrpcClient<Estimates.EstimatesClient>();
-builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthorization(authConfig =>
 {
     authConfig.AddPolicy("apiKey", policyConfig => policyConfig.Requirements.Add(new ApiKeyRequirement()));
 });
 
+builder.Services.AddGrpc();
+builder.Services.AddGrpcClient<Estimates.EstimatesClient>();
 builder.Services.AddGrpcClient<Services.ServicesClient>(o =>
 {
     var credentials = CallCredentials.FromInterceptor((context, metadata) =>
@@ -58,8 +55,6 @@ builder.Services.Configure<ListenOptions>(options =>
 {
     options.UseHttps(new X509Certificate2(Path.Combine("/certs/tls.crt"), Path.Combine("/certs/tls.key")));
 });
-
-builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
 
