@@ -28,7 +28,7 @@ namespace ServicesAPI.Services
 
             _logger.LogInformation($"[ServicesAPI::InternalServices::GetServiceByHash] Receieved Hash: {BitConverter.ToString(request.Hash.ToByteArray())}");
 
-            var estimateHash = BitConverter.ToString(request.Hash.ToByteArray()).Trim('-').ToLower();
+            var estimateHash = BitConverter.ToString(request.Hash.ToByteArray()).Replace("-", string.Empty).ToLower();
 
             _logger.LogInformation($"[ServicesAPI::InternalServices::GetServiceByHash] Final Hash: {estimateHash}");
 
