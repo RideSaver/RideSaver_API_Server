@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using ServicesAPI.Data;
 using static DataAccess.DataModels.ServiceFeaturesModel;
 using Grpc.Core;
+using MySqlConnector;
 
 namespace ServicesAPI.Services
 {
@@ -31,7 +32,7 @@ namespace ServicesAPI.Services
 
             _logger.LogInformation($"[ServicesAPI::InternalServices::GetServiceByHash] Final Hash: {estimateHash}");
 
-            ServicesModel? service = await _serviceContext.Services!.FromSqlRaw("SELECT * FROM services WHERE @Id = SUBSTRING(SHA1(Id), 1, 8)", new SqlParameter("@Id", estimateHash)).FirstOrDefaultAsync();
+            ServicesModel? service = await _serviceContext.Services!.FromSqlRaw("SELECT * FROM services WHERE @Id = SUBSTRING(SHA1(Id), 1, 8)", new MySqlParameter("@Id", estimateHash)).FirstOrDefaultAsync();
 
             if(service is null)
             {
