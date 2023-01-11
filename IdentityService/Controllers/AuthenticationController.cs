@@ -22,7 +22,8 @@ namespace IdentityService.Controllers
             _logger = logger;
         }
         [AllowAnonymous]
-        [HttpPost("authenticate")]
+        [HttpPost]
+        [Route("/api/authentication/authenticate")]
         [Produces("application/json")]
         public override async Task<IActionResult> Authenticate([FromBody] UserLogin model)
         {

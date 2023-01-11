@@ -24,7 +24,7 @@ namespace UserService.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        [Route("signup")]
+        [Route("/api/user/signup")]
         public override async Task<IActionResult> SignUp([FromBody] PatchUserRequest patchUserRequest) // returns HTTP 200 OK response
         {
             _logger.LogInformation("[UserController::SignUp] Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
