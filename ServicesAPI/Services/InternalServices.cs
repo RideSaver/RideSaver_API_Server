@@ -26,8 +26,14 @@ namespace ServicesAPI.Services
         {
             _logger.LogInformation("[ServicesAPI::InternalServices::GetServiceByHash] gRPC method invoked...");
 
-            var EstimateId = new SqlParameter("@EstimateId", request.Hash);
-            var service = await _serviceContext.Services!.FromSqlRaw($"SELECT * FROM services WHERE {EstimateId} = SUBSTRING(SHA1(Id), 1, 4)").FirstOrDefaultAsync();
+            _logger.LogInformation($"[ServicesAPI::InternalServices::GetServiceByHash] Receieved Hash: {request.Hash}");
+
+            var reverseEstimateId = request.Hash.Reverse();
+
+            _logger.LogInformation($"[ServicesAPI::InternalServices::GetServiceByHash] Receieved Hash reversed: {reverseEstimateId}");
+
+            var EstimateId = new SqlParameter("@EstimateId", reverseEstimateId);
+            var service = await _serviceContext.Services!.FromSqlRaw($"SELECT * FROM services WHERE {EstimateId} = SUBSTRING(SHA1(Id), 1, 8)").FirstOrDefaultAsync();
             return new ServiceModel
             {
                 Name = service?.Name,
