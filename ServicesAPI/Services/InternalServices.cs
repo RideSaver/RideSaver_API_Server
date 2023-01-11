@@ -31,8 +31,7 @@ namespace ServicesAPI.Services
 
             _logger.LogInformation($"[ServicesAPI::InternalServices::GetServiceByHash] Final Hash: {estimateHash}");
 
-            var EstimateId = new SqlParameter("@EstimateId", estimateHash);
-            ServicesModel? service = await _serviceContext.Services!.FromSqlRaw($"SELECT * FROM services WHERE {EstimateId} = SUBSTRING(SHA1(Id), 1, 8)").SingleOrDefaultAsync();
+            ServicesModel? service = await _serviceContext.Services!.FromSqlRaw("SELECT * FROM services WHERE @Id = SUBSTRING(SHA1(Id), 1, 8)", new SqlParameter("@Id", estimateHash)).FirstOrDefaultAsync();
 
             if(service is null)
             {
