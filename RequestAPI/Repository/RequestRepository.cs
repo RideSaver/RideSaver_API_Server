@@ -19,8 +19,8 @@ namespace RequestAPI.Repository
         {
             var service = await _servicesClient.GetServiceByHashAsync(new GetServiceByHashRequest
             {
-                Hash = Google.Protobuf.ByteString.CopyFrom(rideId.ToByteArray())
-            });
+                Hash = Google.Protobuf.ByteString.CopyFrom(rideId.ToByteArray(), 0, 4)
+            });;
 
             if (service.Name == null)
             {
