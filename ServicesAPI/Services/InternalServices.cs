@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using ServicesAPI.Data;
 using static DataAccess.DataModels.ServiceFeaturesModel;
 using Grpc.Core;
-using Google.Protobuf;
 
 namespace ServicesAPI.Services
 {
@@ -33,12 +32,33 @@ namespace ServicesAPI.Services
             _logger.LogInformation($"[ServicesAPI::InternalServices::GetServiceByHash] Final Hash: {estimateHash}");
 
             var EstimateId = new SqlParameter("@EstimateId", estimateHash);
-            var service = await _serviceContext.Services!.FromSqlRaw($"SELECT * FROM services WHERE {EstimateId} = SUBSTRING(SHA1(Id), 1, 8)").FirstOrDefaultAsync();
-            return new ServiceModel
+            ServicesModel? service = await _serviceContext.Services!.FromSqlRaw($"SELECT * FROM services WHERE {EstimateId} = SUBSTRING(SHA1(Id), 1, 8)").SingleOrDefaultAsync();
+
+            if(service is null)
             {
-                Name = service?.Name,
-                ClientId = service?.ClientId,
+                _logger.LogError($"[ServicesAPI::InternalServices::GetServiceByHash] Failed to find a service matching the hash!");
+                return null;
+            }
+
+            _logger.LogInformation($"[ServicesAPI::InternalServices::GetServiceByHash] Service sucessfully found! Service Name: {service.Name}");
+
+            ServicesModel servicesModel = new()
+            {
+                Id = service.Id,
+                Name = service.Name!.ToString(),
+                ClientId = service.ClientId!.ToString(),
+                CreatedAt = service.CreatedAt,
             };
+
+            ServiceModel serviceModel = new()
+            {
+                Name = servicesModel.Name.ToString(),
+                ClientId = servicesModel.ClientId!.ToString(),
+            };
+
+            _logger.LogInformation($"[ServicesAPI::InternalServices::GetServiceByHash] Returning service to caller...");
+
+            return serviceModel;
         }
         public override async Task GetServices(Empty request, IServerStreamWriter<ServiceModel> responseStream, ServerCallContext context)
         {
