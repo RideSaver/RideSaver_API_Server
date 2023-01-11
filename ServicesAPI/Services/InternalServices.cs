@@ -28,11 +28,11 @@ namespace ServicesAPI.Services
 
             _logger.LogInformation($"[ServicesAPI::InternalServices::GetServiceByHash] Receieved Hash: {BitConverter.ToString(request.Hash.ToByteArray())}");
 
-            var reverseEstimateId = request.Hash.Reverse().ToArray();
+            var estimateHash = BitConverter.ToString(request.Hash.ToByteArray()).Trim('-').ToLower();
 
-            _logger.LogInformation($"[ServicesAPI::InternalServices::GetServiceByHash] Receieved Hash reversed: {BitConverter.ToString(reverseEstimateId)}");
+            _logger.LogInformation($"[ServicesAPI::InternalServices::GetServiceByHash] Final Hash: {estimateHash}");
 
-            var EstimateId = new SqlParameter("@EstimateId", reverseEstimateId);
+            var EstimateId = new SqlParameter("@EstimateId", estimateHash);
             var service = await _serviceContext.Services!.FromSqlRaw($"SELECT * FROM services WHERE {EstimateId} = SUBSTRING(SHA1(Id), 1, 8)").FirstOrDefaultAsync();
             return new ServiceModel
             {
