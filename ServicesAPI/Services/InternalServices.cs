@@ -26,11 +26,11 @@ namespace ServicesAPI.Services
         {
             _logger.LogInformation("[ServicesAPI::InternalServices::GetServiceByHash] gRPC method invoked...");
 
-            _logger.LogInformation($"[ServicesAPI::InternalServices::GetServiceByHash] Receieved Hash: {request.Hash}");
+            _logger.LogInformation($"[ServicesAPI::InternalServices::GetServiceByHash] Receieved Hash: {BitConverter.ToString(request.Hash.ToByteArray())}");
 
-            var reverseEstimateId = request.Hash.Reverse();
+            var reverseEstimateId = request.Hash.Reverse().ToArray();
 
-            _logger.LogInformation($"[ServicesAPI::InternalServices::GetServiceByHash] Receieved Hash reversed: {reverseEstimateId}");
+            _logger.LogInformation($"[ServicesAPI::InternalServices::GetServiceByHash] Receieved Hash reversed: {BitConverter.ToString(reverseEstimateId)}");
 
             var EstimateId = new SqlParameter("@EstimateId", reverseEstimateId);
             var service = await _serviceContext.Services!.FromSqlRaw($"SELECT * FROM services WHERE {EstimateId} = SUBSTRING(SHA1(Id), 1, 8)").FirstOrDefaultAsync();
