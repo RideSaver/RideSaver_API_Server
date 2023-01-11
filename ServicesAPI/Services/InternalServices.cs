@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using ServicesAPI.Data;
 using static DataAccess.DataModels.ServiceFeaturesModel;
 using Grpc.Core;
+using Google.Protobuf;
 
 namespace ServicesAPI.Services
 {
@@ -23,15 +24,31 @@ namespace ServicesAPI.Services
 
         public override async Task<ServiceModel> GetServiceByHash(GetServiceByHashRequest request, ServerCallContext context)
         {
-            _logger.LogInformation("[ServicesAPI::InternalServices::GetServiceByHash] Method invoked...");
+            _logger.LogInformation("[ServicesAPI::InternalServices::GetServiceByHash] gRPC method invoked...");
 
-            var EstimateId = new SqlParameter("@EstimateId", request.Hash);
+            var serviceID = new Guid(request.ToByteArray());
+
+            _logger.LogInformation($"[ServicesAPI::InternalServices::GetServiceByHash] Finding services with serviceID: {serviceID}...");
+
+            var service = await _serviceContext.Services!.FindAsync(serviceID);
+
+            if(service is null) { return null; } else
+            {
+                _logger.LogInformation("[ServicesAPI::InternalServices::GetServiceByHash] Service match found! Returning data to caller...");
+                return new ServiceModel
+                {
+                    Name = service.Name,
+                    ClientId = service.ClientId,
+                };
+            }
+
+            /*var EstimateId = new SqlParameter("@EstimateId", request.Hash);
             var service = await _serviceContext.Services!.FromSqlRaw($"SELECT * FROM services {EstimateId} = SUBSTRING(HASHBYTES('SHA1', Id), 0, 4))").FirstOrDefaultAsync();
             return new ServiceModel
             {
                 Name = service?.Name,
                 ClientId = service?.ClientId,
-            };
+            };*/
         }
         public override async Task GetServices(Empty request, IServerStreamWriter<ServiceModel> responseStream, ServerCallContext context)
         {

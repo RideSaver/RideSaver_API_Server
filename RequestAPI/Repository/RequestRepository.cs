@@ -1,5 +1,6 @@
 using InternalAPI;
 using RideSaver.Server.Models;
+using System.Net.Http.Headers;
 
 namespace RequestAPI.Repository
 {
@@ -18,15 +19,17 @@ namespace RequestAPI.Repository
         {
             var service = await _servicesClient.GetServiceByHashAsync(new GetServiceByHashRequest
             {
-                Hash = Google.Protobuf.ByteString.CopyFrom(rideId.ToByteArray(), 0, 4)
+                Hash = Google.Protobuf.ByteString.CopyFrom(rideId.ToByteArray())
             });
 
             if (service.Name == null)
             {
+                _logger.LogError("[RequestAPI::RequestRepository::getClient] Failed to find a service-name to retrieve the client name!");
                 throw new NotImplementedException();
             }
 
-            return _clientRepository.GetClientByName(service.Name, token);
+            _logger.LogInformation($"[RequestAPI::RequestRepository::getClient] Service name succesfully found: {service.ClientId} ! Matching client names..");
+            return _clientRepository.GetClientByName(service.ClientId, token);
         }
 
         public async Task<Ride> GetRideRequestAsync(Guid rideId, string token)
@@ -117,6 +120,17 @@ namespace RequestAPI.Repository
                 Price = (decimal)rideReplyModel.Price,
                 Currency = rideReplyModel.Currency
             };
+        }
+
+        public string GetAuthorizationToken(Microsoft.Extensions.Primitives.StringValues headers)
+        {
+            string? token = null;
+            if (AuthenticationHeaderValue.TryParse(headers, out var headerValue))
+            {
+                token = headerValue.Parameter;
+            }
+
+            return token;
         }
     }
 }

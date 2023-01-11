@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using RequestAPI.Repository;
 using RideSaver.Server.Controllers;
+using RideSaver.Server.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http.Headers;
 
@@ -23,72 +24,48 @@ namespace RequestAPI.Controllers
         }
 
         [AllowAnonymous]
-        public override async Task<IActionResult> CancelRide([FromRoute(Name = "rideId"), Required] string rideId)
+        public override async Task<IActionResult> GetRide([FromRoute(Name = "rideId"), Required] string rideId)
         {
-            _logger.LogInformation("[RequestController] CancelRide(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
+            var token = _requestRepository.GetAuthorizationToken(Request.Headers[HeaderNames.Authorization]);
 
-            var authorization = Request.Headers[HeaderNames.Authorization];
-            string? token = null;
+            _logger.LogInformation("[RequestController] GetRide(); method invoked at {DT} with a valid authorization token.", DateTime.UtcNow.ToLongTimeString());
 
-            if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
-            {
-                _logger.LogDebug($"Access Token: {headerValue.Parameter}");
-                token = headerValue.Parameter;
-            }
-            else
-            {
-                _logger.LogDebug($"Access token could not be read: {authorization}");
-            }
+            if (string.IsNullOrEmpty(token)) { return BadRequest("Invalid Authorization Token!"); }
 
-            if (string.IsNullOrEmpty(token)) { return BadRequest(); }
+            if(rideId is null) { return BadRequest("Invalid Ride ID!"); }
 
-            return new OkObjectResult(await _requestRepository.CancelRideRequestAsync(new Guid(rideId), token));
+            var requestUID = Guid.Parse(rideId.ToString());
+            return new OkObjectResult(await _requestRepository.GetRideRequestAsync(requestUID, token));
         }
 
         [AllowAnonymous]
-        public override async Task<IActionResult> GetRide([FromRoute(Name = "rideId"), Required] string rideId)
+        public override async Task<IActionResult> CancelRide([FromRoute(Name = "rideId"), Required] string rideId)
         {
-            _logger.LogInformation("[RequestController] GetRide(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
+            var token = _requestRepository.GetAuthorizationToken(Request.Headers[HeaderNames.Authorization]);
 
-            var authorization = Request.Headers[HeaderNames.Authorization];
-            string? token = null;
-
-            if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
-            {
-                _logger.LogDebug($"Access Token: {headerValue.Parameter}");
-                token = headerValue.Parameter;
-            }
-            else
-            {
-                _logger.LogDebug($"Access token could not be read: {authorization}");
-            }
+            _logger.LogInformation("[RequestController] CancelRide(); method invoked at {DT} with a valid authorization token.", DateTime.UtcNow.ToLongTimeString());
 
             if (string.IsNullOrEmpty(token)) { return BadRequest(); }
 
-            return new OkObjectResult(await _requestRepository.GetRideRequestAsync(new Guid(rideId), token));
+            if (rideId is null) { return BadRequest("Invalid Ride ID!"); }
+
+            var requestUID = Guid.Parse(rideId.ToString());
+            return new OkObjectResult(await _requestRepository.CancelRideRequestAsync(requestUID, token));
         }
 
         [AllowAnonymous]
         public override async Task<IActionResult> RequestRide([FromRoute(Name = "estimateId"), Required] string estimateId)
         {
-            _logger.LogInformation("[RequestController] RequestRide(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
+            var token = _requestRepository.GetAuthorizationToken(Request.Headers[HeaderNames.Authorization]);
 
-            var authorization = Request.Headers[HeaderNames.Authorization];
-            string? token = null;
-
-            if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
-            {
-                _logger.LogDebug($"Access Token: {headerValue.Parameter}");
-                token = headerValue.Parameter;
-            }
-            else
-            {
-                _logger.LogDebug($"Access token could not be read: {authorization}");
-            }
+            _logger.LogInformation("[RequestController] RequestRide(); method invoked at {DT} with a valid authorization token.", DateTime.UtcNow.ToLongTimeString());
 
             if (string.IsNullOrEmpty(token)) { return BadRequest(); }
 
-            return new OkObjectResult(await _requestRepository.CreateRideRequestAsync(new Guid(estimateId), token));
+            if (estimateId is null) { return BadRequest("Invalid Estimate ID!"); }
+
+            var estimateUID = Guid.Parse(estimateId.ToString());
+            return new OkObjectResult(await _requestRepository.CreateRideRequestAsync(estimateUID, token));
         }
 
         [Route("/error-development")]
