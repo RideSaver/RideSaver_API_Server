@@ -1,3 +1,4 @@
+using EstimateAPI.Helpers;
 using EstimateAPI.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
@@ -24,11 +25,12 @@ namespace EstimateAPI.Controllers
         [AllowAnonymous]
         public async override Task<IActionResult> GetEstimates([FromQuery(Name = "startPoint"), Required] Location startPoint, [FromQuery(Name = "endPoint"), Required] Location endPoint, [FromQuery(Name = "services")] List<Guid> services, [FromQuery(Name = "seats")] int? seats)
         {
-            var token = _estimateRepository.GetAuthorizationToken(Request.Headers[HeaderNames.Authorization]);
-
+            var token = Utility.GetAuthorizationToken(Request.Headers[HeaderNames.Authorization]);
             if (string.IsNullOrEmpty(token)) { return BadRequest("Invalid Authorization Token"); }
 
-            _logger.LogInformation("[EstimateController] GetEstimates(); method invoked at {DT} with a valid authorization token.", DateTime.UtcNow.ToLongTimeString());
+            if(startPoint is null || endPoint is null || services is null) { return BadRequest("Invalid Request Data");  }
+
+            _logger.LogInformation("[EstimateController::GetEstimates] Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
 
             return new OkObjectResult(await _estimateRepository.GetRideEstimatesAsync(startPoint, endPoint, services, seats, token));
         }
@@ -36,11 +38,12 @@ namespace EstimateAPI.Controllers
         [AllowAnonymous]
         public async override Task<IActionResult> RefreshEstimates([FromQuery(Name = "ids"), Required] List<Guid> ids)
         {
-            var token = _estimateRepository.GetAuthorizationToken(Request.Headers[HeaderNames.Authorization]);
-
+            var token = Utility.GetAuthorizationToken(Request.Headers[HeaderNames.Authorization]);
             if (string.IsNullOrEmpty(token)) { return BadRequest("Invalid Authorization Token"); }
 
-            _logger.LogInformation("[EstimateController] RefreshEstimates(); method invoked at {DT} with a valid authorization token.", DateTime.UtcNow.ToLongTimeString());
+            if (ids is null) { return BadRequest("Invalid Request Data"); }
+
+            _logger.LogInformation("[EstimateController::RefreshEstimates] RefreshEstimates(); Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
 
             return new OkObjectResult(await _estimateRepository.GetRideEstimatesRefreshAsync(ids, token));
         }
@@ -51,7 +54,6 @@ namespace EstimateAPI.Controllers
             if (!hostEnvironment.IsDevelopment()) return NotFound();
 
             var exceptionHandlerFeature = HttpContext.Features.Get<IExceptionHandlerFeature>()!;
-
             return Problem(detail: exceptionHandlerFeature.Error.StackTrace, title: exceptionHandlerFeature.Error.Message);
         }
 

@@ -1,17 +1,16 @@
-using Google.Protobuf.Collections;
 using Grpc.Core;
 using InternalAPI;
 using RideSaver.Server.Models;
-using System.Net.Http.Headers;
+using Google.Protobuf.Collections;
 
 namespace EstimateAPI.Repository
 {
     public class EstimateRepository : IEstimateRepository
     {
         public readonly IClientRepository _clientRepository;
-        private readonly InternalAPI.Services.ServicesClient _servicesClient;
         private readonly ILogger<EstimateRepository> _logger;
-
+        private readonly InternalAPI.Services.ServicesClient _servicesClient;
+        
         public EstimateRepository(IClientRepository clientRepository, InternalAPI.Services.ServicesClient servicesClient, ILogger<EstimateRepository> logger)
         {
             _clientRepository = clientRepository;
@@ -24,6 +23,7 @@ namespace EstimateAPI.Repository
             IEnumerable<Task<List<Estimate>>> estimateTasksQuery =
                 from client in await _clientRepository.GetClients(token)
                 select GetEstimatesAsync(client, startPoint, endPoint, services, seats);
+
             List<Task<List<Estimate>>> estimateTasks = estimateTasksQuery.ToList();
             List<Estimate> estimates = new List<Estimate>();
 
@@ -38,6 +38,7 @@ namespace EstimateAPI.Repository
 
         public async Task<List<Estimate>> GetEstimatesAsync(Estimates.EstimatesClient client, Location startPoint, Location endPoint, List<Guid> services, int? seats) // TBA
         {
+            // Initalize a new list Estimates to queery the data recieved in the request for different services.
             var estimatesList = new List<Estimate>();
             var clientRequested = new GetEstimatesRequest()
             {
@@ -47,53 +48,42 @@ namespace EstimateAPI.Repository
                     Longitude = (double)startPoint.Longitude,
                     Height = (double)startPoint.Height
                 },
-
                 EndPoint = new LocationModel()
                 {
                     Latitude = (double)endPoint.Latitude,
                     Longitude = (double)endPoint.Longitude,
                     Height = (double)endPoint.Height,
                 },
-
                 Seats = (int)(seats > 0 ? seats : 0),
             };
 
-            if (services is null) { _logger.LogError("[EstimateAPI:EstimateRepository::GetEstimatesAsync] Service List is NULL"); }
+            // Throw an exception if the list of ServiceIDs recieved is null
+            if (services is null) { throw new ArgumentNullException(nameof(services)); }
 
-            foreach (var service in services!)
-            {
-                clientRequested.Services.Add(service.ToString());
-            }
+            // Add each ServiceID to the client-services to match the service-name for each service.
+            foreach (var service in services!) { clientRequested.Services.Add(service.ToString()); }
 
-            _logger.LogInformation($"[EstimateAPI:EstimateRepository::GetEstimatesAsync] Sending (GetEstimateRequest) to the clients... \n{clientRequested}");
-
+            // Make the request to the different clients & iterate through the response while creating new Estimates for each.
             using var estimatesReplyModel = client.GetEstimates(clientRequested);
             await foreach (var estimatesReply in estimatesReplyModel.ResponseStream.ReadAllAsync())
             {
                 var estimate = new Estimate()
                 {
-                    Id = new Guid(estimatesReply.EstimateId), // TBA: IMPLEMENT EXCEPTION HANDLING
-
-                    Price = new PriceWithCurrency()
-                    {
-                        Price = (decimal)estimatesReply.PriceDetails.Price,
-                        Currency = estimatesReply.PriceDetails.Currency
-                    },
-
+                    Id = Guid.Parse(estimatesReply.EstimateId),
                     Distance = estimatesReply.Distance,
                     Waypoints = ConvertLocationModelToLocation(estimatesReply.WayPoints),
                     DisplayName = estimatesReply.DisplayName,
                     Seats = estimatesReply.Seats,
                     RequestURL = estimatesReply.RequestUrl,
-                    InvalidTime = estimatesReply.CreatedTime.ToDateTime()
+                    InvalidTime = estimatesReply.CreatedTime.ToDateTime(),
+                    Price = new PriceWithCurrency()
+                    {
+                        Price = (decimal)estimatesReply.PriceDetails.Price,
+                        Currency = estimatesReply.PriceDetails.Currency
+                    },
                 };
-
-                _logger.LogInformation($"[EstimateAPI:EstimateRepository::GetEstimatesAsync] Received (EstimateModel) from the client... \n{estimate}");
-
                 estimatesList.Add(estimate);
             }
-
-            _logger.LogInformation($"[EstimateAPI:EstimateRepository::GetEstimatesAsync] Reading client data complete.. returning to caller..");
             return estimatesList;
         }
 
@@ -101,53 +91,39 @@ namespace EstimateAPI.Repository
         {
             List<Estimate> estimates = new();
             List<Task<Estimate>> rideEstimatesRefreshTasks = new();
-
             foreach (var id in ids)
             {
-                var service = await _servicesClient.GetServiceByHashAsync(new GetServiceByHashRequest
-                {
-                    Hash = Google.Protobuf.ByteString.CopyFrom(id.ToByteArray(), 0, 4)
-                });
-
+                var service = await _servicesClient.GetServiceByHashAsync(new GetServiceByHashRequest { Hash = Google.Protobuf.ByteString.CopyFrom(id.ToByteArray(), 0, 4) });
                 rideEstimatesRefreshTasks.Add(GetRideEstimateRefreshAsync(_clientRepository.GetClientByName(service.ClientId, token), id));
             }
-
             while (rideEstimatesRefreshTasks.Any())
             {
                 Task<Estimate> finishedTask = await Task.WhenAny(rideEstimatesRefreshTasks);
                 rideEstimatesRefreshTasks.Remove(finishedTask);
                 estimates.Add(await finishedTask);
             }
-
             return estimates;
         }
 
         public async Task<Estimate> GetRideEstimateRefreshAsync(Estimates.EstimatesClient client, Guid estimate_id)
         {
-            var clientRequested = new GetEstimateRefreshRequest()
-            {
-                EstimateId = estimate_id.ToString()
-            };
-
+            var clientRequested = new GetEstimateRefreshRequest() { EstimateId = estimate_id.ToString() };
             var estimateRefreshReplyModel = await client.GetEstimateRefreshAsync(clientRequested);
             var estimate = new Estimate()
             {
                 Id = new Guid(estimateRefreshReplyModel.EstimateId),
                 InvalidTime = estimateRefreshReplyModel.CreatedTime.ToDateTime(),
-
+                Distance = estimateRefreshReplyModel.Distance,
+                Waypoints = ConvertLocationModelToLocation(estimateRefreshReplyModel.WayPoints),
+                DisplayName = estimateRefreshReplyModel.DisplayName,
+                Seats = estimateRefreshReplyModel.Seats,
+                RequestURL = estimateRefreshReplyModel.RequestUrl,
                 Price = new PriceWithCurrency()
                 {
                     Price = (decimal)estimateRefreshReplyModel.PriceDetails.Price,
                     Currency = estimateRefreshReplyModel.PriceDetails.Currency
                 },
-
-                Distance = estimateRefreshReplyModel.Distance,
-                Waypoints = ConvertLocationModelToLocation(estimateRefreshReplyModel.WayPoints),
-                DisplayName = estimateRefreshReplyModel.DisplayName,
-                Seats = estimateRefreshReplyModel.Seats,
-                RequestURL = estimateRefreshReplyModel.RequestUrl
             };
-
             return estimate;
         }
 
@@ -165,22 +141,9 @@ namespace EstimateAPI.Repository
                     Longitude = (decimal)f.Longitude,
                     Height = (decimal)f.Height,
                 };
-
                 locationList.Add(location);
-                
             }
             return locationList;
-        }
-
-        public string GetAuthorizationToken(Microsoft.Extensions.Primitives.StringValues headers)
-        {
-            string? token = null;
-            if (AuthenticationHeaderValue.TryParse(headers, out var headerValue))
-            {
-                token = headerValue.Parameter;
-            }
-
-            return token;
         }
     }
 }

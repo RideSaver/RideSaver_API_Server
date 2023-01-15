@@ -6,6 +6,5 @@ namespace EstimateAPI.Repository
     {
         Task<List<Estimate>> GetRideEstimatesAsync(Location startPoint, Location endPoint, List<Guid> services, int? seats, string token);
         Task<List<Estimate>> GetRideEstimatesRefreshAsync(List<Guid> ids, string token);
-        string GetAuthorizationToken(Microsoft.Extensions.Primitives.StringValues headers);
     }
 }

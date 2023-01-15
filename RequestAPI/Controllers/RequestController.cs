@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
+using RequestAPI.Helpers;
 using RequestAPI.Repository;
 using RideSaver.Server.Controllers;
 using RideSaver.Server.Models;
@@ -26,13 +27,12 @@ namespace RequestAPI.Controllers
         [AllowAnonymous]
         public override async Task<IActionResult> GetRide([FromRoute(Name = "rideId"), Required] string rideId)
         {
-            var token = _requestRepository.GetAuthorizationToken(Request.Headers[HeaderNames.Authorization]);
-
-            _logger.LogInformation("[RequestController] GetRide(); method invoked at {DT} with a valid authorization token.", DateTime.UtcNow.ToLongTimeString());
-
+            var token = Utility.GetAuthorizationToken(Request.Headers[HeaderNames.Authorization]);
             if (string.IsNullOrEmpty(token)) { return BadRequest("Invalid Authorization Token!"); }
 
-            if(rideId is null) { return BadRequest("Invalid Ride ID!"); }
+            if (rideId is null) { return BadRequest("Invalid Ride ID!"); }
+
+            _logger.LogInformation("[RequestController::GetRide] Method invoked at {DT}.", DateTime.UtcNow.ToLongTimeString());
 
             var requestUID = Guid.Parse(rideId.ToString());
             return new OkObjectResult(await _requestRepository.GetRideRequestAsync(requestUID, token));
@@ -41,13 +41,12 @@ namespace RequestAPI.Controllers
         [AllowAnonymous]
         public override async Task<IActionResult> CancelRide([FromRoute(Name = "rideId"), Required] string rideId)
         {
-            var token = _requestRepository.GetAuthorizationToken(Request.Headers[HeaderNames.Authorization]);
-
-            _logger.LogInformation("[RequestController] CancelRide(); method invoked at {DT} with a valid authorization token.", DateTime.UtcNow.ToLongTimeString());
-
+            var token = Utility.GetAuthorizationToken(Request.Headers[HeaderNames.Authorization]);
             if (string.IsNullOrEmpty(token)) { return BadRequest(); }
 
             if (rideId is null) { return BadRequest("Invalid Ride ID!"); }
+
+            _logger.LogInformation("[RequestController::CancelRide] Method invoked at {DT}.", DateTime.UtcNow.ToLongTimeString());
 
             var requestUID = Guid.Parse(rideId.ToString());
             return new OkObjectResult(await _requestRepository.CancelRideRequestAsync(requestUID, token));
@@ -56,13 +55,12 @@ namespace RequestAPI.Controllers
         [AllowAnonymous]
         public override async Task<IActionResult> RequestRide([FromRoute(Name = "estimateId"), Required] string estimateId)
         {
-            var token = _requestRepository.GetAuthorizationToken(Request.Headers[HeaderNames.Authorization]);
-
-            _logger.LogInformation("[RequestController] RequestRide(); method invoked at {DT} with a valid authorization token.", DateTime.UtcNow.ToLongTimeString());
-
+            var token = Utility.GetAuthorizationToken(Request.Headers[HeaderNames.Authorization]);
             if (string.IsNullOrEmpty(token)) { return BadRequest(); }
 
             if (estimateId is null) { return BadRequest("Invalid Estimate ID!"); }
+
+            _logger.LogInformation("[RequestController::RequestRide] Method invoked at {DT}.", DateTime.UtcNow.ToLongTimeString());
 
             var estimateUID = Guid.Parse(estimateId.ToString());
             return new OkObjectResult(await _requestRepository.CreateRideRequestAsync(estimateUID, token));

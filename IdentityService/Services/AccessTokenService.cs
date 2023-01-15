@@ -3,7 +3,6 @@ using IdentityService.Data;
 using IdentityService.Interface;
 using InternalAPI;
 using Microsoft.EntityFrameworkCore;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace IdentityService.Services
@@ -25,37 +24,24 @@ namespace IdentityService.Services
 
         public async override Task<GetUserAccessTokenResponse> GetUserAccessToken(GetUserAccessTokenRequest request, ServerCallContext context)
         {
-            _logger.LogInformation("[IdentityService::AccessTokenService::GetUserAccessToken] Access Token request received...");
-
             string headerToken = "" + _httpContextAccessor.HttpContext!.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
-
-            if(headerToken is null) { _logger.LogInformation("[IdentityService::AccessTokenService::GetUserAccessToken] Request Headers are null."); }
-
-            _logger.LogInformation($"[IdentityService::AccessTokenService::GetUserAccessToken] Headers token: {headerToken}");
+            if(headerToken is null) { throw new ArgumentNullException(nameof(headerToken)); }
 
             var cPrincipal = _tokenService.GetPrincipal(headerToken!);
+            if(cPrincipal is null) { throw new ArgumentNullException(nameof(cPrincipal)); }
 
             var userID = cPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            _logger.LogInformation($"[IdentityService::AccessTokenService::GetUserAccessToken] Retrieving Access token for UserID: {userID}...");
+            if(userID is null) { throw new ArgumentNullException(nameof(userID)); }
 
             var serviceID = request.ServiceId.ToString();
-
-            _logger.LogInformation($"[IdentityService::AccessTokenService::GetUserAccessToken] Retrieving Access token for ServiceID: {serviceID}...");
-
-            if (userID is null) return new GetUserAccessTokenResponse { AccessToken = String.Empty };
-
-            _logger.LogDebug($"User ID: {userID}");
-            _logger.LogDebug($"Service ID: {serviceID}");
+            if (serviceID is null) { throw new ArgumentNullException(nameof(serviceID)); }
 
             var accessToken = await _userContext.Authorizations!
                 .Where(auth => auth.UserId.Equals(new Guid(userID)))
                 .Where(auth => auth.ServiceId.Equals(new Guid(serviceID)))
                 .FirstOrDefaultAsync(); // Retrieves the refresh-token matching the UID & service ID
 
-            if(accessToken is null) return new GetUserAccessTokenResponse { AccessToken = String.Empty };
-
-            _logger.LogInformation($"[IdentityService::AccessTokenService::GetUserAccessToken] Returning Access Token: {accessToken.RefreshhToken}");
+            if (accessToken is null) { throw new ArgumentNullException(nameof(accessToken)); }
 
             return new GetUserAccessTokenResponse { AccessToken = accessToken.RefreshhToken };
         }

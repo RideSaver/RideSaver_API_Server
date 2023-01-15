@@ -19,13 +19,13 @@ namespace ServicesAPI.Controllers
         }
         public override async Task<IActionResult> GetProviders()
         {
-            _logger.LogInformation("[ServicesController] GetProviders(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
+            _logger.LogInformation("[ServicesController::GetProviders] Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
             var rideServices = await _serviceRepository.GetAvailableProviders();
             return new OkObjectResult(rideServices);
         }
         public override async Task<IActionResult> GetServices([FromQuery(Name = "location")] Location location)
         {
-            _logger.LogInformation("[ServicesController] GetServices(); method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
+            _logger.LogInformation("[ServicesController::GetServices] Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
             var rideServices = await _serviceRepository.GetAvailableServices();
             return new OkObjectResult(rideServices);
         }

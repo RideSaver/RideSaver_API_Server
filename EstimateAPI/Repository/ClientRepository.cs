@@ -26,7 +26,7 @@ namespace EstimateAPI.Repository
 
             // Get the Kubernetes Object
             var config = KubernetesClientConfiguration.InClusterConfig();
-            _logger.LogDebug($"kubernetes configuration: {config}");
+            _logger.LogDebug($"Kubernetes configuration: {config}");
             _kubernetes = new Kubernetes(config);
 
             // Construct the label filter
@@ -37,7 +37,7 @@ namespace EstimateAPI.Repository
             }
 
             _labelStr = string.Join(",", labelStrs.ToArray());
-            _logger.LogDebug($"kubernetes label string: {_labelStr}");
+            _logger.LogDebug($"Kubernetes label string: {_labelStr}");
         }
 
         public Estimates.EstimatesClient GetClientByName(string name, string token)

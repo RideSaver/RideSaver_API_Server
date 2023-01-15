@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using ServicesAPI.Data;
-using ServicesAPI.Registry;
 using ServicesAPI.Repository;
 using ServicesAPI.Services;
 using System.Security.Cryptography.X509Certificates;
@@ -23,14 +22,9 @@ builder.Services.AddDbContext<ServiceContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 
-builder.Services.AddHostedService<CertificateStatusService>();
-
-builder.Services.AddEndpointsApiExplorer();
-
 builder.Services.AddGrpc();
-builder.Services.AddTransient<IServiceRegistry, ServiceRegistry>();
 builder.Services.AddTransient<IServiceRepository, ServiceRepository>();
-
+builder.Services.AddHostedService<CertificateStatusService>();
 
 builder.Services.Configure<ListenOptions>(options =>
 {

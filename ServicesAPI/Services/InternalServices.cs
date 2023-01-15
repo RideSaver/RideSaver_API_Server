@@ -2,12 +2,12 @@ using DataAccess.DataModels;
 using Google.Protobuf.Collections;
 using Google.Protobuf.WellKnownTypes;
 using InternalAPI;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using ServicesAPI.Data;
-using static DataAccess.DataModels.ServiceFeaturesModel;
 using Grpc.Core;
 using MySqlConnector;
+
+using static DataAccess.DataModels.ServiceFeaturesModel;
 
 namespace ServicesAPI.Services
 {
@@ -24,23 +24,10 @@ namespace ServicesAPI.Services
 
         public override async Task<ServiceModel> GetServiceByHash(GetServiceByHashRequest request, ServerCallContext context)
         {
-            _logger.LogInformation("[ServicesAPI::InternalServices::GetServiceByHash] gRPC method invoked...");
-
-            _logger.LogInformation($"[ServicesAPI::InternalServices::GetServiceByHash] Receieved Hash: {BitConverter.ToString(request.Hash.ToByteArray())}");
-
             var estimateHash = BitConverter.ToString(request.Hash.ToByteArray()).Replace("-", string.Empty).ToLower();
-
-            _logger.LogInformation($"[ServicesAPI::InternalServices::GetServiceByHash] Final Hash: {estimateHash}");
-
             ServicesModel? service = await _serviceContext.Services!.FromSqlRaw("SELECT * FROM services WHERE @Id = SUBSTRING(SHA1(Id), 1, 8)", new MySqlParameter("@Id", estimateHash)).FirstOrDefaultAsync();
 
-            if(service is null)
-            {
-                _logger.LogError($"[ServicesAPI::InternalServices::GetServiceByHash] Failed to find a service matching the hash!");
-                return null;
-            }
-
-            _logger.LogInformation($"[ServicesAPI::InternalServices::GetServiceByHash] Service sucessfully found! Service Name: {service.Name}");
+            if(service is null) {  throw new ArgumentNullException(nameof(service)); }
 
             ServicesModel servicesModel = new()
             {
@@ -56,14 +43,10 @@ namespace ServicesAPI.Services
                 ClientId = servicesModel.ClientId!.ToString(),
             };
 
-            _logger.LogInformation($"[ServicesAPI::InternalServices::GetServiceByHash] Returning service to caller...");
-
             return serviceModel;
         }
         public override async Task GetServices(Empty request, IServerStreamWriter<ServiceModel> responseStream, ServerCallContext context)
         {
-            _logger.LogInformation("[ServicesAPI::InternalServices::GetServices] gRPC method invoked...");
-
             IList<ServicesModel> services = (IList<ServicesModel>)_serviceContext.Services!.ToListAsync();
             foreach (var service in services)
             {
@@ -76,8 +59,6 @@ namespace ServicesAPI.Services
         }
         public override async Task<InternalAPI.Void> RegisterService(RegisterServiceRequest request, ServerCallContext context)
         {
-            _logger.LogInformation("[ServicesAPI::InternalServices::RegisterService] gRPC Method invoked...");
-
             var service = new ServicesModel()
             {
                 Id = new Guid(request.Id.ToByteArray()),
@@ -90,14 +71,7 @@ namespace ServicesAPI.Services
             {
                 await _serviceContext.Services!.AddAsync(service);
                 await _serviceContext.SaveChangesAsync();
-
-                _logger.LogInformation("[ServicesAPI::InternalServices::RegisterService] Service sucessfully registered...");
-            }
-            else
-            {
-                _logger.LogInformation("[ServicesAPI::InternalServices::RegisterService] Service already exists...");
-            }
-              
+            }              
             return await Task.FromResult(new InternalAPI.Void());
         }
 
