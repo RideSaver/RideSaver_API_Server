@@ -46,7 +46,7 @@ builder.Services.AddGrpcClient<Services.ServicesClient>(o =>
 
     var httpHandler = new HttpClientHandler();
     httpHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-    o.Address = new Uri("https://services-api.api:443");
+    o.Address = new Uri("https://services.api:443");
     o.ChannelOptionsActions.Add(o => o.HttpHandler = httpHandler);
     o.CallOptionsActions.Add(o => o.CallOptions.WithCredentials(credentials));
 });

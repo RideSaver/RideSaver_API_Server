@@ -42,7 +42,7 @@ namespace EstimateAPI.Controllers
 
             _logger.LogInformation("[EstimateController] RefreshEstimates(); method invoked at {DT} with a valid authorization token.", DateTime.UtcNow.ToLongTimeString());
 
-            return new OkObjectResult(await _estimateRepository.GetRideEstimatesRefreshAsync(ids, token!));
+            return new OkObjectResult(await _estimateRepository.GetRideEstimatesRefreshAsync(ids, token));
         }
 
         [Route("/error-development")]
