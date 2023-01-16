@@ -31,11 +31,18 @@ namespace UserService.Controllers
 
             if (patchUserRequest is null) return BadRequest("Invalid user information!");
 
-            var isValid = await _userRepository.CreateUserAsync(patchUserRequest);
+            try
+            {
+                var isValid = await _userRepository.CreateUserAsync(patchUserRequest);
+                if (!isValid) return BadRequest("Account already exists!");
 
-            if (!isValid) return BadRequest("Account already exists!");
-
-            return new NoContentResult(); // [STATUS: 204 NO CONTENT]
+                return new NoContentResult(); // [STATUS: 204 NO CONTENT]
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest("Internal Server Error");
+            }
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -43,10 +50,18 @@ namespace UserService.Controllers
         {
             _logger.LogInformation("[UserController::DeleteUser] Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
 
-            var isValid = await _userRepository.DeleteUserAsync(username);
-            if (!isValid) return BadRequest("Username does not exist!");
+            try
+            { 
+                var isValid = await _userRepository.DeleteUserAsync(username);
+                if (!isValid) return BadRequest("Username does not exist!");
 
-            return new OkResult(); // [STATUS: 200 OK]
+                return new OkResult(); // [STATUS: 200 OK]
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest("Internal Server Error");
+            }
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -54,9 +69,17 @@ namespace UserService.Controllers
         {
             _logger.LogInformation("[UserController::GetUser] Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
 
-            var user = await _userRepository.GetUserAsync(username);
-            if (user is not null) return new OkObjectResult(user); // [STATUS: 200 OK || user]
-            return BadRequest("User does not exist!");
+            try
+            {
+                var user = await _userRepository.GetUserAsync(username);
+                if (user is not null) return new OkObjectResult(user); // [STATUS: 200 OK || user]
+                return BadRequest("User does not exist!");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest("Internal Server Error");
+            }
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -64,10 +87,18 @@ namespace UserService.Controllers
         {
             _logger.LogInformation("[UserController::PatchUser] Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
 
-            var isValid = await _userRepository.UpdateUserAsync(username, patchUserRequest);
-            if (!isValid) return BadRequest("Username does not exist!");
+            try
+            {
+                var isValid = await _userRepository.UpdateUserAsync(username, patchUserRequest);
+                if (!isValid) return BadRequest("Username does not exist!");
 
-            return new OkResult(); // [STATUS: 200 OK]
+                return new OkResult(); // [STATUS: 200 OK]
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest("Internal Server Error");
+            }
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -75,11 +106,18 @@ namespace UserService.Controllers
         {
             _logger.LogInformation("[UserController::GetHistory] Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
 
-            var userHistory = await _userRepository.GetUserHistoryASync(username);
+            try
+            {
+                var userHistory = await _userRepository.GetUserHistoryASync(username);
+                if (userHistory is null) return new BadRequestObjectResult(userHistory);
 
-            if (userHistory is null) return new BadRequestObjectResult(userHistory);
-
-            return new OkObjectResult(userHistory);
+                return new OkObjectResult(userHistory);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest("Internal Server Error");
+            }
         }
 
         public override Task<IActionResult> AutorizeServiceEndpoint([FromRoute(Name = "serviceId"), Required] Guid serviceId, [FromRoute(Name = "userId"), Required] Guid userId, [FromQuery(Name = "code"), Required] string code) => throw new NotImplementedException();

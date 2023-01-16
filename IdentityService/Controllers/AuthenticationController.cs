@@ -31,9 +31,17 @@ namespace IdentityService.Controllers
             var authModel = new AuthenticateRequest() { Username = model.Username, Password = model.Password };
             _logger.LogInformation("[AuthenticationController::Authenticate] Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
 
-            var auth = await _authenticationRepository.Authenticate(authModel);
-            if (auth is null) return new BadRequestResult();
-            return new OkObjectResult(auth);
+            try
+            {
+                var auth = await _authenticationRepository.Authenticate(authModel);
+                if (auth is null) return new BadRequestResult();
+                return new OkObjectResult(auth);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest("Internal Server Error");
+            }
         }
 
         [AllowAnonymous]
@@ -44,10 +52,19 @@ namespace IdentityService.Controllers
             if (token is null) return new UnauthorizedResult();
 
             _logger.LogInformation("[AuthenticationController::ValidateToken] Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
-            var isValid = await _authenticationRepository.ValidateToken(token);
-            if (!isValid) return new UnauthorizedResult();
 
-            return new OkResult();
+            try
+            {
+                var isValid = await _authenticationRepository.ValidateToken(token);
+                if (!isValid) return new UnauthorizedResult();
+
+                return new OkResult();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest("Internal Server Error");
+            }
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -57,7 +74,16 @@ namespace IdentityService.Controllers
         {
             if (token is null) return new UnauthorizedResult();
             _logger.LogInformation("[AuthenticationController::RefreshToken] Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
-            return new OkObjectResult(await _authenticationRepository.RefreshToken(token));
+
+            try
+            {
+                return new OkObjectResult(await _authenticationRepository.RefreshToken(token));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest("Internal Server Error");
+            }
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -67,7 +93,16 @@ namespace IdentityService.Controllers
         {
             if (token is null) return new BadRequestResult();
             _logger.LogInformation("[AuthenticationController::RevokeTokenRefreshToken] Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
-            return new OkObjectResult(await _authenticationRepository.RevokeToken(token));
+
+            try
+            {
+                return new OkObjectResult(await _authenticationRepository.RevokeToken(token));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest("Internal Server Error");
+            }
         }
 
         [HttpPost]

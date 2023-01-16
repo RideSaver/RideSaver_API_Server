@@ -32,7 +32,15 @@ namespace EstimateAPI.Controllers
 
             _logger.LogInformation("[EstimateController::GetEstimates] Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
 
-            return new OkObjectResult(await _estimateRepository.GetRideEstimatesAsync(startPoint, endPoint, services, seats, token));
+            try
+            {
+                return new OkObjectResult(await _estimateRepository.GetRideEstimatesAsync(startPoint, endPoint, services, seats, token));
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest("Internal Server Error");
+            }
         }
 
         [AllowAnonymous]
@@ -45,7 +53,15 @@ namespace EstimateAPI.Controllers
 
             _logger.LogInformation("[EstimateController::RefreshEstimates] RefreshEstimates(); Method invoked at {DT}", DateTime.UtcNow.ToLongTimeString());
 
-            return new OkObjectResult(await _estimateRepository.GetRideEstimatesRefreshAsync(ids, token));
+            try
+            {
+                return new OkObjectResult(await _estimateRepository.GetRideEstimatesRefreshAsync(ids, token));
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest("Internal Server Error");
+            }
         }
 
         [Route("/error-development")]

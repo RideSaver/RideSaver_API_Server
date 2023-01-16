@@ -34,8 +34,16 @@ namespace RequestAPI.Controllers
 
             _logger.LogInformation("[RequestController::GetRide] Method invoked at {DT}.", DateTime.UtcNow.ToLongTimeString());
 
-            var requestUID = Guid.Parse(rideId.ToString());
-            return new OkObjectResult(await _requestRepository.GetRideRequestAsync(requestUID, token));
+            try
+            {
+                var requestUID = Guid.Parse(rideId.ToString());
+                return new OkObjectResult(await _requestRepository.GetRideRequestAsync(requestUID, token));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest("Internal Server Error");
+            }
         }
 
         [AllowAnonymous]
@@ -48,8 +56,16 @@ namespace RequestAPI.Controllers
 
             _logger.LogInformation("[RequestController::CancelRide] Method invoked at {DT}.", DateTime.UtcNow.ToLongTimeString());
 
-            var requestUID = Guid.Parse(rideId.ToString());
-            return new OkObjectResult(await _requestRepository.CancelRideRequestAsync(requestUID, token));
+            try
+            {
+                var requestUID = Guid.Parse(rideId.ToString());
+                return new OkObjectResult(await _requestRepository.CancelRideRequestAsync(requestUID, token));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest("Internal Server Error");
+            }
         }
 
         [AllowAnonymous]
@@ -62,8 +78,16 @@ namespace RequestAPI.Controllers
 
             _logger.LogInformation("[RequestController::RequestRide] Method invoked at {DT}.", DateTime.UtcNow.ToLongTimeString());
 
-            var estimateUID = Guid.Parse(estimateId.ToString());
-            return new OkObjectResult(await _requestRepository.CreateRideRequestAsync(estimateUID, token));
+            try
+            {
+                var estimateUID = Guid.Parse(estimateId.ToString());
+                return new OkObjectResult(await _requestRepository.CreateRideRequestAsync(estimateUID, token));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest("Internal Server Error");
+            }
         }
 
         [Route("/error-development")]
