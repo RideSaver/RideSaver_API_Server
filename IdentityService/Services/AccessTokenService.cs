@@ -32,18 +32,19 @@ namespace IdentityService.Services
 
             var userID = cPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
             if(userID is null) { throw new ArgumentNullException(nameof(userID)); }
+            var userGUID = Guid.Parse(userID);
 
             var serviceID = request.ServiceId.ToString();
             if (serviceID is null) { throw new ArgumentNullException(nameof(serviceID)); }
+            var serviceGUID = Guid.Parse(serviceID);
 
-            var accessToken = await _userContext.Authorizations!
-                .Where(auth => auth.UserId.Equals(new Guid(userID)))
-                .Where(auth => auth.ServiceId.Equals(new Guid(serviceID)))
-                .FirstOrDefaultAsync(); // Retrieves the refresh-token matching the UID & service ID
+            var userAuthorization = await _userContext.Authorizations
+               .Where(o => o.UserModelId == userGUID)
+               .Where(f => f.ServiceId == serviceGUID)
+               .FirstOrDefaultAsync();
+            if(userAuthorization is null) { throw new ArgumentNullException(nameof(userAuthorization)); }
 
-            if (accessToken is null) { throw new ArgumentNullException(nameof(accessToken)); }
-
-            return new GetUserAccessTokenResponse { AccessToken = accessToken.RefreshhToken };
+            return new GetUserAccessTokenResponse { AccessToken = userAuthorization.ServiceToken };
         }
     }
 }

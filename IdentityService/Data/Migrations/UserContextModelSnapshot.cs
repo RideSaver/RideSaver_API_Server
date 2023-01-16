@@ -25,24 +25,20 @@ namespace IdentityService.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<string>("RefreshhToken")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<Guid>("ServiceId")
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("char(36)");
+                    b.Property<string>("ServiceToken")
+                        .HasColumnType("longtext");
 
-                    b.Property<Guid?>("UserModelId")
+                    b.Property<Guid>("UserModelId")
                         .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserModelId");
 
-                    b.ToTable("authorizations");
+                    b.ToTable("Authorizations");
                 });
 
             modelBuilder.Entity("DataAccess.DataModels.RefreshToken", b =>
@@ -72,14 +68,14 @@ namespace IdentityService.Data.Migrations
                     b.Property<string>("Token")
                         .HasColumnType("longtext");
 
-                    b.Property<Guid?>("UserModelId")
+                    b.Property<Guid>("UserModelId")
                         .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserModelId");
 
-                    b.ToTable("refresh_tokens");
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("DataAccess.DataModels.RideHistoryModel", b =>
@@ -89,7 +85,6 @@ namespace IdentityService.Data.Migrations
                         .HasColumnType("char(36)");
 
                     b.Property<string>("Currency")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("Date")
@@ -104,10 +99,9 @@ namespace IdentityService.Data.Migrations
                         .HasColumnType("char(36)");
 
                     b.Property<string>("Url")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<Guid?>("UserModelId")
+                    b.Property<Guid>("UserModelId")
                         .HasColumnType("char(36)");
 
                     b.HasKey("Id");
@@ -116,7 +110,7 @@ namespace IdentityService.Data.Migrations
 
                     b.HasIndex("UserModelId");
 
-                    b.ToTable("ride_history");
+                    b.ToTable("RideHistory");
                 });
 
             modelBuilder.Entity("DataAccess.DataModels.ServiceAreaModel", b =>
@@ -132,7 +126,7 @@ namespace IdentityService.Data.Migrations
 
                     b.HasIndex("ServicesModelId");
 
-                    b.ToTable("service_areas");
+                    b.ToTable("ServiceAreas");
                 });
 
             modelBuilder.Entity("DataAccess.DataModels.ServiceFeaturesModel", b =>
@@ -151,7 +145,7 @@ namespace IdentityService.Data.Migrations
 
                     b.HasIndex("ServicesModelId");
 
-                    b.ToTable("service_features");
+                    b.ToTable("ServiceFeatures");
                 });
 
             modelBuilder.Entity("DataAccess.DataModels.ServicesModel", b =>
@@ -175,7 +169,7 @@ namespace IdentityService.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("services");
+                    b.ToTable("Services");
                 });
 
             modelBuilder.Entity("DataAccess.DataModels.UserModel", b =>
@@ -188,45 +182,44 @@ namespace IdentityService.Data.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<byte[]>("PasswordHash")
-                        .IsRequired()
                         .HasColumnType("longblob");
 
                     b.Property<byte[]>("PasswordSalt")
-                        .IsRequired()
                         .HasColumnType("longblob");
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Username")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.ToTable("users");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("DataAccess.DataModels.AuthorizationModel", b =>
                 {
                     b.HasOne("DataAccess.DataModels.UserModel", null)
                         .WithMany("Authorizations")
-                        .HasForeignKey("UserModelId");
+                        .HasForeignKey("UserModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DataAccess.DataModels.RefreshToken", b =>
                 {
                     b.HasOne("DataAccess.DataModels.UserModel", null)
                         .WithMany("RefreshTokens")
-                        .HasForeignKey("UserModelId");
+                        .HasForeignKey("UserModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DataAccess.DataModels.RideHistoryModel", b =>
@@ -239,7 +232,9 @@ namespace IdentityService.Data.Migrations
 
                     b.HasOne("DataAccess.DataModels.UserModel", null)
                         .WithMany("RideHistory")
-                        .HasForeignKey("UserModelId");
+                        .HasForeignKey("UserModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ServicesModel");
                 });

@@ -14,7 +14,7 @@ namespace IdentityService.Data.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "providers",
+                name: "Services",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
@@ -27,87 +27,99 @@ namespace IdentityService.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_providers", x => x.Id);
+                    table.PrimaryKey("PK_Services", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "users",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    Username = table.Column<string>(type: "longtext", nullable: false)
+                    Username = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Name = table.Column<string>(type: "longtext", nullable: false)
+                    Name = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Avatar = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Email = table.Column<string>(type: "longtext", nullable: false)
+                    Email = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    PhoneNumber = table.Column<string>(type: "longtext", nullable: false)
+                    PhoneNumber = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    PasswordSalt = table.Column<byte[]>(type: "longblob", nullable: false),
-                    PasswordHash = table.Column<byte[]>(type: "longblob", nullable: false)
+                    PasswordSalt = table.Column<byte[]>(type: "longblob", nullable: true),
+                    PasswordHash = table.Column<byte[]>(type: "longblob", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_users", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "services",
+                name: "ServiceAreas",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    Name = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ClientId = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ProviderId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", rowVersion: true, nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn)
+                    ServicesModelId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_services", x => x.Id);
+                    table.PrimaryKey("PK_ServiceAreas", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_services_providers_ProviderId",
-                        column: x => x.ProviderId,
-                        principalTable: "providers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_ServiceAreas_Services_ServicesModelId",
+                        column: x => x.ServicesModelId,
+                        principalTable: "Services",
+                        principalColumn: "Id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "authorizations",
+                name: "ServiceFeatures",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    UserId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Feature = table.Column<int>(type: "int", nullable: false),
+                    ServicesModelId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ServiceFeatures", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ServiceFeatures_Services_ServicesModelId",
+                        column: x => x.ServicesModelId,
+                        principalTable: "Services",
+                        principalColumn: "Id");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Authorizations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     ServiceId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    RefreshToken = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    UserModelId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                    UserModelId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    ServiceToken = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_authorizations", x => x.Id);
+                    table.PrimaryKey("PK_Authorizations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_authorizations_users_UserModelId",
+                        name: "FK_Authorizations_Users_UserModelId",
                         column: x => x.UserModelId,
-                        principalTable: "users",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "RefreshToken",
+                name: "RefreshTokens",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    UserModelId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     Token = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Expires = table.Column<DateTime>(type: "datetime(6)", nullable: false),
@@ -118,154 +130,106 @@ namespace IdentityService.Data.Migrations
                     RevokedByIp = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ReplacedByToken = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    UserModelId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RefreshToken", x => x.Id);
+                    table.PrimaryKey("PK_RefreshTokens", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RefreshToken_users_UserModelId",
+                        name: "FK_RefreshTokens_Users_UserModelId",
                         column: x => x.UserModelId,
-                        principalTable: "users",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "ride_history",
+                name: "RideHistory",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     ServiceId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    UserModelId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     Price = table.Column<int>(type: "int", nullable: false),
-                    Currency = table.Column<string>(type: "longtext", nullable: false)
+                    Currency = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Url = table.Column<string>(type: "longtext", nullable: false)
+                    Url = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Date = table.Column<DateTime>(type: "datetime(6)", rowVersion: true, nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn),
-                    UserModelId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ride_history", x => x.Id);
+                    table.PrimaryKey("PK_RideHistory", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ride_history_services_ServiceId",
+                        name: "FK_RideHistory_Services_ServiceId",
                         column: x => x.ServiceId,
-                        principalTable: "services",
+                        principalTable: "Services",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ride_history_users_UserModelId",
+                        name: "FK_RideHistory_Users_UserModelId",
                         column: x => x.UserModelId,
-                        principalTable: "users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "service_areas",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    ServicesModelId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_service_areas", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_service_areas_services_ServicesModelId",
-                        column: x => x.ServicesModelId,
-                        principalTable: "services",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "service_features",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    Feature = table.Column<int>(type: "int", nullable: false),
-                    ServicesModelId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_service_features", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_service_features_services_ServicesModelId",
-                        column: x => x.ServicesModelId,
-                        principalTable: "services",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_authorizations_UserModelId",
-                table: "authorizations",
+                name: "IX_Authorizations_UserModelId",
+                table: "Authorizations",
                 column: "UserModelId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RefreshToken_UserModelId",
-                table: "RefreshToken",
+                name: "IX_RefreshTokens_UserModelId",
+                table: "RefreshTokens",
                 column: "UserModelId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ride_history_ServiceId",
-                table: "ride_history",
+                name: "IX_RideHistory_ServiceId",
+                table: "RideHistory",
                 column: "ServiceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ride_history_UserModelId",
-                table: "ride_history",
+                name: "IX_RideHistory_UserModelId",
+                table: "RideHistory",
                 column: "UserModelId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_service_areas_ServicesModelId",
-                table: "service_areas",
+                name: "IX_ServiceAreas_ServicesModelId",
+                table: "ServiceAreas",
                 column: "ServicesModelId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_service_features_ServicesModelId",
-                table: "service_features",
+                name: "IX_ServiceFeatures_ServicesModelId",
+                table: "ServiceFeatures",
                 column: "ServicesModelId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_services_ProviderId",
-                table: "services",
-                column: "ProviderId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "authorizations");
+                name: "Authorizations");
 
             migrationBuilder.DropTable(
-                name: "RefreshToken");
+                name: "RefreshTokens");
 
             migrationBuilder.DropTable(
-                name: "ride_history");
+                name: "RideHistory");
 
             migrationBuilder.DropTable(
-                name: "service_areas");
+                name: "ServiceAreas");
 
             migrationBuilder.DropTable(
-                name: "service_features");
+                name: "ServiceFeatures");
 
             migrationBuilder.DropTable(
-                name: "users");
+                name: "Users");
 
             migrationBuilder.DropTable(
-                name: "services");
-
-            migrationBuilder.DropTable(
-                name: "providers");
+                name: "Services");
         }
     }
 }

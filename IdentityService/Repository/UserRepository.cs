@@ -3,6 +3,8 @@ using RideSaver.Server.Models;
 using IdentityService.Data;
 using Microsoft.EntityFrameworkCore;
 using IdentityService.Interface;
+using IdentityService.Registry;
+using System.Diagnostics.Contracts;
 
 namespace IdentityService.Repository
 {
@@ -63,10 +65,13 @@ namespace IdentityService.Repository
                 Email = userInfo.Email,
                 PhoneNumber = userInfo.Phonenumber,
                 PasswordSalt = salt,
-                PasswordHash = Security.Argon2.HashPassword(userInfo.Password, salt)
+                PasswordHash = Security.Argon2.HashPassword(userInfo.Password, salt),
             };
 
-            user.Authorizations = Registry.AuthorizationRegistry.InitializeUserAuthorizationRegistry(user.Id);
+            foreach(var serviceAuth in AuthorizationRegistry.ServiceAuth)
+            {
+                user.Authorizations.Add(serviceAuth);
+            }
 
             await _userContext.Users!.AddAsync(user);
 
@@ -75,7 +80,6 @@ namespace IdentityService.Repository
             await SaveAsync();
             return true; 
         }
-
         public async Task<bool> DeleteUserAsync(string username)
         {
             var userModel = await _userContext.Users!.FirstOrDefaultAsync(o => o.Username == username);
