@@ -25,7 +25,7 @@ namespace ServicesAPI.Services
         public override async Task<ServiceModel> GetServiceByHash(GetServiceByHashRequest request, ServerCallContext context)
         {
             var estimateHash = BitConverter.ToString(request.Hash.ToByteArray()).Replace("-", string.Empty).ToLower();
-            ServicesModel? service = await _serviceContext.Services!.FromSqlRaw("SELECT * FROM services WHERE @Id = SUBSTRING(SHA1(Id), 1, 8)", new MySqlParameter("@Id", estimateHash)).FirstOrDefaultAsync();
+            ServicesModel? service = await _serviceContext.Services!.FromSqlRaw("SELECT * FROM Services WHERE @Id = SUBSTRING(SHA1(Id), 1, 8)", new MySqlParameter("@Id", estimateHash)).FirstOrDefaultAsync();
 
             if(service is null) {  throw new ArgumentNullException(nameof(service)); }
 

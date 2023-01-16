@@ -11,8 +11,8 @@ using ServicesAPI.Data;
 namespace ServicesAPI.Data.Migrations
 {
     [DbContext(typeof(ServiceContext))]
-    [Migration("20230103215826_ServicesUpdate")]
-    partial class ServicesUpdate
+    [Migration("20230116043919_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -28,7 +28,6 @@ namespace ServicesAPI.Data.Migrations
                         .HasColumnType("char(36)");
 
                     b.Property<string>("ClientId")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedAt")
@@ -37,12 +36,11 @@ namespace ServicesAPI.Data.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.ToTable("providers");
+                    b.ToTable("Providers");
                 });
 
             modelBuilder.Entity("DataAccess.DataModels.ServiceAreaModel", b =>
@@ -58,7 +56,7 @@ namespace ServicesAPI.Data.Migrations
 
                     b.HasIndex("ServicesModelId");
 
-                    b.ToTable("service_areas");
+                    b.ToTable("ServiceAreas");
                 });
 
             modelBuilder.Entity("DataAccess.DataModels.ServiceFeaturesModel", b =>
@@ -77,7 +75,7 @@ namespace ServicesAPI.Data.Migrations
 
                     b.HasIndex("ServicesModelId");
 
-                    b.ToTable("service_features");
+                    b.ToTable("ServiceFeatures");
                 });
 
             modelBuilder.Entity("DataAccess.DataModels.ServicesModel", b =>
@@ -106,7 +104,7 @@ namespace ServicesAPI.Data.Migrations
 
                     b.HasIndex("ProviderModelId");
 
-                    b.ToTable("services");
+                    b.ToTable("Services");
                 });
 
             modelBuilder.Entity("DataAccess.DataModels.ServiceAreaModel", b =>
